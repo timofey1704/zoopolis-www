@@ -17,6 +17,10 @@
 - **Django.py** - веб-фреймворк для Python.
 - **PostgreSQL** - реляционная база данных для хранения данных.
 
+### Дизайн
+
+- **Figma** - [Дизайн проекта.](https://www.figma.com/design/WgjtG73yxsdg8KZqqVPeLU/Zoopolis-V2.0?node-id=171-1109&t=to7mXS1zUj8xkhNy-0)
+
 ## Установка
 
 ### Предварительные требования
@@ -90,7 +94,7 @@
    Создайте базу данных PostgreSQL и выполните миграции:
 
    ```sh
-   createdb zoopolisDB
+   createdb zoopolisdb
    # Выполните миграции, если они имеются. В проекте откройте директорию backend
    cd backend
    python manage.py makemigrations

@@ -7,6 +7,11 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 pycodestyle = "*"
+dotenv = "*"
+psycopg2-binary = "*"
+pillow = "*"
+pytest = "*"
+pytest-django = "*"
 
 [dev-packages]
 

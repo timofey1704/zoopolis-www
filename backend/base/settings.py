@@ -1,13 +1,39 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / './.env')
 
-SECRET_KEY = 'django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5'
+SECRET_KEY = os.environ.get("SECRET_KEY")
+DEBUG = os.environ.get("DEBUG_MODE")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 
-DEBUG = True
+CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
+CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
 
-ALLOWED_HOSTS = []
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "HEAD",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
+    "PATCH"
+]
+
+CORS_ALLOW_HEADERS = [
+    'x-api-key', 
+    'content-type',
+    'authorization',
+    'accept',
+    'cookie'
+]
+
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+CHAT_ID = os.environ.get("CHAT_ID")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,14 +76,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'base.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT"),
     }
 }
 
@@ -76,12 +102,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
+TIME_ZONE = 'Europe/Minsk'
 USE_TZ = True
-
+USE_I18N = True
+USE_L10N = True
 
 STATIC_URL = 'static/'
 
