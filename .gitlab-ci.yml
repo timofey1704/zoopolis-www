@@ -1,0 +1,25 @@
+stages:
+  - lint
+  # - test
+
+lint_frontend:
+  image: node:23-alpine
+  stage: lint
+  script:
+    - cd frontend
+    - npm ci
+    - npm run lint
+  only:
+    - main
+    - merge_requests
+
+# test_backend:
+#   image: python:3.13-alpine
+#   stage: test
+#   script:
+#     - cd backend
+#     - pip install -r requirements.txt
+#     - pytest
+#   only:
+#     - main
+#     - merge_requests

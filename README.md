@@ -1,4 +1,4 @@
-# Trip with Bonus
+# Zoopolis
 
 Это репозиторий сайта Zoopolis. Этот проект включает в себя фронтенд на Next.js и бэкенд на Django.py с базой данных PostgreSQL.
 
