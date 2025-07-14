@@ -13,7 +13,7 @@ const FAQ: React.FC<FAQProps> = ({ faqs }) => {
         <h2 className="text-4xl font-bold text-center py-4">
           ЧАСТЫЕ{' '} 
           <span className="relative inline-block px-3">
-            <span className="absolute bg-orange -rotate-2 rounded-3xl -inset-1" />
+            <span className="absolute bg-orange -rotate-3 rounded-3xl -inset-1" />
             <span className="relative text-white">ВОПРОСЫ</span>
           </span>
         </h2>
