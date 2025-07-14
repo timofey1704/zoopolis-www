@@ -12,11 +12,11 @@ const Header = () => {
         </Link>
       </div>
       <div className='flex items-center justify-center space-x-10 ml-10 text-xl font-medium'>
-        <Link href="/" className='hover:text-orange'>Как это работает</Link>
-        <Link href="/about" className='hover:text-orange'>Тарифы</Link>
-        <Link href="/about" className='hover:text-orange'>Отзывы</Link>
-        <Link href="/about" className='hover:text-orange'>FAQ</Link>
-        <Link href="/about" className='hover:text-orange'>О компании</Link>
+        <Link href="/" className='hover:text-orange transition-colors duration-300'>Как это работает?</Link>
+        <Link href="/about" className='hover:text-orange transition-colors duration-300'>Тарифы</Link>
+        <Link href="/about" className='hover:text-orange transition-colors duration-300'>Отзывы</Link>
+        <Link href="/about" className='hover:text-orange transition-colors duration-300'>FAQ</Link>
+        <Link href="/about" className='hover:text-orange transition-colors duration-300'>О компании</Link>
       </div>
       <div className='pr-[92px]'>
         <Button text="Личный кабинет" />
