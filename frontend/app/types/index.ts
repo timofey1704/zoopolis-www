@@ -17,3 +17,18 @@ export interface ButtonProps {
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
 }
+
+export interface AccordionProps {
+  title: string
+  content: string | React.ReactNode
+}
+
+export interface FAQ {
+  id: number
+  title: string
+  content: string | React.ReactNode
+}
+
+export interface FAQProps {
+  faqs: FAQ[]
+}

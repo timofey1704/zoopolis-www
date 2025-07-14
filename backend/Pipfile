@@ -12,6 +12,7 @@ psycopg2-binary = "*"
 pillow = "*"
 pytest = "*"
 pytest-django = "*"
+requests = "*"
 
 [dev-packages]
 
