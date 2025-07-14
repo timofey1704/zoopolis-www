@@ -1,3 +1,16 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+admin.site.register(FAQ)
+
+@admin.register(Feature)
+class FeatureAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    search_fields = ['name']
+
+@admin.register(Pricing)
+class PricingAdmin(admin.ModelAdmin):
+    list_display = ['plan', 'price', 'is_popular']
+    list_filter = ['is_popular']
+    search_fields = ['plan']
+    filter_horizontal = ['features']
