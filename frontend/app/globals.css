@@ -27,3 +27,38 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+h1 {
+  font-size: 48px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 64px;
+}
+
+h2 {
+  font-size: 36px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 48px;
+}
+
+h3 {
+  font-size: 28px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 38px;
+}
+
+h4 {
+  font-size: 24px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 28px;
+}
+
+div {
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 26px;
+}

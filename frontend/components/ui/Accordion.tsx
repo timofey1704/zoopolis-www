@@ -35,7 +35,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
         className="flex justify-between items-center py-5 px-8 w-full"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h3 className="text-2xl font-bold text-white text-left">{title}</h3>
+        <h3 className="text-white text-left">{title}</h3>
         <div className="w-8 h-8 flex items-center justify-center relative">
           <Image
             src={openFAQ}
@@ -73,7 +73,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
       >
         <div className="overflow-hidden">
           <div className="px-8 pb-5">
-            <div className="text-lg text-white">{renderContent()}</div>
+            <div className="text-white">{renderContent()}</div>
           </div>
         </div>
       </div>

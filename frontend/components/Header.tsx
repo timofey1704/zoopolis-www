@@ -19,7 +19,7 @@ const Header = () => {
         <Link href="/about" className='hover:text-orange transition-colors duration-300'>О компании</Link>
       </div>
       <div className='pr-[92px]'>
-        <Button text="Личный кабинет" />
+        <Button text="Личный кабинет" className="bg-white text-black" />
       </div>
     </div>
   )
