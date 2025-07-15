@@ -6,6 +6,8 @@ import Dog4 from '../public/dog4.png'
 import Cat2 from '../public/cat2.png'
 import Dog2 from '../public/god2.png'
 import Cat1 from '../public/cat1.png'
+import Dog3 from '../public/dog3.png'
+import Brelok from '../public/brelok.png'
 import MediaSlider from "@/components/MediaSlider"
 
 export default async function Home() {
@@ -32,6 +34,46 @@ const faqs = await getFAQs()
       
         </div>
         <Image src={Cat1} alt="cat" width={289} height={263} />
+      </div>
+
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-11">
+            <h2 className="font-bold leading-tight text-gray-900">
+              Мы создали QR решения, которые помогают питомцам вернутся домой, 
+              а их хозяевам - оставаться спокойными.
+            </h2>
+            <div className="relative overflow-hidden">
+              <Image 
+                src={Dog3} 
+                alt="dog" 
+                width={598} 
+                height={480}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="relative overflow-hidden">
+              <Image 
+                src={Brelok} 
+                alt="cat" 
+                width={400} 
+                height={330}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            <div className="space-y-3">
+              <p>
+                С 2020 года создаём QR-кулон для наших мохнатых друзей. Наша команда — ветеринары, разработчики и просто любители питомцев, понимающие, как важно быстро получить помощь в критический момент.
+              </p>
+              <p>
+                Все данные защищены: серверы, шифрование и строгая конфиденциальность. Доступ к информации — только у тех, кому вы его открыли.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col justify-center items-center gap-10 my-8">
