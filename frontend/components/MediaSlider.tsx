@@ -2,13 +2,10 @@
 
 import React, { useRef, useState, useEffect  } from 'react'
 import axios from 'axios'
-import Image from 'next/image'
 import { MediaItem } from '@/app/types'
 import ImagesSlider from './ui/ImagesSlider'
 import type Slider from 'react-slick'
 import Loader from './ui/Loader'
-import rightArrow from '../public/rightArrow.png'
-import leftArrow from '../public/leftArrow.png'
 
 const MediaSlider = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -20,20 +17,15 @@ const MediaSlider = () => {
 
   useEffect(() => {
     const loadMainPageData = async () => {
-      console.log('Starting to load media data...')
-      console.log('API_URL:', API_URL)
       
       try {
-        console.log('Making API request...')
         const response = await axios.get(`${API_URL}/media/`)
-        console.log('API Response:', response.data)
         
         if (!response.data.media || !Array.isArray(response.data.media)) {
           throw new Error('Invalid response format: media array is missing')
         }
 
         const transformedMedia = response.data.media.map((item: MediaItem) => {
-          console.log('Processing item:', item)
           return {
             id: item.id,
             type: item.type,
@@ -42,7 +34,6 @@ const MediaSlider = () => {
           }
         })
         
-        console.log('Transformed media:', transformedMedia)
         setMedia(transformedMedia)
       } catch (err) {
         console.error('Detailed error:', {
@@ -69,8 +60,6 @@ const MediaSlider = () => {
       sliderRef.current.slickNext()
     }
   }
-
-  console.log('Current state:', { loading, error, mediaLength: media.length })
 
   if (loading) {
     return (
@@ -106,19 +95,19 @@ const MediaSlider = () => {
         className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Previous slide"
       >
-        <Image src={leftArrow} alt="leftArrow" width={48} height={48} />
+        <img src="/leftArrow.svg" alt="Previous" width="48" height="48" />
       </button>
 
-      <div className="px-10">
+      <div className="px-12">
         <ImagesSlider items={media} sliderRef={sliderRef} />
       </div>
 
       <button
         onClick={handleNextClick}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
+        className="absolute right-0 pb-6 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Next slide"
       >
-        <Image src={rightArrow} alt="rightArrow" width={48} height={48} />
+        <img src="/rightArrow.svg" alt="Next" width="48" height="48" />
       </button>
     </div>
   )
