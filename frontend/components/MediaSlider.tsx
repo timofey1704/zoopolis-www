@@ -30,13 +30,13 @@ const MediaSlider = () => {
           throw new Error('Invalid response format: media array is missing')
         }
 
-        const transformedMedia = response.data.media.map((item: any) => {
+        const transformedMedia = response.data.media.map((item: MediaItem) => {
           console.log('Processing item:', item)
           return {
             id: item.id,
             type: item.type,
             url: item.url,
-            thumbnailUrl: item.thumbnail_url || undefined
+            thumbnailUrl: item.thumbnailUrl || undefined
           }
         })
         
