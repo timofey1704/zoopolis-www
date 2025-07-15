@@ -7,7 +7,7 @@ import { ImagesSliderProps } from '@/app/types'
 
 const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
   const settings = {
-    dots: false,
+    dots: true,
     infinite: true,
     arrows: false,
     speed: 500,

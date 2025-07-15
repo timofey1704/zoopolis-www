@@ -2,11 +2,13 @@
 
 import React, { useRef, useState, useEffect  } from 'react'
 import axios from 'axios'
+import Image from 'next/image'
 import { MediaItem } from '@/app/types'
 import ImagesSlider from './ui/ImagesSlider'
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import type Slider from 'react-slick'
 import Loader from './ui/Loader'
+import rightArrow from '../public/rightArrow.png'
+import leftArrow from '../public/leftArrow.png'
 
 const MediaSlider = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -101,10 +103,10 @@ const MediaSlider = () => {
     <div className="relative w-full">
       <button
         onClick={handlePrevClick}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Previous slide"
       >
-        <IoIosArrowBack size={24} />
+        <Image src={leftArrow} alt="leftArrow" width={48} height={48} />
       </button>
 
       <div className="px-10">
@@ -113,10 +115,10 @@ const MediaSlider = () => {
 
       <button
         onClick={handleNextClick}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Next slide"
       >
-        <IoIosArrowForward size={24} />
+        <Image src={rightArrow} alt="rightArrow" width={48} height={48} />
       </button>
     </div>
   )
