@@ -8,11 +8,11 @@ django = "*"
 djangorestframework = "*"
 pycodestyle = "*"
 dotenv = "*"
-psycopg2-binary = "*"
 pillow = "*"
 pytest = "*"
 pytest-django = "*"
 requests = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

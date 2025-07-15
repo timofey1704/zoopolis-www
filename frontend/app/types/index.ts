@@ -32,3 +32,16 @@ export interface FAQ {
 export interface FAQProps {
   faqs: FAQ[]
 }
+
+export interface MediaItem {
+  id: number
+  type: 'image' | 'video'
+  url: string
+  thumbnailUrl?: string // для превью видео
+}
+
+export interface ImagesSliderProps {
+  items: MediaItem[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sliderRef: React.RefObject<any>
+}

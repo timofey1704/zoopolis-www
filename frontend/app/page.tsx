@@ -1,14 +1,16 @@
 import Image from "next/image"
 import { getFAQs } from "@/lib/main/fetchFAQ"
+import { getMainMedia } from "@/lib/main/fetchMainMedia"
 import FAQ from "@/components/FAQ"
 import Button from "@/components/ui/Button"
 import Dog4 from '../public/dog4.png'
 import Cat2 from '../public/cat2.png'
 import Dog2 from '../public/god2.png'
 import Cat1 from '../public/cat1.png'
+import MediaSlider from "@/components/MediaSlider"
 
 export default async function Home() {
-const faqs = await getFAQs()
+const [faqs, media] = await Promise.all([getFAQs(), getMainMedia()])
 
   return (
     <div className="mx-auto flex max-w-[1216px] flex-col items-center justify-center">
@@ -33,7 +35,16 @@ const faqs = await getFAQs()
         <Image src={Cat1} alt="cat" width={289} height={263} />
       </div>
 
-
+      <div className="flex justify-center items-center gap-10 my-8">
+        <h2 className="text-white">
+          <span className="text-black">МЫ НА</span>
+          <span className="relative inline-block px-1 mx-2">
+            <span className="absolute bg-orange rotate-3 rounded-3xl -inset-1" />
+            <span className="relative text-white">МЕРОПРИЯТИЯХ</span>
+          </span>
+        </h2>
+        {media && <MediaSlider items={media} />}
+      </div>
 
       <FAQ faqs={faqs} />
 

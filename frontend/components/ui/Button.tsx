@@ -12,7 +12,7 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`text-base font-medium rounded-[52px] cursor-pointer text-black w-60 h-14 hover:shadow-xl transition-all duration-500 ${className}`}
+      className={`text-base font-medium rounded-[52px] cursor-pointer text-black w-60 h-14 hover:shadow-2xl transition-all duration-500 ${className}`}
       type={type}
     >
       {leftIcon && <span className="mr-2 flex items-center">{leftIcon}</span>}

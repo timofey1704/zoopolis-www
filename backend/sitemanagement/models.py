@@ -36,3 +36,18 @@ class Feature(models.Model):
         
     def __str__(self):
         return self.name
+
+class MainPageMedia(models.Model):
+    type = models.CharField(max_length=10, 
+        choices=[
+            ("photo", "Фото"),
+            ("video", "Видео"),     
+        ],verbose_name="Тип контента")
+    url = models.CharField(max_length=255, verbose_name="Ссылка на медиаконтент")
+    
+    class Meta:
+        verbose_name = 'Медиа контент для главной'
+        verbose_name_plural = 'Медиа контент для главной'
+        
+    def __str__(self):
+        return self.url
