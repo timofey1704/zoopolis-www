@@ -40,10 +40,11 @@ class Feature(models.Model):
 class MainPageMedia(models.Model):
     type = models.CharField(max_length=10, 
         choices=[
-            ("photo", "Фото"),
+            ("image", "Фото"),
             ("video", "Видео"),     
         ],verbose_name="Тип контента")
     url = models.CharField(max_length=255, verbose_name="Ссылка на медиаконтент")
+    thumbnail_url = models.CharField(max_length=255, verbose_name="Ссылка на превью видео", null=True, blank=True)
     
     class Meta:
         verbose_name = 'Медиа контент для главной'
