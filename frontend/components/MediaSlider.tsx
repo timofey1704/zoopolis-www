@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef, useState, useEffect  } from 'react'
+import Image from 'next/image'
 import axios from 'axios'
 import { MediaItem } from '@/app/types'
 import ImagesSlider from './ui/ImagesSlider'
@@ -95,7 +96,7 @@ const MediaSlider = () => {
         className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Previous slide"
       >
-        <img src="/leftArrow.svg" alt="Previous" width="48" height="48" />
+        <Image src="/leftArrow.svg" alt="Previous" width={48} height={48} />
       </button>
 
       <div className="px-12">
@@ -107,7 +108,7 @@ const MediaSlider = () => {
         className="absolute right-0 pb-6 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         aria-label="Next slide"
       >
-        <img src="/rightArrow.svg" alt="Next" width="48" height="48" />
+        <Image src="/rightArrow.svg" alt="Next" width={48} height={48} />
       </button>
     </div>
   )

@@ -37,7 +37,15 @@ const faqs = await getFAQs()
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative">
+          {/* плашка отзывов */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-gray/80 backdrop-blur-sm rounded-[52px] px-10 py-4 shadow-lg">
+            <div className="flex flex-col items-center gap-2">
+              <Image src='./reviewIcon.svg' alt="star" width={140} height={24} />
+              <span className="text-base ">Средняя оценка</span>
+            </div>
+          </div>
+          
           <div className="space-y-11">
             <h2 className="font-bold leading-tight text-gray-900">
               Мы создали QR решения, которые помогают питомцам вернутся домой, 
