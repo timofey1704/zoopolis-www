@@ -36,22 +36,28 @@ export default async function Home() {
         <Image src={Cat1} alt="cat" width={289} height={263} />
       </div>
 
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        <div className="relative grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+      <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24">
+        <div className="relative grid grid-cols-1 items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
           {/* плашка отзывов */}
-          <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-10 py-4 shadow-lg backdrop-blur-sm">
+          <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
             <div className="flex flex-col items-center gap-2">
-              <Image src="./reviewIcon.svg" alt="star" width={140} height={24} />
-              <span className="text-base">Средняя оценка</span>
+              <Image
+                src="./reviewIcon.svg"
+                alt="star"
+                width={140}
+                height={24}
+                className="h-auto w-[100px] sm:w-[100px] lg:w-[140px]"
+              />
+              <span className="text-sm sm:text-base">Средняя оценка</span>
             </div>
           </div>
 
-          <div className="space-y-11">
-            <h2 className="leading-tight font-bold text-gray-900">
+          <div className="space-y-6 sm:space-y-8 md:space-y-11">
+            <h2 className="text-2xl leading-tight font-bold text-gray-900 sm:text-3xl md:text-4xl">
               Мы создали QR решения, которые помогают питомцам вернутся домой, а их хозяевам -
               оставаться спокойными.
             </h2>
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden rounded-2xl">
               <Image
                 src={Dog3}
                 alt="dog"
@@ -62,8 +68,8 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="space-y-1">
-            <div className="relative overflow-hidden">
+          <div className="space-y-6 sm:space-y-8">
+            <div className="relative overflow-hidden rounded-2xl">
               <Image
                 src={Brelok}
                 alt="cat"
@@ -72,13 +78,13 @@ export default async function Home() {
                 className="h-auto w-full object-cover"
               />
             </div>
-            <div className="space-y-3">
-              <p>
+            <div className="space-y-3 sm:space-y-4">
+              <p className="text-base sm:text-lg">
                 С 2020 года создаём QR-кулон для наших мохнатых друзей. Наша команда — ветеринары,
                 разработчики и просто любители питомцев, понимающие, как важно быстро получить
                 помощь в критический момент.
               </p>
-              <p>
+              <p className="text-base sm:text-lg">
                 Все данные защищены: серверы, шифрование и строгая конфиденциальность. Доступ к
                 информации — только у тех, кому вы его открыли.
               </p>
