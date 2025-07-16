@@ -29,7 +29,7 @@ const Header = () => {
         </Link>
       </div>
       <div className="pr-[92px]">
-        <Button text="Личный кабинет" className="bg-white text-black" />
+        <Button text="Личный кабинет" className="bg-white text-black hover:shadow-md" />
       </div>
     </div>
   )

@@ -14,8 +14,55 @@ export default async function Home() {
   const faqs = await getFAQs()
 
   return (
-    <div className="mx-auto flex max-w-[1216px] flex-col items-center justify-center">
-      <div className="my-8 flex items-center justify-center gap-10">
+    <div className="mx-auto flex flex-col items-center justify-center">
+      <div className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]">
+        <h1 className="sr-only hidden">ZOOPOLIS</h1>
+        <div className="relative w-full pt-10">
+          <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
+          <div className="mt-16 flex justify-center px-6 md:px-10 lg:px-18">
+            <div className="flex -translate-y-1/2 flex-row items-center justify-between gap-10 md:gap-20">
+              <div className="flex max-w-xl flex-col gap-8">
+                <div className="space-y-1">
+                  <h2 className="text-4xl font-semibold text-gray-900">QR-кулон</h2>
+                  <h2 className="text-4xl font-semibold text-gray-900">для питомца</h2>
+                </div>
+                <p className="text-lg leading-relaxed text-gray-600">
+                  Просто прикрепите QR-кулон к ошейнику — и любой, кто найдёт вашего питомца, сможет
+                  связаться с нашей службой поддержки, которая решит все нюансы по возвращению
+                  питомца хозяину.
+                </p>
+                <Button
+                  text="Заказать"
+                  className="bg-orange hover:bg-orange/90 w-fit px-8 py-3 text-lg font-medium text-white transition-all"
+                />
+              </div>
+              <div className="relative mx-10 flex-shrink-0">
+                <Image
+                  src="/dog1.svg"
+                  alt="Счастливая собака"
+                  width={580}
+                  height={710}
+                  className="relative z-10"
+                />
+                <div className="bg-orange/10 absolute top-1/2 -right-10 z-0 -translate-y-1/2 rounded-full blur-3xl" />
+              </div>
+              <div className="flex max-w-md flex-col gap-6">
+                <div className="space-y-1">
+                  <h2 className="text-4xl font-semibold text-gray-900">QR-кулон Zoopolis</h2>
+                </div>
+                <div className="space-y-4">
+                  <p className="text-lg leading-relaxed text-gray-600">
+                    Защита питомца 24/7. Прочный водонепроницаемый кулон с круглосуточной поддержкой
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* блюр снизу */}
+        <div className="absolute inset-x-0 -bottom-5 h-40 bg-gradient-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
+      </div>
+      <div className="my-8 flex max-w-[1216px] items-center justify-center gap-10">
         <Image src={Dog2} alt="dog" width={289} height={263} />
         <div className="flex flex-col items-center justify-center space-y-5">
           <h2 className="text-white">
@@ -36,7 +83,7 @@ export default async function Home() {
         <Image src={Cat1} alt="cat" width={289} height={263} />
       </div>
 
-      <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24">
+      <div className="container mx-auto max-w-[1216px] px-4 py-8 sm:py-12 md:py-16 lg:py-24">
         <div className="relative grid grid-cols-1 items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
           {/* плашка отзывов */}
           <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
@@ -93,7 +140,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="my-8 flex flex-col items-center justify-center gap-10">
+      <div className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10">
         <h2 className="text-white">
           <span className="text-black">МЫ НА</span>
           <span className="relative mx-2 inline-block px-1">
@@ -106,7 +153,7 @@ export default async function Home() {
 
       <FAQ faqs={faqs} />
 
-      <div className="my-8 flex items-center justify-center gap-10">
+      <div className="my-8 flex max-w-[1216px] items-center justify-center gap-10">
         <Image src={Dog4} alt="dog" width={289} height={263} />
         <div className="flex flex-col items-center justify-center space-y-5">
           <h2 className="text-white">
