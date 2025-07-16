@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useEffect  } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
 import { MediaItem } from '@/app/types'
@@ -18,10 +18,9 @@ const MediaSlider = () => {
 
   useEffect(() => {
     const loadMainPageData = async () => {
-      
       try {
         const response = await axios.get(`${API_URL}/media/`)
-        
+
         if (!response.data.media || !Array.isArray(response.data.media)) {
           throw new Error('Invalid response format: media array is missing')
         }
@@ -31,16 +30,16 @@ const MediaSlider = () => {
             id: item.id,
             type: item.type,
             url: item.url,
-            thumbnailUrl: item.thumbnailUrl || undefined
+            thumbnailUrl: item.thumbnailUrl || undefined,
           }
         })
-        
+
         setMedia(transformedMedia)
       } catch (err) {
         console.error('Detailed error:', {
           message: err instanceof Error ? err.message : 'Unknown error',
           error: err,
-          apiUrl: `${API_URL}/media/`
+          apiUrl: `${API_URL}/media/`,
         })
         setError('Failed to load main page data')
       } finally {
@@ -64,7 +63,7 @@ const MediaSlider = () => {
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center items-center min-h-[200px]">
+      <div className="flex min-h-[200px] w-full items-center justify-center">
         <Loader />
       </div>
     )
@@ -72,10 +71,10 @@ const MediaSlider = () => {
 
   if (error) {
     return (
-      <div className="w-full flex justify-center items-center min-h-[200px] text-red-500">
+      <div className="flex min-h-[200px] w-full items-center justify-center text-red-500">
         <div>
           <p>{error}</p>
-          <p className="text-sm mt-2">Check console for details</p>
+          <p className="mt-2 text-sm">Check console for details</p>
         </div>
       </div>
     )
@@ -83,7 +82,7 @@ const MediaSlider = () => {
 
   if (media.length === 0) {
     return (
-      <div className="w-full flex justify-center items-center min-h-[200px] text-gray-500">
+      <div className="flex min-h-[200px] w-full items-center justify-center text-gray-500">
         No media available
       </div>
     )
@@ -93,7 +92,7 @@ const MediaSlider = () => {
     <div className="relative w-full">
       <button
         onClick={handlePrevClick}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
+        className="absolute top-1/2 left-0 z-10 -translate-y-1/2 transition-all duration-300 hover:scale-110 hover:cursor-pointer"
         aria-label="Previous slide"
       >
         <Image src="/leftArrow.svg" alt="Previous" width={48} height={48} />
@@ -105,7 +104,7 @@ const MediaSlider = () => {
 
       <button
         onClick={handleNextClick}
-        className="absolute right-0 pb-6 top-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-all duration-300 hover:cursor-pointer"
+        className="absolute top-1/2 right-0 z-10 -translate-y-1/2 pb-6 transition-all duration-300 hover:scale-110 hover:cursor-pointer"
         aria-label="Next slide"
       >
         <Image src="/rightArrow.svg" alt="Next" width={48} height={48} />
@@ -114,4 +113,4 @@ const MediaSlider = () => {
   )
 }
 
-export default MediaSlider 
+export default MediaSlider

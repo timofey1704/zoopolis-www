@@ -35,7 +35,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
         <div className="relative aspect-[316/580] w-full">
           <video
             controls
-            className="w-full h-full object-cover rounded-lg"
+            className="h-full w-full rounded-lg object-cover"
             poster={item.thumbnailUrl}
           >
             <source src={item.url} type="video/mp4" />
@@ -47,22 +47,22 @@ const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
 
     return (
       <div className="relative aspect-[316/580] w-full">
-        <Image 
-          src={item.url} 
-          alt={`Slide ${item.id}`} 
+        <Image
+          src={item.url}
+          alt={`Slide ${item.id}`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           priority={item.id <= 4}
-          className="object-cover rounded-lg"
+          className="rounded-lg object-cover"
         />
       </div>
     )
   }
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-4">
+    <div className="mx-auto w-full max-w-[1200px] px-4">
       <Slider ref={sliderRef} {...settings}>
-        {items.map((item) => (
+        {items.map(item => (
           <div key={item.id} className="px-2">
             {renderMedia(item)}
           </div>

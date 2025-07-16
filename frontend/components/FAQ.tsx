@@ -8,21 +8,21 @@ const FAQ: React.FC<FAQProps> = ({ faqs }) => {
   }
 
   return (
-    <div className="w-full max-w-[1000px] mx-auto">
-      <div className="pl-4 py-7 sticky">
-        <h2 className="text-4xl font-bold text-center py-4">
-          ЧАСТЫЕ{' '} 
+    <div className="mx-auto w-full max-w-[1000px]">
+      <div className="sticky py-7 pl-4">
+        <h2 className="py-4 text-center text-4xl font-bold">
+          ЧАСТЫЕ{' '}
           <span className="relative inline-block px-3">
-            <span className="absolute bg-orange -rotate-3 rounded-3xl -inset-1" />
+            <span className="bg-orange absolute -inset-1 -rotate-3 rounded-3xl" />
             <span className="relative text-white">ВОПРОСЫ</span>
           </span>
         </h2>
-        {faqs.map((faq) => (
+        {faqs.map(faq => (
           <Accordion key={faq.id} title={faq.title} content={faq.content} />
         ))}
       </div>
     </div>
   )
-} 
+}
 
 export default FAQ

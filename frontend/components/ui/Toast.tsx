@@ -23,15 +23,13 @@ const showToast = ({ type, message, action, duration }: ToastProps) => {
   const styles = toastStyles[type]
 
   toast.custom(
-    (t) => (
+    t => (
       <div
         className={`${
           t.visible ? 'animate-slideIn' : 'animate-slideOut'
-        }  shadow-lg rounded-2xl px-3 pointer-events-auto ${
-          styles.background
-        } ${
+        } pointer-events-auto rounded-2xl px-3 shadow-lg ${styles.background} ${
           styles.border
-        } border transform transition-all duration-300 ease-in-out`}
+        } transform border transition-all duration-300 ease-in-out`}
       >
         <div className="p-4">
           <div className="flex items-start">
@@ -41,7 +39,7 @@ const showToast = ({ type, message, action, duration }: ToastProps) => {
                 <div className="text-center">
                   <button
                     onClick={action.onClick}
-                    className="mt-2 text-sm text-red-600 hover:text-red-800 font-medium"
+                    className="mt-2 text-sm font-medium text-red-600 hover:text-red-800"
                   >
                     {action.text}
                   </button>
