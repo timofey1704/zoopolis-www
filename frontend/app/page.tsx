@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { getFAQs } from '@/lib/main/fetchFAQ'
+import { getMemberships } from '@/lib/main/fetchMemberships'
 import FAQ from '@/components/FAQ'
 import Button from '@/components/ui/Button'
 import Dog4 from '../public/dog4.png'
@@ -9,24 +10,25 @@ import Cat1 from '../public/cat1.png'
 import Dog3 from '../public/dog3.png'
 import Brelok from '../public/brelok.png'
 import MediaSlider from '@/components/MediaSlider'
+import PricingCard from '@/components/PricingCard'
 
 export default async function Home() {
-  const faqs = await getFAQs()
+  const [faqs, memberships] = await Promise.all([getFAQs(), getMemberships()])
 
   return (
-    <div className="mx-auto flex flex-col items-center justify-center">
+    <div className="mx-auto flex flex-col items-center justify-center space-y-24">
       <div className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]">
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
         <div className="relative w-full pt-10">
           <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
-          <div className="mt-16 flex justify-center px-6 md:px-10 lg:px-18">
+          <div className="mt-12 flex justify-center px-6 md:px-10 lg:px-30">
             <div className="flex -translate-y-1/2 flex-row items-center justify-between gap-10 md:gap-20">
-              <div className="flex max-w-xl flex-col gap-8">
+              <div className="flex max-w-xl flex-col gap-4">
                 <div className="space-y-1">
                   <h2 className="text-4xl font-semibold text-gray-900">QR-кулон</h2>
                   <h2 className="text-4xl font-semibold text-gray-900">для питомца</h2>
                 </div>
-                <p className="text-lg leading-relaxed text-gray-600">
+                <p className="text-lg text-gray-600">
                   Просто прикрепите QR-кулон к ошейнику — и любой, кто найдёт вашего питомца, сможет
                   связаться с нашей службой поддержки, которая решит все нюансы по возвращению
                   питомца хозяину.
@@ -138,6 +140,18 @@ export default async function Home() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10">
+        <h2 className="space-x-4 text-white">
+          <span className="text-black">УДОБНАЯ</span>
+          <span className="relative mx-2 inline-block px-1">
+            <span className="bg-orange absolute -inset-1 rotate-3 rounded-3xl" />
+            <span className="relative text-white">ПОДПИСКА</span>
+          </span>
+          <span className="text-black">ZOOPOLIS</span>
+        </h2>
+        <PricingCard memberships={memberships} />
       </div>
 
       <div className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10">

@@ -7,24 +7,42 @@ const Header = () => {
   return (
     <div className="bg-gray flex items-center justify-between p-4">
       <div className="pl-[92px]">
-        <Link href="/" className="transition-opacity duration-300 hover:opacity-80">
+        <Link
+          href="/"
+          className="transition-opacity duration-300 hover:cursor-pointer hover:opacity-80"
+        >
           <Image src="/logo.png" alt="logo" width={62} height={62} />
         </Link>
       </div>
       <div className="ml-10 flex items-center justify-center space-x-10 text-xl font-medium">
-        <Link href="/" className="hover:text-orange transition-colors duration-300">
+        <Link
+          href="/"
+          className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
+        >
           Как это работает?
         </Link>
-        <Link href="/about" className="hover:text-orange transition-colors duration-300">
+        <Link
+          href="/about"
+          className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
+        >
           Тарифы
         </Link>
-        <Link href="/about" className="hover:text-orange transition-colors duration-300">
+        <Link
+          href="/about"
+          className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
+        >
           Отзывы
         </Link>
-        <Link href="/about" className="hover:text-orange transition-colors duration-300">
+        <Link
+          href="/about"
+          className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
+        >
           FAQ
         </Link>
-        <Link href="/about" className="hover:text-orange transition-colors duration-300">
+        <Link
+          href="/about"
+          className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
+        >
           О компании
         </Link>
       </div>

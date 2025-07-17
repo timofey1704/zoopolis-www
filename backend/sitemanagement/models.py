@@ -14,12 +14,13 @@ class FAQ (models.Model):
         return self.title
     
 class Pricing(models.Model):
-    plan = models.CharField(max_length=10, choices=account_types)
-    description = models.CharField(max_length=255)
-    price = models.IntegerField()
-    is_popular = models.BooleanField(default=False)
-    is_available = models.BooleanField(default=False)
+    plan = models.CharField(max_length=10, choices=account_types, verbose_name='Название тарифного плана')
+    description = models.TextField(max_length=255, verbose_name='Описание тарифного плана')
+    price = models.IntegerField(verbose_name='Стоимость тарифного плана / месяц')
+    is_popular = models.BooleanField(default=False, verbose_name='Популярность')
+    is_available = models.BooleanField(default=False, verbose_name='Доступность')
     features = models.ManyToManyField('Feature', related_name='pricing_plans', verbose_name='Свойства')
+    bg_image = models.CharField(max_length=255, verbose_name='Картинка карточки')
     class Meta:
         verbose_name = 'Тарифный план'
         verbose_name_plural = 'Тарифные планы'

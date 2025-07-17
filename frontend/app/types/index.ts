@@ -45,3 +45,23 @@ export interface ImagesSliderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sliderRef: React.RefObject<any>
 }
+
+interface MembershipFeature {
+  id: number
+  name: string
+}
+
+export interface Membership {
+  id: number
+  plan: string
+  bg_image: string
+  price: number
+  description: string
+  is_popular: boolean
+  is_available: boolean
+  features: MembershipFeature[]
+}
+
+export interface PricingCardProps {
+  memberships: Membership[]
+}
