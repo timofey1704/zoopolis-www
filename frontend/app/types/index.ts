@@ -54,7 +54,7 @@ interface MembershipFeature {
 export interface Membership {
   id: number
   plan: string
-  bg_image: string
+  bg_color: string
   price: number
   description: string
   is_popular: boolean

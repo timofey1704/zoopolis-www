@@ -9,12 +9,8 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       {memberships.map(membership => (
         <div
           key={membership.id}
-          className={`relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] p-8`}
-          style={{
-            backgroundImage: `url(${membership.bg_image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+          className="relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] p-8"
+          style={{ backgroundColor: membership.bg_color }}
         >
           <div className="flex-1">
             <div className="mb-3 flex items-center justify-between">

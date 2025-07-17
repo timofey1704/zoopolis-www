@@ -1,5 +1,6 @@
 from django.db import models
 from sitemanagement.constants.account_types import account_types
+from sitemanagement.constants.colors import colors
 
 class FAQ (models.Model):
     title = models.CharField(max_length=250)
@@ -20,7 +21,7 @@ class Pricing(models.Model):
     is_popular = models.BooleanField(default=False, verbose_name='Популярность')
     is_available = models.BooleanField(default=False, verbose_name='Доступность')
     features = models.ManyToManyField('Feature', related_name='pricing_plans', verbose_name='Свойства')
-    bg_image = models.CharField(max_length=255, verbose_name='Картинка карточки')
+    bg_color = models.CharField(max_length=10,choices=colors, verbose_name='Цвет карточки')
     class Meta:
         verbose_name = 'Тарифный план'
         verbose_name_plural = 'Тарифные планы'
