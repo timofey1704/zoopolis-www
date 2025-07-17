@@ -142,7 +142,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="flex max-w-[1216px] flex-col items-center justify-center">
+      <div className="flex max-w-[1216px] flex-col items-center justify-center px-4">
         <h2 className="space-x-4 text-white">
           <span className="text-black">УДОБНАЯ</span>
           <span className="relative mx-2 inline-block px-1">

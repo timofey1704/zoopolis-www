@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   return (
-    <div className="grid grid-cols-1 gap-8 px-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
       {memberships.map(membership => (
         <div
           key={membership.id}
@@ -49,7 +49,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
             className={`w-full ${
               membership.is_available
                 ? 'bg-orange hover:bg-orange/80 text-white hover:scale-105 hover:shadow-none'
-                : 'bg-orange cursor-not-allowed text-white opacity-55 hover:shadow-none'
+                : 'bg-orange text-white opacity-55 hover:cursor-not-allowed hover:shadow-none'
             }`}
           />
         </div>
