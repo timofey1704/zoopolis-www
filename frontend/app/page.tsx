@@ -85,7 +85,7 @@ export default async function Home() {
         <Image src={Cat1} alt="cat" width={289} height={263} />
       </div>
 
-      <div className="container mx-auto max-w-[1216px] px-4 py-8 sm:py-12 md:py-16 lg:py-24">
+      <div className="container mx-auto max-w-[1216px] px-4 py-4 sm:py-6 md:py-8 lg:py-10">
         <div className="relative grid grid-cols-1 items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
           {/* плашка отзывов */}
           <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
@@ -142,7 +142,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10">
+      <div className="flex max-w-[1216px] flex-col items-center justify-center">
         <h2 className="space-x-4 text-white">
           <span className="text-black">УДОБНАЯ</span>
           <span className="relative mx-2 inline-block px-1">
@@ -151,6 +151,10 @@ export default async function Home() {
           </span>
           <span className="text-black">ZOOPOLIS</span>
         </h2>
+        <div className="mt-5 mb-8 max-w-[600px] text-center">
+          Подписка оформляется 1 раз, а списание происходит ежемесячно, условия подписки можно
+          регулировать в личном кабинете
+        </div>
         <PricingCard memberships={memberships} />
       </div>
 

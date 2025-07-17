@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from sitemanagement.constants.account_types import account_types
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, Feature
 
 class FAQMainSerializer(serializers.ModelSerializer):
@@ -18,6 +19,10 @@ class FeatureSerializer(serializers.ModelSerializer):
         
 class MembershipPlansSerializer(serializers.ModelSerializer):
     features = FeatureSerializer(many=True, read_only=True)
+    plan = serializers.SerializerMethodField()
+    
+    def get_plan(self, obj):
+        return dict(account_types)[obj.plan]
     
     class Meta:
         model = Pricing
