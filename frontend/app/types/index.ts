@@ -13,6 +13,7 @@ export interface ButtonProps {
   className?: string
   text?: string
   leftIcon?: React.ReactNode
+  midIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean

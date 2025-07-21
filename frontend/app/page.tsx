@@ -64,25 +64,40 @@ export default async function Home() {
         {/* блюр снизу */}
         <div className="absolute inset-x-0 -bottom-5 h-40 bg-gradient-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
       </div>
-      <div className="my-8 flex max-w-[1216px] items-center justify-center gap-10">
-        <Image src={Dog2} alt="dog" width={289} height={263} />
-        <div className="flex flex-col items-center justify-center space-y-5">
-          <h2 className="text-white">
-            <span className="text-black">ВАШ ПИТОМЕЦ</span>
+      <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-6 px-4 sm:my-6 sm:px-8 lg:my-8 lg:flex-row lg:gap-10 lg:px-0">
+        <Image
+          src={Dog2}
+          alt="dog"
+          width={289}
+          height={263}
+          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+        />
+        <div className="flex max-w-sm flex-col items-center justify-center space-y-4 lg:max-w-none lg:space-y-5">
+          <h2 className="text-center text-white">
+            <span className="text-2xl text-black sm:text-3xl lg:text-4xl">ВАШ ПИТОМЕЦ</span>
             <span className="relative mx-2 inline-block px-1">
               <span className="bg-orange absolute -inset-1 rotate-3 rounded-3xl" />
-              <span className="relative text-white">ПОТЕРЯЛСЯ</span>
+              <span className="relative text-2xl text-white sm:text-3xl lg:text-4xl">
+                ПОТЕРЯЛСЯ
+              </span>
             </span>
-
             <br />
-            <span className="mt-2 flex items-center justify-center text-black">ЧТО ДАЛЬШЕ?</span>
+            <span className="mt-2 flex items-center justify-center text-2xl text-black sm:text-3xl lg:text-4xl">
+              ЧТО ДАЛЬШЕ?
+            </span>
           </h2>
-          <div className="text-center text-black">
+          <div className="px-4 text-center text-sm text-black sm:px-8 sm:text-base lg:px-0 lg:text-lg">
             Бумажные жетоны теряются, информация устаревает. Номер на ошейнике не всегда виден или
             может быть неактуален. Ценные минуты тратятся впустую.
           </div>
         </div>
-        <Image src={Cat1} alt="cat" width={289} height={263} />
+        <Image
+          src={Cat1}
+          alt="cat"
+          width={289}
+          height={263}
+          className="h-auto w-full sm:block sm:w-[220px] lg:w-[289px]"
+        />
       </div>
 
       <div className="container mx-auto max-w-[1216px] px-4 py-4 sm:py-6 md:py-8 lg:py-10">
@@ -171,10 +186,16 @@ export default async function Home() {
 
       <FAQ faqs={faqs} />
 
-      <div className="my-8 flex max-w-[1216px] items-center justify-center gap-10">
-        <Image src={Dog4} alt="dog" width={289} height={263} />
-        <div className="flex flex-col items-center justify-center space-y-5">
-          <h2 className="text-white">
+      <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-4 px-4 sm:my-6 sm:flex-row sm:gap-6 lg:my-8 lg:gap-10">
+        <Image
+          src={Dog4}
+          alt="dog"
+          width={289}
+          height={263}
+          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+        />
+        <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 lg:space-y-5">
+          <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl">
             <span className="text-black">Не ждите беды.</span>
             <span className="relative mx-2 inline-block px-1">
               <span className="bg-orange absolute -inset-1 rotate-3 rounded-3xl" />
@@ -184,12 +205,18 @@ export default async function Home() {
             <br />
             <span className="text-black">кто вас любит, прямо сейчас</span>
           </h2>
-          <div className="text-center text-black">
+          <div className="px-4 text-center text-sm text-black sm:px-8 sm:text-base lg:px-0 lg:text-lg">
             3 месяца Зоо ID-подписки в подарок при покупке QR-кулона!
           </div>
           <Button text="Защитить питомца" className="bg-orange text-white" />
         </div>
-        <Image src={Cat2} alt="cat" width={289} height={263} />
+        <Image
+          src={Cat2}
+          alt="cat"
+          width={289}
+          height={263}
+          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+        />
       </div>
     </div>
   )

@@ -89,25 +89,37 @@ const MediaSlider = () => {
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full px-4 sm:px-8 lg:px-0">
       <button
         onClick={handlePrevClick}
-        className="absolute top-1/2 left-0 z-10 -translate-y-1/2 transition-all duration-300 hover:scale-110 hover:cursor-pointer"
+        className="absolute top-1/2 -left-2 z-10 -translate-y-1/2 transition-all duration-300 hover:scale-110 hover:cursor-pointer sm:-left-4 lg:-left-3"
         aria-label="Previous slide"
       >
-        <Image src="/leftArrow.svg" alt="Previous" width={48} height={48} />
+        <Image
+          src="/leftArrow.svg"
+          alt="Previous"
+          width={48}
+          height={48}
+          className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
+        />
       </button>
 
-      <div className="px-12">
+      <div className="px-6 sm:px-8 lg:px-12">
         <ImagesSlider items={media} sliderRef={sliderRef} />
       </div>
 
       <button
         onClick={handleNextClick}
-        className="absolute top-1/2 right-0 z-10 -translate-y-1/2 pb-6 transition-all duration-300 hover:scale-110 hover:cursor-pointer"
+        className="absolute top-1/2 -right-2 z-10 -translate-y-1/2 transition-all duration-300 hover:scale-110 hover:cursor-pointer sm:-right-4 lg:-right-3"
         aria-label="Next slide"
       >
-        <Image src="/rightArrow.svg" alt="Next" width={48} height={48} />
+        <Image
+          src="/rightArrow.svg"
+          alt="Next"
+          width={48}
+          height={48}
+          className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
+        />
       </button>
     </div>
   )

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ButtonProps } from '@/app/types/index'
 
-const Button = ({ onClick, className, text, type, leftIcon, rightIcon }: ButtonProps) => {
+const Button = ({ onClick, className, text, type, leftIcon, midIcon, rightIcon }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -9,6 +9,7 @@ const Button = ({ onClick, className, text, type, leftIcon, rightIcon }: ButtonP
       type={type}
     >
       {leftIcon && <span className="mr-2 flex items-center">{leftIcon}</span>}
+      {midIcon && <span className="flex items-center">{midIcon}</span>}
       <span className="text-center text-xl font-normal">{text}</span>
       {rightIcon && <span className="ml-2 flex items-center">{rightIcon}</span>}
     </button>
