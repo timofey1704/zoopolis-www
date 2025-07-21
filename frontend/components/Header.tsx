@@ -55,12 +55,12 @@ const Header = () => {
       </div>
       {/* Mobile/Tablet layout */}
       <div className="flex items-center space-x-4 pr-4 sm:pr-8 lg:hidden">
+        <Burger />
         <Link href="/login">
-          <button className="rounded-full bg-white p-2 transition-shadow hover:shadow-md">
+          <button className="ml-6 rounded-2xl bg-white p-2 transition-shadow hover:shadow-md">
             <FaUser className="h-6 w-6" />
           </button>
         </Link>
-        <Burger />
       </div>
     </div>
   )

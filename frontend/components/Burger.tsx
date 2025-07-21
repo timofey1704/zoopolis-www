@@ -14,17 +14,17 @@ const Burger = () => {
       >
         <div className="relative h-8 w-8">
           <span
-            className={`bg-orange absolute h-0.5 transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-8 rotate-45' : 'top-2 w-8'
             }`}
           ></span>
           <span
-            className={`bg-orange absolute h-0.5 transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-0 opacity-0' : 'top-4 w-8'
             }`}
           ></span>
           <span
-            className={`bg-orange absolute h-0.5 transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-8 -rotate-45' : 'top-6 w-8'
             }`}
           ></span>
@@ -33,7 +33,7 @@ const Burger = () => {
 
       {/* меню */}
       <div
-        className={`fixed left-0 z-50 w-full origin-top bg-[#eeebeb] shadow-lg transition-all duration-300 ease-in-out ${
+        className={`bg-gray fixed left-0 z-50 w-full origin-top shadow-lg transition-all duration-300 ease-in-out ${
           isOpen
             ? 'top-[80px] h-[calc(100vh-80px)] scale-y-100 opacity-100'
             : 'top-[80px] h-0 scale-y-0 opacity-0'

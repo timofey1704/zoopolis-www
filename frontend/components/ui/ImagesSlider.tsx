@@ -45,7 +45,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
   const renderMedia = (item: ImagesSliderProps['items'][0]) => {
     if (item.type === 'video') {
       return (
-        <div className="relative aspect-[316/580] w-full overflow-hidden rounded-lg">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg sm:aspect-[4/5] lg:aspect-[316/580]">
           <video controls className="h-full w-full object-cover" poster={item.thumbnailUrl}>
             <source src={item.url} type="video/mp4" />
             Your browser does not support the video tag.
@@ -55,12 +55,12 @@ const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
     }
 
     return (
-      <div className="relative aspect-[316/580] w-full overflow-hidden rounded-lg">
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg sm:aspect-[4/5] lg:aspect-[316/580]">
         <Image
           src={item.url}
           alt={`Slide ${item.id}`}
           fill
-          sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, (max-width: 1280px) 50vw, 33vw"
+          sizes="(max-width: 480px) 90vw, (max-width: 768px) 45vw, (max-width: 1280px) 30vw, 25vw"
           priority={item.id <= 4}
           className="object-cover transition-transform duration-300 hover:scale-105"
         />
@@ -73,7 +73,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = ({ items, sliderRef }) => {
       <Slider ref={sliderRef} {...settings} className="slick-slider-custom">
         {items.map(item => (
           <div key={item.id} className="px-1 sm:px-2">
-            {renderMedia(item)}
+            <div className="mx-auto max-w-[300px] sm:max-w-none">{renderMedia(item)}</div>
           </div>
         ))}
       </Slider>

@@ -118,7 +118,7 @@ const MediaSlider = () => {
           alt="Next"
           width={48}
           height={48}
-          className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
+          className="hidden h-8 w-8 sm:block sm:h-10 sm:w-10 lg:h-12 lg:w-12"
         />
       </button>
     </div>

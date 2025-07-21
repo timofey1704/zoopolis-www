@@ -16,7 +16,7 @@ export default async function Home() {
   const [faqs, memberships] = await Promise.all([getFAQs(), getMemberships()])
 
   return (
-    <div className="mx-auto flex flex-col items-center justify-center space-y-24">
+    <div className="mx-auto flex flex-col items-center justify-center space-y-24 overflow-x-hidden">
       <div className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]">
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
         <div className="relative w-full pt-10">
