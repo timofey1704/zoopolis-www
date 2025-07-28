@@ -32,8 +32,13 @@ CORS_ALLOW_HEADERS = [
     'cookie'
 ]
 
+#telegram
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
+
+#смски
+SMS_USER = os.environ.get("SMS_USER")
+SMS_API_KEY = os.environ.get("SMS_API_KEY")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
