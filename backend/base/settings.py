@@ -40,6 +40,10 @@ CHAT_ID = os.environ.get("CHAT_ID")
 SMS_USER = os.environ.get("SMS_USER")
 SMS_API_KEY = os.environ.get("SMS_API_KEY")
 
+# редис
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = 6379
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
