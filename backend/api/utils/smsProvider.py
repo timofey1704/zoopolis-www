@@ -2,23 +2,23 @@ import requests
 from django.conf import settings
 
 #config
-SMS_API_URL = 'https://cabinet.smsp.by/api/'
+SMS_API_URL = 'https://cabinet.smsp.by/api/send/sms'
 user = settings.SMS_USER
 apikey = settings.SMS_API_KEY
 
 def sendsms(phone, message):
-	data = {'user': user, 'apikey' : apikey, 'msisdn': phone, 'text': message}
-	try:
-		request = requests.post(SMS_API_URL, data = data)
-		result = request.json()
-		status = result['status']
-	except Exception as e:
-		print('Cannot send SMS: bad or no response from SmsP.')
-		print(e)
-	else:
-		if (status == True):
-			print('SMS accepted, status: {}'.format(status))
-		else:
-			print('SMS rejected, status: {}'.format(status))
+    data = {'user': user, 'apikey': apikey, 'msisdn': phone, 'text': message}
+    try:
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        request = requests.post(SMS_API_URL, data=data, headers=headers)
+        return request.json()
+    except Exception as e:
+        return {
+            'status': False,
+            'error': {
+                'code': 1,
+                'description': str(e)
+            }
+        }
 
 # sendsms(375333832840, 'Testmessage')

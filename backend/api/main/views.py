@@ -49,6 +49,15 @@ class SmsSendView(APIView):
         phone = request.data.get('phone')
         text = request.data.get('text')
         
-        sendsms(phone, text)
+        if not phone or not text:
+            return Response(
+                {'status': False, 'error': {'code': 1, 'description': 'Phone and text are required'}}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        return Response({'message': 'SMS sent successfully'}, status=status.HTTP_200_OK)
+        result = sendsms(phone, text)
+        
+        if result.get('status'):
+            return Response(result, status=status.HTTP_200_OK)
+        else:
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)

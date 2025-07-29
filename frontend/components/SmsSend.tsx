@@ -9,7 +9,7 @@ const SmsSend = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ phone: '375257800713', text: 'Зоополис зовет:)' }),
+      body: JSON.stringify({ phone: '375333832840', text: 'Зоополис зовет:)' }),
     })
     const data = await response.json()
     console.log('SMS sent:', data)
