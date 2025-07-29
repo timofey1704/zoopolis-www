@@ -9,7 +9,7 @@ apikey = settings.SMS_API_KEY
 def sendsms(phone, message):
 	data = {'user': user, 'apikey' : apikey, 'msisdn': phone, 'text': message}
 	try:
-		request = requests.get(SMS_API_URL, data = data)
+		request = requests.post(SMS_API_URL, data = data)
 		result = request.json()
 		status = result['status']
 	except Exception as e:
