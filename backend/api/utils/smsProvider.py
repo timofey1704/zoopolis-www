@@ -2,7 +2,7 @@ import requests
 from django.conf import settings
 
 #config
-SMS_API_URL = 'cabinet.smsp.by/api/'
+SMS_API_URL = 'https://cabinet.smsp.by/api/'
 user = settings.SMS_USER
 apikey = settings.SMS_API_KEY
 

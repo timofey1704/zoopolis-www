@@ -6,6 +6,8 @@ from api.utils.exceptionsHandler import handle_exceptions
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
 from sitemanagement.models import FAQ, MainPageMedia, Pricing
 
+from api.utils.smsProvider import sendsms
+
 class FAQView(APIView):
     @handle_exceptions
     def get(self, request):
@@ -40,3 +42,13 @@ class MembershipPlansView(APIView):
         }
         
         return Response(data, status=status.HTTP_200_OK)
+    
+class SmsSendView(APIView):
+    @handle_exceptions
+    def post(self, request):
+        phone = request.data.get('phone')
+        text = request.data.get('text')
+        
+        sendsms(phone, text)
+        
+        return Response({'message': 'SMS sent successfully'}, status=status.HTTP_200_OK)
