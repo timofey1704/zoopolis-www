@@ -13,6 +13,8 @@ pytest = "*"
 pytest-django = "*"
 requests = "*"
 psycopg2-binary = "*"
+pyjwt = "*"
+redis = "*"
 
 [dev-packages]
 
