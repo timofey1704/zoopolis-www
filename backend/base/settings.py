@@ -12,7 +12,7 @@ if not SECRET_KEY:
 DEBUG = os.environ.get("DEBUG_MODE", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
-print("CSRF_TRUSTED_ORIGINS:", os.environ.get("CSRF_TRUSTED_ORIGINS"))
+# print("CSRF_TRUSTED_ORIGINS:", os.environ.get("CSRF_TRUSTED_ORIGINS"))
 
 CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
 CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist
@@ -49,6 +49,9 @@ SMS_API_KEY = os.environ.get("SMS_API_KEY")
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 REDIS_PORT = 6379
 
+LOGIN_URL = '/admin/login/'
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +63,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'sitemanagement.apps.SitemanagementConfig',
     'rest_framework',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
