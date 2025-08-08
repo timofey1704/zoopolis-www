@@ -5,6 +5,7 @@ from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.contrib.rest_framework import TokenHasScope
 from .serializers import ApplicationSerializer, TokenIntrospectSerializer
 from django.utils import timezone
+from api.models import UserProfile
 
 class ApplicationRegistrationView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -60,10 +61,12 @@ class ProtectedResourceView(APIView):
     
     def get(self, request):
         user = request.user
+        profile = UserProfile.objects.get(user=user)
         
         return Response({
             'id': user.id,
             'username': user.username,
             'email': user.email,
-            'uuid': str(user.uuid),
+            'uuid': str(profile.uuid),
+            'phone_number': profile.phone_number,
         })

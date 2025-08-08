@@ -1,3 +1,23 @@
+import { IconType } from 'react-icons'
+
+export interface User {
+  id?: number | undefined | string
+  uuid?: string
+  name: string
+  surname: string
+  image?: string
+  phone_number?: string
+  email: string
+  country?: string
+  city?: string
+  account_type: string
+}
+
+export interface UserState {
+  isAuthenticated: boolean
+  user: User | null
+}
+
 export type ToastProps = {
   type: 'error' | 'success' | 'loading'
   message: string
@@ -65,4 +85,15 @@ export interface Membership {
 
 export interface PricingCardProps {
   memberships: Membership[]
+}
+
+export interface NavigationItem {
+  name: string
+  href: string
+  icon: IconType
+}
+
+export interface AccountSidebarProps {
+  user: User
+  navigation: NavigationItem[]
 }

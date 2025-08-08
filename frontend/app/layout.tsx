@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-dispay flex min-h-screen flex-col">
+      <body className="font-display flex min-h-screen flex-col">
         <Header />
         <main className="flex-grow">{children}</main>
         <Toaster />
