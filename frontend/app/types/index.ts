@@ -97,3 +97,30 @@ export interface AccountSidebarProps {
   user: User
   navigation: NavigationItem[]
 }
+
+export interface ValidationRules {
+  required?: boolean
+  minLength?: number
+  pattern?: RegExp
+}
+
+export interface ValidationErrors {
+  [key: string]: string
+}
+
+export interface TextInputProps {
+  value: string
+  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  label?: string
+  placeholder?: string
+  name: string
+  type?: 'text' | 'email' | 'password'
+  className?: string
+  maxLength?: number
+  tooltip?: string | React.ReactNode
+  style: string
+  isPassword?: boolean
+  isVisible?: boolean
+  togglePasswordVisibility?: () => void
+  error?: string
+}
