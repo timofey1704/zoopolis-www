@@ -11,6 +11,7 @@ Django==5.2.5
 django-cors-headers==4.7.0
 django-oauth-toolkit==3.0.1
 djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
 dotenv==0.9.9
 frozenlist==1.7.0
 idna==3.10

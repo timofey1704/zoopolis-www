@@ -10,7 +10,6 @@ declare module 'next-auth' {
       email?: string | null
       phone_number?: string | null
       image?: string | null
-      userType?: string | null
     }
     accessToken?: string
     refreshToken?: string
@@ -154,7 +153,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const res = await fetch(`${process.env.BACKEND_URL}/auth/login/clients/`, {
+          const res = await fetch(`${process.env.BACKEND_URL}/login/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -218,7 +217,6 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user.userType = token.userType as string
         session.accessToken = token.accessToken as string
         session.refreshToken = token.refreshToken as string
       }

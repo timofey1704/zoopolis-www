@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from api.main.views import FAQView, MediaMainView, MembershipPlansView, SmsSendView
+from api.auth.views import LoginViewSet
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -8,4 +9,5 @@ urlpatterns = [
     path("v1/account/memberships/", MembershipPlansView.as_view(), name='memberships'),
     path("v1/send-sms/", SmsSendView.as_view(), name='send-sms'),
     path('oauth/', include('api.oauth.urls')),
+    path('v1/login/', LoginViewSet.as_view({'post': 'login'}), name="login-client"),
 ]

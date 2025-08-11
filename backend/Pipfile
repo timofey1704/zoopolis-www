@@ -17,6 +17,7 @@ pyjwt = "*"
 redis = "*"
 django-oauth-toolkit = "*"
 requests-oauthlib = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
