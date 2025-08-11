@@ -11,7 +11,6 @@ import Dog3 from '../public/dog3.png'
 import Brelok from '../public/brelok.png'
 import MediaSlider from '@/components/MediaSlider'
 import PricingCard from '@/components/PricingCard'
-import SmsSend from '@/components/SmsSend'
 
 export default async function Home() {
   const [faqs, memberships] = await Promise.all([getFAQs(), getMemberships()])
@@ -65,7 +64,7 @@ export default async function Home() {
         {/* блюр снизу */}
         <div className="absolute inset-x-0 -bottom-5 h-40 bg-gradient-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
       </div>
-      <SmsSend />
+
       <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-6 px-4 sm:my-6 sm:px-8 lg:my-8 lg:flex-row lg:gap-10 lg:px-0">
         <Image
           src={Dog2}

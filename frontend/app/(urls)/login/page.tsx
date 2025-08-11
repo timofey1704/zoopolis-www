@@ -106,10 +106,10 @@ const LoginPage = () => {
               Забыли пароль?
             </Link>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <Button
               text="Войти"
-              className="bg-orange mt-3 flex items-center justify-center rounded-2xl py-3 text-base font-semibold text-white"
+              className="bg-orange mt-3 flex w-full items-center justify-center rounded-2xl py-3 text-base font-semibold text-white"
               type="submit"
             />
           </div>

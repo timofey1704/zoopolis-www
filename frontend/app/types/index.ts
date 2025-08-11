@@ -124,3 +124,11 @@ export interface TextInputProps {
   togglePasswordVisibility?: () => void
   error?: string
 }
+
+export interface PhoneInputProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  label?: string
+  className?: string
+  operatorsInfo?: boolean
+}
