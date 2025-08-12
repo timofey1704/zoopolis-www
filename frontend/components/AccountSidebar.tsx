@@ -69,11 +69,11 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
 
   const getAccountTypeStyles = (accountType: string) => {
     switch (accountType.toLowerCase()) {
-      case 'lite':
+      case 'zooID':
         return 'bg-gray-400 text-white'
-      case 'standart':
+      case 'concierge':
         return 'bg-orange/70 text-white'
-      case 'premium':
+      case 'zoopolis':
         return 'bg-blue-500 text-white'
       default:
         return 'bg-gray-200'
@@ -111,7 +111,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
           {user.uuid && <p className="text-sm font-medium text-gray-500">ID: {user.uuid}</p>}
           {user.account_type && (
             <Link
-              href="payments/"
+              href="membership/"
               className={`${getAccountTypeStyles(
                 user.account_type
               )} flex items-center justify-center rounded-lg px-3 py-1 text-sm`}
@@ -131,11 +131,13 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
                 key={item.name}
                 href={item.href}
                 className={`${
-                  isActive ? 'bg-orange text-white' : 'text-gray-600 hover:bg-gray-100'
-                } flex items-center rounded-lg p-4 text-sm font-medium transition-colors`}
+                  isActive
+                    ? 'border-orange translate-x-2 border-r-4 text-gray-600 hover:bg-gray-100'
+                    : 'text-gray-600 hover:bg-gray-100'
+                } flex items-center rounded-lg p-4 text-sm font-medium transition-all duration-200`}
               >
                 <item.icon
-                  className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400'}`}
+                  className={`mr-3 h-5 w-5 ${isActive ? 'text-orange' : 'text-gray-400'}`}
                 />
                 {item.name}
               </Link>
