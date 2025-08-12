@@ -35,6 +35,8 @@ export interface ButtonProps {
   rightIcon?: React.ReactNode
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'default' | 'text'
 }
 
 export interface AccordionProps {

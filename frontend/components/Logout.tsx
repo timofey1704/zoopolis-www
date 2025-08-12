@@ -32,7 +32,9 @@ const Logout = () => {
     <Button
       text="Выйти из аккаунта"
       leftIcon={<IoExitOutline className="mr-1 h-5 w-5" />}
-      className="flex w-full items-center rounded-lg px-4 py-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+      className="flex w-full items-center rounded-lg px-4 py-4 font-medium text-gray-600 transition-colors hover:bg-gray-100"
+      size="sm"
+      variant="text"
       onClick={handleLogout}
     />
   )
