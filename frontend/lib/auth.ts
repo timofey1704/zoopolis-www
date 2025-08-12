@@ -22,7 +22,6 @@ declare module 'next-auth' {
     name?: string
     accessToken?: string
     refreshToken?: string
-    userType?: string
   }
 
   interface JWT {
@@ -191,7 +190,6 @@ export const authOptions: NextAuthOptions = {
             accessToken: user.accessToken,
             refreshToken: user.refreshToken,
             expiresAt: Math.floor(Date.now() / 1000) + 15 * 60, // 15 минут
-            userType: user.userType,
           }
         } else {
           return {
@@ -199,7 +197,6 @@ export const authOptions: NextAuthOptions = {
             accessToken: account.access_token,
             refreshToken: account.refresh_token,
             expiresAt: account.expires_at,
-            userType: user.userType,
           }
         }
       }

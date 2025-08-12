@@ -8,6 +8,7 @@ export interface User {
   image?: string
   phone_number?: string
   email: string
+  account_type?: string
 }
 
 export interface UserState {

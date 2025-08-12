@@ -51,6 +51,11 @@ REDIS_PORT = 6379
 
 LOGIN_URL = '/admin/login/'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -131,3 +136,4 @@ USE_L10N = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
