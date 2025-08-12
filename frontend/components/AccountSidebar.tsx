@@ -1,65 +1,65 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
-// import Image from 'next/image'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { AccountSidebarProps } from '@/app/types'
 import Logout from './Logout'
-// import noPhoto from '../public/images/noPhoto.png'
-// import showToast from './ui/Toast'
+import noPhoto from '../public/noPhoto.png'
+import showToast from './ui/Toast'
 import { TbPhotoUp } from 'react-icons/tb'
-// import { uploadImage } from '@/lib/account/uploadImage'
+import { uploadImage } from '@/lib/account/uploadImage'
 
 const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => {
   const pathname = usePathname()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  //   const [previewUrl, setPreviewUrl] = useState<string>(user?.image || '')
+  const [previewUrl, setPreviewUrl] = useState<string>(user?.image || '')
 
   const handlePhotoChange = () => {
     fileInputRef.current?.click()
   }
 
-  //   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const files = e.target.files
-  //     if (!files || files.length === 0) return
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
-  //     try {
-  //       const file = files[0]
+    try {
+      const file = files[0]
 
-  //       if (!file.type.startsWith('image/')) {
-  //         showToast({
-  //           type: 'error',
-  //           message: 'Пожалуйста, выберите изображение',
-  //         })
-  //         return
-  //       }
+      if (!file.type.startsWith('image/')) {
+        showToast({
+          type: 'error',
+          message: 'Пожалуйста, выберите изображение',
+        })
+        return
+      }
 
-  //       // создаем превью
-  //       const previewUrl = URL.createObjectURL(file)
-  //       setPreviewUrl(previewUrl)
+      // создаем превью
+      const previewUrl = URL.createObjectURL(file)
+      setPreviewUrl(previewUrl)
 
-  //       // загружаем на сервер
-  //       const response = await uploadImage(file)
-  //       if (response.user?.image) {
-  //         setPreviewUrl(response.user.image)
-  //       }
+      // загружаем на сервер
+      const response = await uploadImage(file)
+      if (response.user?.image) {
+        setPreviewUrl(response.user.image)
+      }
 
-  //       showToast({
-  //         type: 'success',
-  //         message: 'Фотография успешно обновлена',
-  //       })
+      showToast({
+        type: 'success',
+        message: 'Фотография успешно обновлена',
+      })
 
-  //       // очищаем инпут
-  //       e.target.value = ''
-  //     } catch (error) {
-  //       showToast({
-  //         type: 'error',
-  //         message: 'Ошибка при загрузке фотографии',
-  //       })
-  //       console.error('Error handling file:', error)
-  //     }
-  //   }, [])
+      // очищаем инпут
+      e.target.value = ''
+    } catch (error) {
+      showToast({
+        type: 'error',
+        message: 'Ошибка при загрузке фотографии',
+      })
+      console.error('Error handling file:', error)
+    }
+  }, [])
 
   if (!user) {
     return null
@@ -85,22 +85,22 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
       <div className="flex w-full items-center space-x-4 rounded-2xl bg-white p-4 shadow">
         <div className="flex items-center justify-center">
           <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
-            {/* <input
+            <input
               type="file"
               id="image"
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
               accept="image/*"
-            /> */}
-            {/* <Image
+            />
+            <Image
               src={previewUrl || user.image || noPhoto}
               alt="profile image"
               height={84}
               width={84}
               priority
-              className="aspect-square w-full rounded-2xl object-cover md:w-[84px]"
-            /> */}
+              className="aspect-square w-full rounded-full object-cover md:w-[84px]"
+            />
             <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
               <TbPhotoUp className="text-3xl text-white" />
             </div>

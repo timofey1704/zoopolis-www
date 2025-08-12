@@ -8,7 +8,7 @@ class UserProfileInline(admin.StackedInline):
     can_delete = False
     verbose_name = 'Профиль пользователя'
     verbose_name_plural = 'Профили пользователей'
-    fields = ('phone_number', 'uuid')
+    fields = ('phone_number', 'uuid', 'privacy_accepted', 'account_type')
     readonly_fields = ('uuid',)
 
 class UserAdmin(BaseUserAdmin):

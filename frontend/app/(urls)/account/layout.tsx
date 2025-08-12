@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import AccountSidebar from '@/components/AccountSidebar'
 import Loader from '@/components/ui/Loader'
 import { RiUser3Line } from 'react-icons/ri'
-import { FaRoute } from 'react-icons/fa'
-import { HiOutlineSquaresPlus } from 'react-icons/hi2'
-import { IoGitPullRequest } from 'react-icons/io5'
+import { FaRegListAlt } from 'react-icons/fa'
+import { IoIosWallet } from 'react-icons/io'
+import { CiMoneyCheck1 } from 'react-icons/ci'
 import useUserStore from '@/app/store/userStore'
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
@@ -34,9 +34,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   const userNavigation = [
     { name: 'Профиль', href: '/account', icon: RiUser3Line },
-    { name: 'Услуги', href: '/account/services', icon: FaRoute },
-    { name: 'Подписка', href: '/account/membership', icon: HiOutlineSquaresPlus },
-    { name: 'Бонусы', href: '/account/bonuses', icon: IoGitPullRequest },
+    { name: 'Услуги', href: '/account/services', icon: FaRegListAlt },
+    { name: 'Подписка', href: '/account/membership', icon: IoIosWallet },
+    { name: 'Бонусы', href: '/account/bonuses', icon: CiMoneyCheck1 },
   ]
 
   return (

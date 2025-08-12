@@ -20,9 +20,6 @@ const Logout = () => {
       // чистим стор
       useUserStore.getState().logout()
 
-      // если логин был гугловый
-      await signOut({ redirect: false })
-
       // редирект
       router.push('/')
       router.refresh() // обновляем страницу чтобы обновить стейты
