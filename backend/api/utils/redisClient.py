@@ -83,6 +83,29 @@ class RedisClient:
         except Exception as e:
             print(f"Redis error in verify_code: {str(e)}")
             return False, "Ошибка проверки кода"
+        
+    def delete_verification_code(self, phone_number: str) -> bool:
+        """
+        Удаляет код верификации
+        
+        Args:
+            phone_number: Номер телефона пользователя
+            
+        Returns:
+            bool: True если успешно удалено, False если произошла ошибка
+        """
+        try:
+            verification_key = f"email_verification:{phone_number}"
+            attempts_key = f"verification_attempts:{phone_number}"
+            
+            self.redis.delete(verification_key)
+            self.redis.delete(attempts_key)
+            
+            return True
+            
+        except Exception as e:
+            print(f"Redis error in delete_verification_code: {str(e)}")
+            return False
             
     def can_send_new_code(self, phone_number: str) -> Tuple[bool, str]:
         """
