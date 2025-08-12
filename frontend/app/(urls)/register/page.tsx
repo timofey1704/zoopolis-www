@@ -62,7 +62,7 @@ const RegisterPage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: values.email }),
+          body: JSON.stringify({ phone_number: values.phone_number }),
         })
 
         const verificationData = await verificationResponse.json()
@@ -72,7 +72,7 @@ const RegisterPage = () => {
           return
         }
 
-        showToast({ type: 'success', message: 'Код верификации отправлен на ваш email' })
+        showToast({ type: 'success', message: 'Код верификации отправлен на ваш номер телефона' })
         setVerificationStep(true)
       } catch (error) {
         console.error(error)
@@ -135,8 +135,8 @@ const RegisterPage = () => {
     return (
       <div className="flex flex-col items-center gap-6">
         <div className="text-center">
-          <h2 className="mb-2 text-2xl font-semibold">Подтвердите email</h2>
-          <p className="text-gray-600">Мы отправили код подтверждения на {values.email}</p>
+          <h2 className="mb-2 text-2xl font-semibold">Пожалуйста, введите код подтверждения</h2>
+          <p className="text-gray-600">Мы отправили код подтверждения на {values.phone_number}</p>
         </div>
 
         <div className="flex justify-center">
@@ -152,10 +152,10 @@ const RegisterPage = () => {
           </InputOTP>
         </div>
 
-        <div className="flex w-full flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <Button
             text={isLoading ? 'Подождите...' : 'Подтвердить'}
-            className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white disabled:opacity-50"
+            className="flex items-center justify-center rounded-2xl bg-black py-3 text-white disabled:opacity-50"
             onClick={handleVerificationSubmit}
             disabled={verificationCode.length !== 6 || isLoading}
           />

@@ -16,7 +16,8 @@ from api.utils.cookiesSetter import AuthBaseViewSet
 from datetime import datetime
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
-from api.models import User
+from api.models import User, UserProfile
+
 
 
 class LoginViewSet(AuthBaseViewSet):
@@ -73,7 +74,6 @@ class RegisterViewSet(AuthBaseViewSet):
     @action(detail=False, methods=['post'], url_path="send-verification")
     def send_verification_code(self, request):
         """Отправка кода верификации на email"""
-        email = request.data.get('email')
         phone_number = request.data.get('phone_number')
         
         if not phone_number:
@@ -83,7 +83,7 @@ class RegisterViewSet(AuthBaseViewSet):
             )
             
         # проверяем не существует ли уже пользователь с таким номером телефона
-        if User.objects.filter(phone_number=phone_number).exists():
+        if UserProfile.objects.filter(phone_number=phone_number).exists():
             return Response(
                 {"error": "Пользователь с таким номером телефона уже существует"},
                 status=status.HTTP_400_BAD_REQUEST
@@ -118,28 +118,21 @@ class RegisterViewSet(AuthBaseViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(detail=False, methods=['post'], url_path="verify-and-register")
+    @action(detail=False, methods=['post'], url_path="verify")
     def verify_and_register_client(self, request):
         """Верификация кода и регистрация клиента"""
-        print("\n=== Starting registration process ===")
-        print(f"Request data: {request.data}")
         
         phone_number = request.data.get('phone_number')
         verification_code = request.data.get('verification_code')
-        
-        print(f"Номер телефона: {phone_number}, Code provided: {bool(verification_code)}")
-        
+
         if not phone_number or not verification_code:
-            print("Missing required fields")
             return Response(
-                {"error": "Email и код верификации обязательны"},
+                {"error": "Номер телефона и код верификации обязательны"},
                 status=status.HTTP_400_BAD_REQUEST
             )
             
         # проверяем код верификации
-        print(f"Verifying code for номера телефона: {phone_number}")
         is_valid = redis_client.verify_code(phone_number, verification_code)
-        print(f"Code verification result: {is_valid}")
         
         if not is_valid:
             print(f"Invalid verification code for phone number: {phone_number}")
@@ -149,14 +142,10 @@ class RegisterViewSet(AuthBaseViewSet):
             )
         
         # продолжаем регистрацию
-        print("Starting serializer validation")
         serializer = ClientRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            print("Serializer validation passed")
-            print(f"Validated data: {serializer.validated_data}")
             try:
                 with transaction.atomic():
-                    print("Creating new user")
                     user = serializer.save()
                     
                     refresh = RefreshToken.for_user(user)
@@ -171,7 +160,6 @@ class RegisterViewSet(AuthBaseViewSet):
                         status=status.HTTP_201_CREATED
                     )
                     
-                    print("Registration completed successfully")
                     return self._set_auth_cookies(response, refresh)
                     
             except IntegrityError as e:

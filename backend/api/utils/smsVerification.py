@@ -33,11 +33,6 @@ def send_verification_code(phone_number: str) -> tuple[str, str]:
             error_msg = "Invalid phone number format"
             return "", error_msg
 
-        # проверяем возможность отправки нового кода через Redis
-        can_send, error_msg = redis_client.can_send_new_code(phone_number)
-        if not can_send:
-            return "", error_msg
-
         # генерируем код
         verification_code = generate_verification_code()
         
