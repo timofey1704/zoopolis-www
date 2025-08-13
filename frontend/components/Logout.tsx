@@ -1,6 +1,5 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { signOut } from 'next-auth/react'
 import Button from './ui/Button'
 import { IoExitOutline } from 'react-icons/io5'
 import useUserStore from '@/app/store/userStore'
