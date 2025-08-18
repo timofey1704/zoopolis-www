@@ -77,6 +77,7 @@ class QRCode(models.Model):
     code = models.CharField(max_length=255, verbose_name='Код')
     imageURL = models.CharField(max_length=255, verbose_name='Фото QR кода')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    is_active = models.BooleanField(default=True, verbose_name='Активность')
     
     class Meta:
         verbose_name = 'QR код'
