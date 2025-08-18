@@ -18,6 +18,7 @@ redis = "*"
 django-oauth-toolkit = "*"
 requests-oauthlib = "*"
 djangorestframework-simplejwt = "*"
+qrcode = "*"
 
 [dev-packages]
 

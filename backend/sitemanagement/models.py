@@ -54,3 +54,33 @@ class MainPageMedia(models.Model):
         
     def __str__(self):
         return self.url
+    
+class Pet(models.Model):
+    owner = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name='Владелец')
+    imageURL = models.CharField(max_length=255, verbose_name='Фото питомца', null=True, blank=True)
+    name = models.CharField(max_length=255, verbose_name='Кличка')
+    type = models.CharField(max_length=10, choices=[('dog', 'Собака'), ('cat', 'Кошка')], verbose_name='Тип питомца')
+    birthday = models.DateField(verbose_name='Дата рождения')
+    gender = models.CharField(max_length=10, choices=[('male', 'Мужской'), ('female', 'Женский')], verbose_name='Пол')
+    breed = models.CharField(max_length=255, verbose_name='Порода')
+    color = models.CharField(max_length=255, verbose_name='Цвет')
+    comment = models.TextField(max_length=255, verbose_name='Комментарий', null=True, blank=True)
+    allergies = models.TextField(max_length=255, verbose_name='Аллергии', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'Питомец'
+        verbose_name_plural = 'Питомцы'
+        
+class QRCode(models.Model):
+    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, verbose_name='Питомец')
+    code = models.CharField(max_length=255, verbose_name='Код')
+    imageURL = models.CharField(max_length=255, verbose_name='Фото QR кода')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'QR код'
+        verbose_name_plural = 'QR коды'
+        
+    def __str__(self):
+        return self.code
