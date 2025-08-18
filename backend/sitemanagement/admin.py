@@ -15,3 +15,9 @@ class PricingAdmin(admin.ModelAdmin):
     list_filter = ['is_popular']
     search_fields = ['plan']
     filter_horizontal = ['features']
+    
+@admin.register(Pet)
+class PetAdmin(admin.ModelAdmin):
+    list_display = ['name', 'type']
+    list_filter = ['type']
+    search_fields = ['owner']

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
 
@@ -56,7 +57,7 @@ class MainPageMedia(models.Model):
         return self.url
     
 class Pet(models.Model):
-    owner = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name='Владелец')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
     imageURL = models.CharField(max_length=255, verbose_name='Фото питомца', null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name='Кличка')
     type = models.CharField(max_length=10, choices=[('dog', 'Собака'), ('cat', 'Кошка')], verbose_name='Тип питомца')
