@@ -21,3 +21,4 @@ class PetAdmin(admin.ModelAdmin):
     list_display = ['name', 'type']
     list_filter = ['type']
     search_fields = ['owner']
+    readonly_fields = ('created_at',)

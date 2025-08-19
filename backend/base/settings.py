@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api.apps.ApiConfig',
     'sitemanagement.apps.SitemanagementConfig',
+    'dictionaries.apps.DictionariesConfig',
     'rest_framework',
     'oauth2_provider'
 ]
@@ -143,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Minsk'
 USE_TZ = True
 USE_I18N = True
