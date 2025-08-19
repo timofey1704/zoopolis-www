@@ -67,6 +67,7 @@ class Pet(models.Model):
     color = models.CharField(max_length=255, verbose_name='Цвет')
     comment = models.TextField(max_length=255, verbose_name='Комментарий', null=True, blank=True)
     allergies = models.TextField(max_length=255, verbose_name='Аллергии', null=True, blank=True)
+    is_lost = models.BooleanField(default=False, verbose_name='Питомец потерян?')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:

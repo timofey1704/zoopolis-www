@@ -74,27 +74,12 @@ def generate_pet_qr(pet: Pet, *,
         - PIL Image объект QR кода
         - Base64 закодированную строку изображения QR кода
     """
-    # подготавливаем данные о питомце и владельце
-    owner = pet.owner
     
     pet_data = {
         "pet": {
             "id": pet.pk,
             "name": pet.name,
-            "type": pet.type,
-            "breed": pet.breed,
-            "color": pet.color,
-            "gender": pet.gender,
-            "birthday": pet.birthday.isoformat(),
-            "allergies": pet.allergies if pet.allergies else None,
-            "comment": pet.comment if pet.comment else None
         },
-        "owner": {
-            "id": owner.pk,
-            "name": f"{owner.first_name} {owner.last_name}".strip() or owner.username,
-            "phone": owner.phone,
-            "email": owner.email
-        }
     }
     
     # генерируем QR код
