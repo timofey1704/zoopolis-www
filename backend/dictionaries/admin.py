@@ -37,7 +37,7 @@ class PetsColorsAdmin(admin.ModelAdmin):
     
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name == 'hex_code':
+        if db_field.name == 'hex_code' and formfield is not None:
             formfield.widget = TextInput(attrs={'type': 'color'})
         return formfield
     

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
+from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
     title = models.CharField(max_length=250)
@@ -55,16 +56,15 @@ class MainPageMedia(models.Model):
         
     def __str__(self):
         return self.url
-    
 class Pet(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
     imageURL = models.CharField(max_length=255, verbose_name='Фото питомца', null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name='Кличка')
-    type = models.CharField(max_length=10, choices=[('dog', 'Собака'), ('cat', 'Кошка')], verbose_name='Тип питомца')
+    type = models.ForeignKey(PetsTypes, on_delete=models.CASCADE, verbose_name='Тип питомца')
     birthday = models.DateField(verbose_name='Дата рождения')
     gender = models.CharField(max_length=10, choices=[('male', 'Мужской'), ('female', 'Женский')], verbose_name='Пол')
-    breed = models.CharField(max_length=255, verbose_name='Порода')
-    color = models.CharField(max_length=255, verbose_name='Цвет')
+    breed = models.ForeignKey(PetsBreeds, on_delete=models.CASCADE, verbose_name='Порода')
+    color = models.ForeignKey(PetsColors, on_delete=models.CASCADE, verbose_name='Цвет')
     comment = models.TextField(max_length=255, verbose_name='Комментарий', null=True, blank=True)
     allergies = models.TextField(max_length=255, verbose_name='Аллергии', null=True, blank=True)
     is_lost = models.BooleanField(default=False, verbose_name='Питомец потерян?')
