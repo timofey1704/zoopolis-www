@@ -1,5 +1,6 @@
 stages:
   - lint
+  - lint_dashboard
   # - test
 
 lint_frontend:
@@ -7,6 +8,17 @@ lint_frontend:
   stage: lint
   script:
     - cd frontend
+    - npm ci
+    - npm run lint
+  only:
+    - main
+    - merge_requests
+
+lint_dashboard:
+  image: node:23-alpine
+  stage: lint_dashboard
+  script:
+    - cd dashboard-frontend
     - npm ci
     - npm run lint
   only:

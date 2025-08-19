@@ -71,3 +71,11 @@ export interface NavigationItem {
   href: string
   icon: IconType
 }
+
+export interface PhoneInputProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  label?: string
+  className?: string
+  operatorsInfo?: boolean
+}

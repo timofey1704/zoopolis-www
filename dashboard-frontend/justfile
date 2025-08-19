@@ -1,0 +1,3 @@
+image := "dashboard-frontend"
+
+import "../docker.just"

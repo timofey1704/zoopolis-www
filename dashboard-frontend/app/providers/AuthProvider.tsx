@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
-import useUserStore from '@/app/store/userStore'
+import useUserStore from '../store/userStore'
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession()

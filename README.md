@@ -45,6 +45,9 @@
    cd frontend
    npm install
 
+   cd dashboard-frontend
+   npm install
+
    cd backend
    pipenv shell
    pipenv install
@@ -52,9 +55,10 @@
 
 3. **Настройка переменных окружения:**
 
-   Создайте файл `.env` в директориях ./frontend и ./backend и добавьте необходимые переменные окружения:
+   Создайте файл `.env` в директориях ./frontend, ./dashboard-frontend и ./backend и добавьте необходимые переменные окружения:
 
-   ```env/backend
+   ```
+   env/backend
    #django settings
    SECRET_KEY=
    DEBUG_MODE=
@@ -79,7 +83,14 @@
 
    ```
 
-   ```env/frontend
+   ```
+   env/frontend
+   #server components url
+   NEXT_PUBLIC_API_URL=
+   ```
+
+   ```
+   env/dashboard-frontend
    #server components url
    NEXT_PUBLIC_API_URL=
 
@@ -103,7 +114,7 @@
 
 5. **Локальная разработка:**
 
-   Откройте два терминала или используйте вкладки в одном терминале.
+   Откройте три терминала или используйте вкладки в одном терминале.
 
    В первом терминале запустите бэкенд:
 
@@ -119,6 +130,13 @@
    npm run dev
    ```
 
+   Во третьем терминале запустите дашборд:
+
+   ```
+   cd dashboard-frontend
+   npm run dev
+   ```
+
 Теперь проект будет доступен по адресу `http://localhost:3000`.
 
 ### Инструкция по деплою.
@@ -128,6 +146,7 @@
    ```sh
    cd backend
    cd frontend
+   cd dashboard-frontend
    ```
 
 2. **Запускаем сборку контейнеров в каждом терминале:**
@@ -185,13 +204,19 @@
    docker logs -f zoopolis-frontend-1
    ```
 
-2. **Логи бекенда:**
+2. **Логи дашборда:**
+
+   ```sh
+   docker logs -f zoopolis-dashboard-frontend-1
+   ```
+
+3. **Логи бекенда:**
 
    ```sh
    docker logs -f zoopolis-backend-1
    ```
 
-3. **Логи сервера:**
+4. **Логи сервера:**
 
    ```sh
    tail -f /var/log/angie/access.log

@@ -7,7 +7,7 @@ import Loader from '@/components/ui/Loader'
 import useUserStore from '@/app/store/userStore'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
-import showToast from '@/components/ui/Toast'
+import showToast from '@/components/ui/showToast'
 import { signIn } from 'next-auth/react'
 import TextInput from '@/components/ui/TextInput'
 
@@ -25,7 +25,7 @@ const LoginPage = () => {
     // проверяем логин
     if (isAuthenticated) {
       // распределяем
-      router.replace('/account')
+      router.replace('/profile')
       return
     }
 
