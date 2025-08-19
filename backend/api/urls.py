@@ -8,7 +8,7 @@ from api.auth.views import (
     RegisterViewSet
 )
 
-from api.account.views import UserDataView
+from api.account.views import UserDataView, PetView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -25,4 +25,13 @@ urlpatterns = [
     path("v1/register/verify/", RegisterViewSet.as_view({'post': 'verify_and_register_client'}), name="verify-and-register"),
     
     path('v1/user/', UserDataView.as_view({'get': 'user_data'}), name="user"),
+    
+    path('v1/pets/', PetView.as_view({
+        'get': 'get_pets',
+        'post': 'create_pet', 
+        'patch': 'update_pet', 
+        'delete': 'delete_pet'
+    }), name="pets"),
+    path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
+    
 ]

@@ -117,7 +117,7 @@ def generate_unique_qr_code() -> str:
     Returns:
         Уникальная строка длиной 8 символов, содержащая только заглавные буквы и цифры (1-9)
     """
-    # определяем допустимые символы: A-Z и 1-9 (без нуля)
+    # определяем допустимые символы: A-Z и 1-9
     letters = string.ascii_uppercase
     digits = '123456789'
     all_chars = letters + digits
