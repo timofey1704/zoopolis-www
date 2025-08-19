@@ -51,7 +51,9 @@ const Header = () => {
       </div>
       {/* Desktop button */}
       <div className="hidden pr-[92px] lg:block">
-        <Button text="Личный кабинет" className="bg-white text-black hover:shadow-md" />
+        <Link href="/login">
+          <Button text="Личный кабинет" className="bg-white text-black hover:shadow-md" />
+        </Link>
       </div>
       {/* Mobile/Tablet layout */}
       <div className="flex items-center space-x-4 pr-4 sm:pr-8 lg:hidden">
