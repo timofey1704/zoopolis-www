@@ -16,9 +16,37 @@ class PricingAdmin(admin.ModelAdmin):
     search_fields = ['plan']
     filter_horizontal = ['features']
     
+from django.contrib import admin
+from .models import Pet
+
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
-    list_display = ['name', 'type']
+    list_display = ['name', 'type', 'is_lost']
     list_filter = ['type']
-    search_fields = ['owner']
+    search_fields = ['owner__username', 'name']
     readonly_fields = ('created_at',)
+
+    def get_readonly_fields(self, request, obj=None):
+        # created_at всегда readonly
+        base_readonly = ['created_at']
+        
+        if request.user.is_superuser:
+            # суперюзер видит все поля редактируемыми кроме created_at
+            return base_readonly
+        else:
+            # staff может редактировать только is_lost
+            all_fields = [field.name for field in self.model._meta.fields]
+            readonly_for_staff = [f for f in all_fields if f not in ('is_lost', 'created_at')]
+            return readonly_for_staff
+
+    def has_change_permission(self, request, obj=None):
+        # Только суперюзеры и staff могут менять
+        return request.user.is_superuser or request.user.is_staff
+
+    def has_add_permission(self, request):
+        # Добавление только для суперюзеров
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        # Удалять могут только суперюзеры
+        return request.user.is_superuser
