@@ -111,7 +111,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
           {user.uuid && <p className="text-sm font-medium text-gray-500">ID: {user.uuid}</p>}
           {user.account_type && (
             <Link
-              href="payments/"
+              href="/membership"
               className={`${getAccountTypeStyles(
                 user.account_type
               )} flex items-center justify-center rounded-lg px-3 py-1 text-sm`}
@@ -131,11 +131,17 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
                 key={item.name}
                 href={item.href}
                 className={`${
-                  isActive ? 'bg-orange text-white' : 'text-gray-600 hover:bg-gray-100'
-                } flex items-center rounded-lg p-4 text-sm font-medium transition-colors`}
+                  isActive
+                    ? 'border-orange translate-x-2 rounded-l-lg border-r-4 bg-gray-100 text-black'
+                    : 'rounded-lg text-gray-600 hover:bg-gray-100'
+                } flex items-center p-4 text-sm font-medium transition-all duration-200`}
               >
-                <item.icon
-                  className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400'}`}
+                <Image
+                  src={`/icons/${item.icon}.svg`}
+                  alt={item.name}
+                  width={20}
+                  height={20}
+                  className="mr-2"
                 />
                 {item.name}
               </Link>
@@ -144,6 +150,23 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
         </nav>
       </div>
       <div className="w-full rounded-2xl bg-white p-2 shadow md:w-64">
+        <Link
+          href={'/support'}
+          className={`${
+            pathname === '/support'
+              ? 'border-orange translate-x-2 rounded-l-lg border-r-4 bg-gray-100 text-black'
+              : 'rounded-lg text-gray-600 hover:bg-gray-100'
+          } flex items-center p-4 text-sm font-medium transition-all duration-200`}
+        >
+          <Image
+            src={`/icons/support.svg`}
+            alt={'support'}
+            width={20}
+            height={20}
+            className="mr-2"
+          />
+          Поддержка
+        </Link>
         <Logout />
       </div>
     </div>

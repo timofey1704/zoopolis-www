@@ -39,20 +39,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }
 
   const userNavigation = [
-    { name: 'Главная', href: '/main', icon: RiUser3Line },
-    { name: 'Профиль', href: '/profile', icon: FaRoute },
-    { name: 'Услуги', href: '/membership', icon: HiOutlineSquaresPlus },
-    { name: 'Подписка', href: '/map', icon: IoGitPullRequest },
-    { name: 'Карта', href: '/map', icon: IoGitPullRequest },
+    { name: 'Главная', href: '/main', icon: 'main' },
+    { name: 'Профиль', href: '/profile', icon: 'profile' },
+    { name: 'Услуги', href: '/membership', icon: 'services' },
+    { name: 'Подписка', href: '/membership', icon: 'membership' },
+    { name: 'Карта', href: '/map', icon: 'map' },
     {
       name: 'Устройства',
       href: '/devices',
-      icon: GoPackageDependents,
+      icon: 'devices',
     },
     {
       name: 'Скидки и бонусы',
       href: '/bonuses',
-      icon: GoPackageDependencies,
+      icon: 'bonuses',
     },
   ]
 
@@ -67,7 +67,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <AccountSidebar user={user} navigation={userNavigation} />
               </div>
             </div>
-            <main className="min-w-0 flex-1">{children}</main>
+            <main className="min-w-0 flex-1 px-5">{children}</main>
           </div>
         </div>
       </div>
