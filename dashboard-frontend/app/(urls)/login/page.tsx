@@ -75,14 +75,14 @@ const LoginPage = () => {
         alt="login-bg-down"
         width={1500}
         height={1500}
-        className="absolute bottom-0 left-0 z-0 hidden md:block"
+        className="absolute bottom-0 left-0 z-0"
       />
       <Image
         src="/images/login-up.svg"
         alt="login-bg-up"
         width={1500}
         height={1500}
-        className="absolute top-0 right-0 z-0 hidden md:block"
+        className="absolute top-0 right-0 z-0"
       />
       <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
         <form
@@ -127,13 +127,13 @@ const LoginPage = () => {
               />
             </div>
           </div>
-          <div className="flex w-full items-center justify-center md:w-[35%] lg:w-[40%]">
+          <div className="w-full items-center justify-center md:w-[35%] lg:w-[40%] hidden sm:block">
             <Image
               src="/images/login-dog.svg"
               alt="login-dog"
               width={323}
               height={543}
-              className="w-[250px] object-contain md:w-full"
+              className="object-contain sm:hidden md:block"
             />
           </div>
         </form>
