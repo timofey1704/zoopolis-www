@@ -1,5 +1,3 @@
-import { IconType } from 'react-icons'
-
 export interface User {
   id?: number | undefined | string
   uuid?: string
@@ -69,7 +67,7 @@ export interface ValidationErrors {
 export interface NavigationItem {
   name: string
   href: string
-  icon: IconType
+  icon: string
 }
 
 export interface PhoneInputProps {
@@ -78,4 +76,9 @@ export interface PhoneInputProps {
   label?: string
   className?: string
   operatorsInfo?: boolean
+}
+
+export interface AccountSidebarProps {
+  user: User
+  navigation: NavigationItem[]
 }

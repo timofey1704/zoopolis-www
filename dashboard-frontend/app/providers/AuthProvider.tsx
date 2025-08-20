@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email: userData.email || session.user.email || '',
           phone_number: userData.phone_number,
           image: userData.image,
+          account_type: userData.account_type,
         })
         setAuthenticated(true)
       } catch (error) {
