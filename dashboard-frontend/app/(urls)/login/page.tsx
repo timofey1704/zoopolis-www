@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import { signIn } from 'next-auth/react'
 import TextInput from '@/components/ui/TextInput'
+import Image from 'next/image'
 
 const validationRules = {
   email: { required: true },
@@ -56,7 +57,7 @@ const LoginPage = () => {
         }
 
         showToast({ type: 'success', message: 'Авторизация успешна!' })
-        router.push('/account')
+        router.push('/profile')
       } catch {
         showToast({ type: 'error', message: 'Ошибка при входе в аккаунт' })
       }
@@ -68,49 +69,71 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center py-8">
-      <div className="flex w-full max-w-3xl flex-col gap-4 rounded-2xl border border-gray-200 p-6 shadow-lg">
-        <div className="flex flex-col items-center py-4">
-          <h1 className="pb-1 text-2xl font-medium">Рады видеть Вас снова!</h1>
-          <p className="text-center text-base font-medium">
-            Пожалуйста, авторизуйтесь, чтобы продолжить
-          </p>
-        </div>
+    <div className="relative flex h-screen items-center justify-center py-8">
+      <Image
+        src="/images/login-down.svg"
+        alt="login-bg-down"
+        width={1500}
+        height={1500}
+        className="absolute bottom-0 left-0 z-0"
+      />
+      <Image
+        src="/images/login-up.svg"
+        alt="login-bg-up"
+        width={1500}
+        height={1500}
+        className="absolute top-0 right-0 z-0"
+      />
+      <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
+        <form
+          className="flex flex-col items-center justify-between gap-8 md:flex-row md:gap-4"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex w-full flex-col gap-2 md:w-[60%] lg:w-[55%]">
+            <h1 className="pb-1 text-center text-2xl font-bold text-black md:text-3xl">ВОЙТИ</h1>
+            <TextInput
+              value={values.email}
+              name="email"
+              handleChange={handleChange}
+              placeholder="my_email@gmail.com"
+              style="register"
+              label="Ваш еmail"
+            />
 
-        <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
-          <TextInput
-            value={values.email}
-            name="email"
-            handleChange={handleChange}
-            placeholder="my_email@gmail.com"
-            style="register"
-            label="Ваш еmail"
-          />
-
-          <TextInput
-            value={values.password}
-            name="password"
-            handleChange={handleChange}
-            placeholder="Не менее 8 символов"
-            style="register"
-            label="Ваш пароль"
-            isPassword={true}
-            isVisible={isVisible}
-            togglePasswordVisibility={togglePasswordVisibility}
-          />
-          <div className="flex flex-row-reverse justify-between pb-2 text-sm">
-            <Link
-              href="/password-recovery"
-              className="text-sm text-gray-600 hover:text-gray-900 hover:underline"
-            >
-              Забыли пароль?
-            </Link>
+            <TextInput
+              value={values.password}
+              name="password"
+              handleChange={handleChange}
+              placeholder="Не менее 8 символов"
+              style="register"
+              label="Ваш пароль"
+              isPassword={true}
+              isVisible={isVisible}
+              togglePasswordVisibility={togglePasswordVisibility}
+            />
+            <div className="flex flex-row-reverse justify-between pb-2 text-sm">
+              <Link
+                href="/password-recovery"
+                className="text-gray-500 transition-colors duration-200 hover:text-orange-600 hover:underline"
+              >
+                Забыли пароль?
+              </Link>
+            </div>
+            <div className="flex w-full items-center justify-center">
+              <Button
+                text="Войти"
+                className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
+                type="submit"
+              />
+            </div>
           </div>
-          <div className="flex w-full items-center justify-center">
-            <Button
-              text="Войти"
-              className="bg-orange mt-3 flex w-full items-center justify-center rounded-2xl py-3 text-base font-semibold text-white"
-              type="submit"
+          <div className="w-full items-center justify-center md:w-[35%] lg:w-[40%] hidden sm:block">
+            <Image
+              src="/images/login-dog.svg"
+              alt="login-dog"
+              width={323}
+              height={543}
+              className="object-contain sm:hidden md:block"
             />
           </div>
         </form>
@@ -123,7 +146,7 @@ const LoginPage = () => {
 
         <p className="text-center text-base font-medium">
           Впервые у нас?{' '}
-          <span className="text-orange/70 hover:underline">
+          <span className="text-orange transition-colors duration-200 hover:text-orange-600 hover:underline">
             <Link href="/register">Зарегистрироваться</Link>
           </span>
         </p>
