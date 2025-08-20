@@ -7,13 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BASE_DIR / './.env', override=True)
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
-if not SECRET_KEY:
-    raise ValueError("SECRET_KEY is not set in the environment!")
-
 DEBUG = os.environ.get("DEBUG_MODE", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
-# print("CSRF_TRUSTED_ORIGINS:", os.environ.get("CSRF_TRUSTED_ORIGINS"))
 
 CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
 CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist
@@ -44,7 +40,6 @@ CHAT_ID = os.environ.get("CHAT_ID")
 #смски
 SMS_USER = os.environ.get("SMS_USER")
 SMS_API_KEY = os.environ.get("SMS_API_KEY")
-# print(SMS_USER, SMS_API_KEY)
 
 # редис
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")

@@ -79,3 +79,8 @@ export interface PhoneInputProps {
   className?: string
   operatorsInfo?: boolean
 }
+
+export interface AccountSidebarProps {
+  user: User
+  navigation: NavigationItem[]
+}
