@@ -7,6 +7,8 @@ export interface User {
   phone_number?: string
   email: string
   account_type?: string
+  city?: string
+  address?: string
 }
 
 export interface UserState {
