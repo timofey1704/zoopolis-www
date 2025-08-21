@@ -22,7 +22,7 @@ const PhoneInput = ({
         placeholder={'+375 (__) ___ __ __'}
         value={value || ''}
         onChange={handleChange}
-        className="w-full rounded-xl border border-gray-300 px-3 py-2 text-black focus:bg-white focus:ring-1 focus:ring-blue-400 focus:outline-none"
+        className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-black focus:ring-1 focus:ring-blue-400 focus:outline-none"
         autoComplete="tel"
       />
       {operatorsInfo && (

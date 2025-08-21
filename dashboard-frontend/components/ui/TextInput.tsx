@@ -48,7 +48,7 @@ const TextInput = ({
           placeholder={placeholder}
           value={value || ''}
           onChange={handleChange}
-          className={`${getStylesProps()} w-full border ${
+          className={`${getStylesProps()} w-full border bg-white ${
             error ? 'border-red-500' : 'border-gray-300'
           } rounded-xl text-black focus:ring-1 focus:outline-none ${
             error ? 'focus:ring-red-400' : 'focus:ring-blue-400'

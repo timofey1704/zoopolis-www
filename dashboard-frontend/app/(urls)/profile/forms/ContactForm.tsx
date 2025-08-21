@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '@/app/hooks/useForm'
 import TextInput from '@/components/ui/TextInput'
 import PhoneInput from '@/components/ui/PhoneInput'
@@ -12,14 +12,13 @@ const validationRules = {
   phone_number: { required: true },
   email: { required: true },
   city: { required: true },
-  address: { required: true },
+  address: { required: false },
 }
 
 const ContactForm = () => {
   const { user, setUser } = useUserStore()
-  const [isLoading, setIsLoading] = useState(true)
 
-  const { values, isVisible, handleChange, handleSubmit } = useForm(
+  const { values, handleChange, handleSubmit } = useForm(
     {
       firstName: user?.name || '',
       lastName: user?.surname || '',
@@ -31,7 +30,7 @@ const ContactForm = () => {
     validationRules,
     async values => {
       try {
-        const response = await fetch('/api/account/profile/contacts', {
+        const response = await fetch('/api/profile/contacts', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -58,66 +57,64 @@ const ContactForm = () => {
 
   return (
     <div className="space-y-3 py-3">
-      <div className="overflow-hidden rounded-2xl shadow">
-        <div className="bg-white p-6 sm:p-8">
-          <div className="space-y-4">
-            <h3>Контактные данные</h3>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
-                <TextInput
-                  name="firstName"
-                  value={values.firstName}
-                  handleChange={handleChange}
-                  label="Имя"
-                  placeholder="Ваше имя"
-                  style="register"
-                />
-                <TextInput
-                  name="lastName"
-                  value={values.lastName}
-                  handleChange={handleChange}
-                  label="Фамилия"
-                  placeholder="Ваша фамилия"
-                  style="register"
-                />
-                <TextInput
-                  name="email"
-                  value={values.email}
-                  handleChange={handleChange}
-                  label="Email"
-                  placeholder="Ваш email"
-                  style="register"
-                />
-                <PhoneInput
-                  value={values.phone_number}
-                  handleChange={handleChange}
-                  operatorsInfo={false}
-                />
-                <TextInput
-                  name="city"
-                  value={values.city}
-                  handleChange={handleChange}
-                  label="Страна"
-                  placeholder="Ваша страна проживания"
-                  style="register"
-                />
-                <TextInput
-                  name="address"
-                  value={values.address}
-                  handleChange={handleChange}
-                  label="Город"
-                  placeholder="Ваш город проживания"
-                  style="register"
-                />
-              </div>
-
+      <div className="overflow-hidden rounded-2xl pl-1">
+        <div className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
+              <TextInput
+                name="firstName"
+                value={values.firstName}
+                handleChange={handleChange}
+                label="Имя"
+                placeholder="Ваше имя"
+                style="register"
+              />
+              <TextInput
+                name="lastName"
+                value={values.lastName}
+                handleChange={handleChange}
+                label="Фамилия"
+                placeholder="Ваша фамилия"
+                style="register"
+              />
+              <TextInput
+                name="email"
+                value={values.email}
+                handleChange={handleChange}
+                label="Email"
+                placeholder="Ваш email"
+                style="register"
+              />
+              <PhoneInput
+                value={values.phone_number}
+                handleChange={handleChange}
+                operatorsInfo={false}
+              />
+              <TextInput
+                name="city"
+                value={values.city}
+                handleChange={handleChange}
+                label="Город"
+                placeholder="Ваш город проживания"
+                style="register"
+              />
+              <TextInput
+                name="address"
+                value={values.address}
+                handleChange={handleChange}
+                label="Адрес"
+                placeholder="Ваш адрес проживания"
+                style="register"
+              />
+            </div>
+            <div className="flex items-center justify-center">
               <Button
-                text="Сохранить изменения"
-                className="bg-orange mt-4 flex items-center justify-center text-white"
+                text="Сохранить"
+                className="bg-orange mt-4 flex w-full items-center justify-center text-white"
                 type="submit"
               />
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
