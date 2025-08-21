@@ -5,6 +5,7 @@ import PhoneInput from '@/components/ui/PhoneInput'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import useUserStore from '@/app/store/userStore'
+import LocationSelect from '@/components/LocationSelector'
 
 const validationRules = {
   firstName: { required: true },
@@ -90,14 +91,14 @@ const ContactForm = () => {
                 handleChange={handleChange}
                 operatorsInfo={false}
               />
-              <TextInput
+              <LocationSelect
                 name="city"
                 value={values.city}
                 handleChange={handleChange}
                 label="Город"
                 placeholder="Ваш город проживания"
-                style="register"
               />
+
               <TextInput
                 name="address"
                 value={values.address}

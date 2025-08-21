@@ -10,7 +10,7 @@ from api.auth.views import (
 
 from api.account.actions.userActions import UserDataView
 from api.account.actions.petActions import PetView
-from api.account.actions.accountActions import AccountActionsView
+from api.account.actions.accountActions import AccountActionsView, CityView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -36,6 +36,7 @@ urlpatterns = [
     }), name="pets"),
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
     
-    path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data')
+    path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
+    path('v1/account/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities')
     
 ]
