@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import Burger from './ui/Burger'
@@ -8,9 +7,7 @@ import { FaUser } from 'react-icons/fa'
 const Header = () => {
   return (
     <div className="bg-gray flex items-center justify-between p-4">
-      <div className="pl-4 sm:pl-8 lg:pl-[92px]">
-      Тайтл
-      </div>
+      <div className="pl-4 sm:pl-8 lg:pl-[92px]">Тайтл</div>
 
       <div className="hidden pr-[92px] lg:block">
         <Link href="/login">

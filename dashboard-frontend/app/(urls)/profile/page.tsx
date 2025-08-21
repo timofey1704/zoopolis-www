@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import ContactForm from './forms/ContactForm'
 import PetForm from './forms/PetForm'
 
@@ -12,8 +12,7 @@ const ProfilePage = () => {
   const petsRef = useRef<HTMLButtonElement>(null)
 
   //определяем ширину кнопки чтобы красиво отрисовать индикатор активности
-
-  const updateIndicator = () => {
+  const updateIndicator = useCallback(() => {
     if (selectedTab === 'contacts' && contactsRef.current) {
       setIndicatorStyle({
         left: contactsRef.current.offsetLeft,
@@ -25,13 +24,13 @@ const ProfilePage = () => {
         width: petsRef.current.offsetWidth,
       })
     }
-  }
+  }, [selectedTab])
 
   useEffect(() => {
     updateIndicator()
     window.addEventListener('resize', updateIndicator)
     return () => window.removeEventListener('resize', updateIndicator)
-  }, [selectedTab])
+  }, [updateIndicator])
 
   const handleTabChange = (tab: 'contacts' | 'pets') => {
     setSelectedTab(tab)

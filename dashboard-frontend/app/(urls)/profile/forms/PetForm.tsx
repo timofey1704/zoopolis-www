@@ -47,7 +47,6 @@ const PetForm = () => {
           throw new Error(error.error || 'Ошибка при обновлении данных')
         }
 
-        const result = await response.json()
         showToast({ type: 'success', message: 'Данные успешно обновлены!' })
       } catch (error) {
         showToast({

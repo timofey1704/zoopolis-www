@@ -1,47 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Select from 'react-select'
-import axios from 'axios'
 import Tooltip from './ui/Tooltip'
-
-interface CityResponse {
-  id: number
-  name: string
-  country: string
-  display_name: string
-}
-
-interface PaginatedResponse<T> {
-  count: number
-  next: string | null
-  previous: string | null
-  results: T[]
-}
-
-interface LocationOption {
-  value: string
-  label: string
-  id: number
-}
-
-interface CityData {
-  id: number
-  name: string
-  country: string
-  display_name: string
-}
-
-interface LocationSelectProps {
-  name: string
-  value: CityData | null
-  handleChange: (e: {
-    target: { id: string; value: CityData | null; selectedOption?: LocationOption }
-  }) => void
-  label: string
-  placeholder: string
-  tooltip?: string | React.ReactNode
-}
+import { useClientFetch } from '@/app/hooks/useClientFetch'
+import { PaginatedResponse, CityResponse, LocationOption, LocationSelectProps } from '@/app/types'
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
   name,
@@ -51,42 +14,33 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   tooltip,
   placeholder,
 }) => {
-  const [options, setOptions] = useState<LocationOption[]>([])
-  const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
-  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-  useEffect(() => {
-    const fetchOptions = async () => {
-      setIsLoading(true)
-      try {
-        // Если поиск пустой, не добавляем параметр search в URL
-        const url = `${API_URL}/account/cities/${search ? `?search=${search}` : ''}`
-
-        // для городов - пагинированный ответ
-        const response = await axios.get<PaginatedResponse<CityResponse>>(url)
-        setOptions(
-          response.data.results.map(city => ({
-            id: city.id,
-            value: city.name,
-            label: city.display_name,
-          }))
-        )
-      } catch (error) {
-        console.error('Error fetching options:', error)
-        setOptions([])
-      } finally {
-        setIsLoading(false)
-      }
+  const { data, isLoading, error } = useClientFetch<PaginatedResponse<CityResponse>>(
+    '/account/cities/',
+    {
+      config: {
+        // если search не пустой, то добавляем его в query params
+        params: search ? { search } : undefined,
+      },
+      queryOptions: {
+        staleTime: 60 * 60 * 1000, // кэшируем на 1 час
+        refetchOnWindowFocus: false, // не перезапрашиваем при фокусе инпута
+      },
     }
+  )
 
-    // debounce search
-    const timeoutId = setTimeout(() => {
-      fetchOptions()
-    }, 300)
+  const options =
+    data?.results.map(city => ({
+      id: city.id,
+      value: city.name,
+      label: city.display_name,
+    })) || []
 
-    return () => clearTimeout(timeoutId)
-  }, [search, API_URL])
+  // если есть ошибка, логируем её
+  if (error) {
+    console.error('Error fetching cities:', error)
+  }
 
   return (
     <div>

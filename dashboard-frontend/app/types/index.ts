@@ -91,3 +91,34 @@ export interface AccountSidebarProps {
   user: User
   navigation: NavigationItem[]
 }
+
+export interface PaginatedResponse<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
+export interface CityResponse {
+  id: number
+  name: string
+  country: string
+  display_name: string
+}
+
+export interface LocationOption {
+  value: string
+  label: string
+  id: number
+}
+
+export interface LocationSelectProps {
+  name: string
+  value: CityData | null
+  handleChange: (e: {
+    target: { id: string; value: CityData | null; selectedOption?: LocationOption }
+  }) => void
+  label: string
+  placeholder: string
+  tooltip?: string | React.ReactNode
+}

@@ -6,11 +6,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AccountSidebar from '@/components/AccountSidebar'
 import Loader from '@/components/ui/Loader'
-import { RiUser3Line } from 'react-icons/ri'
-import { FaRoute } from 'react-icons/fa'
-import { GoPackageDependents, GoPackageDependencies } from 'react-icons/go'
-import { HiOutlineSquaresPlus } from 'react-icons/hi2'
-import { IoGitPullRequest } from 'react-icons/io5'
 import useUserStore from '@/app/store/userStore'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
