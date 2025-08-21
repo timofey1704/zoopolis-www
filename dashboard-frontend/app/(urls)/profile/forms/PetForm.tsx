@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { useForm } from '@/app/hooks/useForm'
 import TextInput from '@/components/ui/TextInput'
 import Button from '@/components/ui/Button'
@@ -18,6 +18,54 @@ const validationRules = {
 }
 
 const PetForm = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>('')
+
+  const handlePhotoChange = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    try {
+      const file = files[0]
+
+      if (!file.type.startsWith('image/')) {
+        showToast({
+          type: 'error',
+          message: 'Пожалуйста, выберите изображение',
+        })
+        return
+      }
+
+      // создаем превью
+      const previewUrl = URL.createObjectURL(file)
+      setPreviewUrl(previewUrl)
+
+      // загружаем на сервер
+      //   const response = await uploadImage(file)
+      //   if (response.user?.image) {
+      //     setPreviewUrl(response.user.image)
+      //   }
+
+      showToast({
+        type: 'success',
+        message: 'Фотография успешно обновлена',
+      })
+
+      // очищаем инпут
+      e.target.value = ''
+    } catch (error) {
+      showToast({
+        type: 'error',
+        message: 'Ошибка при загрузке фотографии',
+      })
+      console.error('Error handling file:', error)
+    }
+  }, [])
+
   const { values, handleChange, handleSubmit } = useForm(
     {
       imageURL: '',
@@ -56,19 +104,33 @@ const PetForm = () => {
       }
     }
   )
+
   return (
     <div className="space-y-3 py-3">
       <div className="overflow-hidden rounded-2xl pl-1">
         <div className="space-y-4">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex items-center justify-around gap-4 py-4">
-              <Image
-                src={values.imageURL || '/images/noPet.svg'}
-                alt="Pet"
-                width={160}
-                height={160}
-                className="rounded-full object-cover hover:cursor-pointer"
-              />
+              <div className="flex items-center justify-center md:w-[160px]">
+                <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
+                  <input
+                    type="file"
+                    id="image"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
+                  <Image
+                    src={previewUrl || '/images/noPet.svg'}
+                    alt="Pet"
+                    height={160}
+                    width={160}
+                    priority
+                    className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
+                  />
+                </div>
+              </div>
               <Image
                 src={values.QR_code || '/images/noQR.svg'}
                 alt="qrcode"
