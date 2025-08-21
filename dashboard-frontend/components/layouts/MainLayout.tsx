@@ -41,7 +41,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const userNavigation = [
     { name: 'Главная', href: '/main', icon: 'main' },
     { name: 'Профиль', href: '/profile', icon: 'profile' },
-    { name: 'Услуги', href: '/membership', icon: 'services' },
+    { name: 'Услуги', href: '/services', icon: 'services' },
     { name: 'Подписка', href: '/membership', icon: 'membership' },
     { name: 'Карта', href: '/map', icon: 'map' },
     {
