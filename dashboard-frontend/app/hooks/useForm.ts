@@ -2,9 +2,9 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react'
 import toast from 'react-hot-toast'
-import { ValidationRules, ValidationErrors } from '../types'
+import { ValidationRules, ValidationErrors, CityData } from '../types'
 
-type FormValue = string | number | boolean | string[] | number[]
+type FormValue = string | number | boolean | string[] | number[] | CityData | null
 
 type CustomChangeEvent = {
   target: {
@@ -25,21 +25,19 @@ export function useForm<T extends Record<string, FormValue>>(
   const [isVisible, setIsVisible] = useState(false)
 
   const handleChange = (
-    e:
-      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-      | CustomChangeEvent
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | CustomChangeEvent
   ) => {
     const { id, value, type } = e.target
     const isCheckbox = type === 'checkbox' && 'checked' in e.target
 
-    setValues((prev) => ({
+    setValues(prev => ({
       ...prev,
       [id]: isCheckbox ? (e.target as HTMLInputElement).checked : value,
     }))
 
     // скидываем ошибки
     if (errors[id]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev }
         delete newErrors[id]
         return newErrors
@@ -48,14 +46,14 @@ export function useForm<T extends Record<string, FormValue>>(
   }
 
   const resetField = (fieldName: keyof T, value: FormValue = '') => {
-    setValues((prev) => ({
+    setValues(prev => ({
       ...prev,
       [fieldName]: value,
     }))
 
     // очищаем ошибки для этого поля, если они есть
     if (errors[fieldName as string]) {
-      setErrors((prev) => {
+      setErrors(prev => {
         const newErrors = { ...prev }
         delete newErrors[fieldName as string]
         return newErrors
@@ -77,37 +75,28 @@ export function useForm<T extends Record<string, FormValue>>(
 
     const newErrors: ValidationErrors = {}
 
-    Object.keys(validationRules).forEach((key) => {
+    Object.keys(validationRules).forEach(key => {
       const value = values[key]
       const rules = validationRules[key as keyof T]
 
       if (rules?.required && !value) {
         newErrors[key] = 'Это поле обязательно'
-        toast.error(
-          `Поле "${fieldNames[key] || key}" обязательно для заполнения`,
-          {
-            duration: 2000,
-            position: 'top-right',
-            style: {
-              background: '#FEE2E2',
-              color: '#991B1B',
-              padding: '16px',
-              borderRadius: '8px',
-            },
-          }
-        )
+        toast.error(`Поле "${fieldNames[key] || key}" обязательно для заполнения`, {
+          duration: 2000,
+          position: 'top-right',
+          style: {
+            background: '#FEE2E2',
+            color: '#991B1B',
+            padding: '16px',
+            borderRadius: '8px',
+          },
+        })
       }
 
-      if (
-        rules?.minLength &&
-        typeof value === 'string' &&
-        value.length < rules.minLength
-      ) {
+      if (rules?.minLength && typeof value === 'string' && value.length < rules.minLength) {
         newErrors[key] = `Минимальная длина ${rules.minLength} символов`
         toast.error(
-          `Минимальная длина поля "${fieldNames[key] || key}" - ${
-            rules.minLength
-          } символов`,
+          `Минимальная длина поля "${fieldNames[key] || key}" - ${rules.minLength} символов`,
           {
             duration: 2000,
             position: 'top-right',
@@ -121,11 +110,7 @@ export function useForm<T extends Record<string, FormValue>>(
         )
       }
 
-      if (
-        rules?.pattern &&
-        typeof value === 'string' &&
-        !rules.pattern.test(value)
-      ) {
+      if (rules?.pattern && typeof value === 'string' && !rules.pattern.test(value)) {
         newErrors[key] = 'Неверный формат'
         toast.error(`Поле "${fieldNames[key] || key}" заполнено некорректно`, {
           duration: 2000,

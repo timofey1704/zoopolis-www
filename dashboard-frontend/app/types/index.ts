@@ -1,3 +1,10 @@
+export interface CityData {
+  id: number
+  name: string
+  country: string
+  display_name: string
+}
+
 export interface User {
   id?: number | undefined | string
   uuid?: string
@@ -7,7 +14,7 @@ export interface User {
   phone_number?: string
   email: string
   account_type?: string
-  city?: string
+  city?: CityData | null
   address?: string
 }
 

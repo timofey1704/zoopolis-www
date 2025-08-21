@@ -43,6 +43,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           phone_number: userData.phone_number,
           image: userData.image,
           account_type: userData.account_type,
+          city: userData.city,
+          address: userData.address,
         })
         setAuthenticated(true)
       } catch (error) {

@@ -25,7 +25,7 @@ const ContactForm = () => {
       lastName: user?.surname || '',
       phone_number: user?.phone_number || '',
       email: user?.email || '',
-      city: user?.city || '',
+      city: typeof user?.city === 'object' ? user?.city : null,
       address: user?.address || '',
     },
     validationRules,
@@ -36,7 +36,10 @@ const ContactForm = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify({
+            ...values,
+            city: values.city?.id || null,
+          }),
         })
 
         if (!response.ok) {

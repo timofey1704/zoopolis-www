@@ -37,8 +37,14 @@ class AccountActionsView(ViewSet):
         if 'lastName' in request.data:
             user.last_name = request.data['lastName']
         if 'city' in request.data:
-            user_profile.city = request.data['city']
-        if 'country' in request.data:
+            city_id = request.data['city']
+            if city_id:
+                try:
+                    city = Cities.objects.get(id=city_id)
+                    user_profile.city = city
+                except (Cities.DoesNotExist, ValueError):
+                    raise ValidationError("Город не найден")
+        if 'address' in request.data:
             user_profile.address = request.data['address']
         if 'email' in request.data:
             email = request.data['email']

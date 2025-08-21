@@ -25,11 +25,18 @@ interface LocationOption {
   id: number
 }
 
+interface CityData {
+  id: number
+  name: string
+  country: string
+  display_name: string
+}
+
 interface LocationSelectProps {
   name: string
-  value: string
+  value: CityData | null
   handleChange: (e: {
-    target: { id: string; value: string; selectedOption?: LocationOption }
+    target: { id: string; value: CityData | null; selectedOption?: LocationOption }
   }) => void
   label: string
   placeholder: string
@@ -95,12 +102,19 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         inputId={name}
         name={name}
         options={options}
-        value={options.find(opt => opt.label === value || opt.value === value)}
+        value={options.find(opt => opt.id === value?.id)}
         onChange={selectedOption => {
           handleChange({
             target: {
               id: name,
-              value: selectedOption?.value || '',
+              value: selectedOption
+                ? {
+                    id: selectedOption.id,
+                    name: selectedOption.value,
+                    country: selectedOption.label.split(', ')[1],
+                    display_name: selectedOption.label,
+                  }
+                : null,
               selectedOption: selectedOption || undefined,
             },
           })

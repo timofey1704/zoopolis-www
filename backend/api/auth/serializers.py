@@ -68,6 +68,8 @@ class UserResponseSerializer(serializers.Serializer):
     phone_number = serializers.CharField(source='userprofile.phone_number')
     image = serializers.SerializerMethodField()
     uuid = serializers.SerializerMethodField()
+    city = serializers.SerializerMethodField()
+    address = serializers.SerializerMethodField()
 
     def get_uuid(self, obj):
         try:
@@ -87,3 +89,17 @@ class UserResponseSerializer(serializers.Serializer):
             return None
         except Exception as e:
             return None
+        
+    def get_city(self, obj):
+        city = obj.userprofile.city
+        if city:
+            return {
+                'id': city.id,
+                'name': city.name,
+                'country': city.country,
+                'display_name': f"{city.name}, {city.country}"
+            }
+        return None
+    
+    def get_address(self, obj):
+        return obj.userprofile.address if obj.userprofile.address else None
