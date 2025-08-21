@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React from 'react'
+import { usePhotoUpload } from '@/app/hooks/usePhotoUpload'
 import { useForm } from '@/app/hooks/useForm'
 import TextInput from '@/components/ui/TextInput'
 import Button from '@/components/ui/Button'
@@ -18,53 +19,19 @@ const validationRules = {
 }
 
 const PetForm = () => {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>('')
-
-  const handlePhotoChange = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    try {
-      const file = files[0]
-
-      if (!file.type.startsWith('image/')) {
-        showToast({
-          type: 'error',
-          message: 'Пожалуйста, выберите изображение',
+  const { fileInputRef, displayUrl, openFileDialog, handleFileChange, isUploading } =
+    usePhotoUpload({
+      uploadUrl: '/pets/upload-photo', // как будем загружать фотки?
+      defaultImage: '/images/noPet.svg',
+      onUploadSuccess: url => {
+        handleChange({
+          target: {
+            id: 'imageURL',
+            value: url,
+          },
         })
-        return
-      }
-
-      // создаем превью
-      const previewUrl = URL.createObjectURL(file)
-      setPreviewUrl(previewUrl)
-
-      // загружаем на сервер
-      //   const response = await uploadImage(file)
-      //   if (response.user?.image) {
-      //     setPreviewUrl(response.user.image)
-      //   }
-
-      showToast({
-        type: 'success',
-        message: 'Фотография успешно обновлена',
-      })
-
-      // очищаем инпут
-      e.target.value = ''
-    } catch (error) {
-      showToast({
-        type: 'error',
-        message: 'Ошибка при загрузке фотографии',
-      })
-      console.error('Error handling file:', error)
-    }
-  }, [])
+      },
+    })
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -112,7 +79,13 @@ const PetForm = () => {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex items-center justify-around gap-4 py-4">
               <div className="flex items-center justify-center md:w-[160px]">
-                <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
+                <div
+                  className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
+                  onClick={openFileDialog}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => e.key === 'Enter' && openFileDialog()}
+                >
                   <input
                     type="file"
                     id="image"
@@ -122,13 +95,18 @@ const PetForm = () => {
                     accept="image/*"
                   />
                   <Image
-                    src={previewUrl || '/images/noPet.svg'}
+                    src={displayUrl}
                     alt="Pet"
                     height={160}
                     width={160}
                     priority
                     className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
                   />
+                  {isUploading && (
+                    <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded-2xl bg-black">
+                      <span className="text-white">Загрузка...</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <Image
