@@ -19,19 +19,18 @@ const validationRules = {
 }
 
 const PetForm = () => {
-  const { fileInputRef, displayUrl, openFileDialog, handleFileChange, isUploading } =
-    usePhotoUpload({
-      uploadUrl: '/pets/upload-photo', // как будем загружать фотки?
-      defaultImage: '/images/noPet.svg',
-      onUploadSuccess: url => {
-        handleChange({
-          target: {
-            id: 'imageURL',
-            value: url,
-          },
-        })
-      },
-    })
+  const { fileInputRef, displayUrl, openFileDialog, handleFileChange } = usePhotoUpload({
+    defaultImage: '/images/noPet.svg',
+    onUploadSuccess: url => {
+      // обновляем локальное превью в форме
+      handleChange({
+        target: {
+          id: 'imageURL',
+          value: url,
+        },
+      })
+    },
+  })
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -44,17 +43,30 @@ const PetForm = () => {
       color: '',
       comment: '',
       allergies: '',
-      QR_code: '',
+      QRImage: '',
+      QRCode: '',
     },
     validationRules,
     async values => {
       try {
-        const response = await fetch('/api/profile/contacts', {
+        // создаем FormData для отправки файла и данных формы
+        const formData = new FormData()
+
+        // добавляем все текстовые поля
+        Object.entries(values).forEach(([key, value]) => {
+          if (key !== 'imageURL') {
+            formData.append(key, value.toString())
+          }
+        })
+
+        // если есть файл для загрузки, добавляем его
+        if (fileInputRef.current?.files?.[0]) {
+          formData.append('image', fileInputRef.current.files[0])
+        }
+
+        const response = await fetch('/api/pets', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ values }),
+          body: formData, // FormData автоматически установит правильный Content-Type
         })
 
         if (!response.ok) {
@@ -102,20 +114,20 @@ const PetForm = () => {
                     priority
                     className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
                   />
-                  {isUploading && (
-                    <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded-2xl bg-black">
-                      <span className="text-white">Загрузка...</span>
-                    </div>
-                  )}
                 </div>
               </div>
               <Image
-                src={values.QR_code || '/images/noQR.svg'}
+                src={values.QRImage || '/images/noQR.svg'}
                 alt="qrcode"
                 width={160}
                 height={160}
-                className="rounded-full object-cover hover:cursor-pointer"
+                className="rounded-full object-cover"
               />
+              {values.QRCode && (
+                <div className="flex items-center justify-center">
+                  <span className="text-sm text-gray-500">{values.QRCode}</span>
+                </div>
+              )}
             </div>
             <div className="h-[2px] w-full bg-white" />
             <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-3">
