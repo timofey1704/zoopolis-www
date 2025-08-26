@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers/Providers'
-import MainLayout from '@/components/layouts/MainLayout'
-import { Toaster } from 'react-hot-toast'
 
 export const metadata: Metadata = {
   title: 'Zoopolis - Панель управления',
@@ -17,12 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-display flex min-h-screen flex-col">
-        <Providers>
-          <MainLayout>
-            <Toaster />
-            {children}
-          </MainLayout>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

@@ -31,7 +31,7 @@ const RegisterPage = () => {
     // проверяем логин
     if (isAuthenticated) {
       // распределяем
-      router.replace('/account')
+      router.replace('/profile')
       return
     }
 
@@ -119,7 +119,7 @@ const RegisterPage = () => {
       }
 
       showToast({ type: 'success', message: 'Регистрация успешна!' })
-      router.push('/account')
+      router.push('/profile')
     } catch {
       showToast({ type: 'error', message: 'Ошибка при регистрации' })
     } finally {
