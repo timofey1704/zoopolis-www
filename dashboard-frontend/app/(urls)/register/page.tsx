@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
-import Loader from '@/components/ui/Loader'
+
 import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
@@ -82,10 +82,6 @@ const RegisterPage = () => {
       }
     }
   )
-
-  if (isLoading) {
-    return <Loader />
-  }
 
   const handleVerificationSubmit = async () => {
     try {

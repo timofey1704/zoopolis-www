@@ -16,15 +16,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       router.replace('/login')
       return
     }
-
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 300)
-
-    return () => clearTimeout(timer)
+    setIsLoading(false)
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || !user || isLoading) {
+  if (isLoading) {
     return <Loader />
   }
 
@@ -53,7 +48,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex flex-col gap-6 md:flex-row">
             <div className="w-full flex-shrink-0 md:w-64">
               <div className="sticky top-8">
-                <AccountSidebar user={user} navigation={userNavigation} />
+                {user && <AccountSidebar user={user} navigation={userNavigation} />}
               </div>
             </div>
             <main className="min-w-0 flex-1 px-5">{children}</main>
