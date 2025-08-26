@@ -122,3 +122,12 @@ export interface LocationSelectProps {
   placeholder: string
   tooltip?: string | React.ReactNode
 }
+
+export interface TextAreaProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  label: string
+  name: string
+  placeholder: string
+  height?: string | number
+}

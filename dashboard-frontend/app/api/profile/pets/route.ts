@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function PATCH(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
@@ -12,25 +12,40 @@ export async function PATCH(req: NextRequest) {
       })
     }
 
-    const data = await req.json()
-    const { name, type, gender, birthday, breed, color, comment, allegries } = data
+    // получаем FormData из запроса
+    const formData = await req.formData()
+    const sendFormData = new FormData()
+
+    // добавляем все текстовые поля
+    const textFields = [
+      'name',
+      'type',
+      'birthday',
+      'gender',
+      'breed',
+      'color',
+      'comment',
+      'allergies',
+    ]
+    textFields.forEach(field => {
+      const value = formData.get(field)
+      if (value) {
+        sendFormData.append(field, value.toString())
+      }
+    })
+
+    // добавляем изображение если оно есть
+    const image = formData.get('image')
+    if (image instanceof Blob) {
+      sendFormData.append('image', image)
+    }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/profile/pet/`, {
-      method: 'PATCH',
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${session.accessToken}`,
       },
-      body: JSON.stringify({
-        name,
-        type,
-        birthday,
-        gender,
-        breed,
-        color,
-        comment,
-        allegries,
-      }),
+      body: sendFormData,
     })
 
     if (!response.ok) {
@@ -41,7 +56,7 @@ export async function PATCH(req: NextRequest) {
     const result = await response.json()
     return new Response(JSON.stringify(result), { status: 200 })
   } catch (error) {
-    console.error('PATCH /api/account/profile error:', error)
+    console.error('POST /api/profile/pets error:', error)
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
     })

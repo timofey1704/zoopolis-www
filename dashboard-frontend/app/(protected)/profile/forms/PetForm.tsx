@@ -2,6 +2,7 @@ import React from 'react'
 import { usePhotoUpload } from '@/app/hooks/usePhotoUpload'
 import { useForm } from '@/app/hooks/useForm'
 import TextInput from '@/components/ui/TextInput'
+import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
@@ -181,22 +182,20 @@ const PetForm = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
-              <TextInput
+            <div className="grid grid-cols-1 gap-6 px-1 pb-4 md:grid-cols-2">
+              <TextAreaInput
                 name="comment"
                 value={values.comment}
                 handleChange={handleChange}
                 label="Комментарий"
-                placeholder="Комментарий"
-                style="register"
+                placeholder="Опишите вашего питомца"
               />
-              <TextInput
+              <TextAreaInput
                 name="allergies"
                 value={values.allergies}
                 handleChange={handleChange}
                 label="Аллергии"
-                placeholder="Аллергии"
-                style="register"
+                placeholder="Какие у вашего питомца аллергии?"
               />
             </div>
 
