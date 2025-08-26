@@ -1,17 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-// import Header from '@/components/Header'
-// import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import AccountSidebar from '@/components/AccountSidebar'
 import Loader from '@/components/ui/Loader'
 import useUserStore from '@/app/store/userStore'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  // const pathname = usePathname()
-  // const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register')
-
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const { isAuthenticated, user } = useUserStore()
@@ -53,7 +48,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      {/* {!isAuthPage && <Header />} */}
       <div className="min-h-screen bg-[#F3F3F3]">
         <div className="mx-auto max-w-[1350px] px-4 pt-8 sm:px-6">
           <div className="flex flex-col gap-6 md:flex-row">
