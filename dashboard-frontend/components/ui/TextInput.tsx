@@ -11,6 +11,7 @@ const TextInput = ({
   type = 'text',
   className = '',
   maxLength,
+  min,
   tooltip,
   style,
   isPassword,
@@ -55,6 +56,7 @@ const TextInput = ({
           } focus:bg-white`}
           autoComplete={name}
           maxLength={maxLength}
+          min={min}
         />
         {isPassword && (
           <button

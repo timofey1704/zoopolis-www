@@ -39,9 +39,10 @@ export interface SelectorProps<T extends DataItem> {
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
-  endpoint: string
+  endpoint?: string
   mapDataToOptions: (data: T) => Option
   searchParam?: string
+  staticOptions?: T[]
 }
 
 const Selector = <T extends DataItem>({
@@ -54,22 +55,31 @@ const Selector = <T extends DataItem>({
   endpoint,
   mapDataToOptions,
   searchParam = 'search',
+  staticOptions,
 }: SelectorProps<T>) => {
   const [search, setSearch] = useState('')
 
-  const { data, isLoading, error } = useClientFetch<PaginatedResponse<T>>(endpoint, {
+  const { data, isLoading, error } = useClientFetch<PaginatedResponse<T>>(endpoint || '', {
     config: {
       params: search ? { [searchParam]: search } : undefined,
     },
     queryOptions: {
       staleTime: 60 * 60 * 1000, // кешируем на час
       refetchOnWindowFocus: false,
+      enabled: !staticOptions, // отключаем запрос если используем статические опции
     },
   })
 
-  // проверяем является ли дата с бекенда массивом или объектом с results
-  const dataArray = Array.isArray(data) ? data : data?.results || []
-  const options = dataArray.map(mapDataToOptions) || []
+  let options: Option[] = []
+
+  if (staticOptions) {
+    // если есть статические опции используем их
+    options = staticOptions.map(mapDataToOptions)
+  } else {
+    // иначе используем данные с бекенда
+    const dataArray = Array.isArray(data) ? data : data?.results || []
+    options = dataArray.map(mapDataToOptions)
+  }
 
   if (error) {
     console.error(`Error fetching data from ${endpoint}:`, error)

@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
 import PetTypeSelector from '@/components/selectors/PetTypeSelector'
+import GenderSelector from '@/components/selectors/GenderSelector'
 
 const validationRules = {
   imageURL: { required: false },
@@ -150,19 +151,19 @@ const PetForm = () => {
               />
               <TextInput
                 name="birthday"
+                type="date"
+                min={new Date().toISOString().split('T')[0]}
                 value={values.birthday}
                 handleChange={handleChange}
                 label="Дата рождения"
-                placeholder="Дата рождения"
                 style="register"
               />
-              <TextInput
+              <GenderSelector
                 name="gender"
                 value={values.gender}
                 handleChange={handleChange}
                 label="Пол"
-                placeholder="Пол"
-                style="register"
+                placeholder="Выберите пол питомца"
               />
               <TextInput
                 name="breed"

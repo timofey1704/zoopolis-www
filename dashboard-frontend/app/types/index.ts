@@ -52,7 +52,7 @@ export interface TextInputProps {
   label?: string
   placeholder?: string
   name: string
-  type?: 'text' | 'email' | 'password'
+  type?: 'text' | 'email' | 'password' | 'datetime-local' | 'date'
   className?: string
   maxLength?: number
   tooltip?: string | React.ReactNode
@@ -61,6 +61,7 @@ export interface TextInputProps {
   isVisible?: boolean
   togglePasswordVisibility?: () => void
   error?: string
+  min?: string
 }
 
 export interface ValidationRules {
