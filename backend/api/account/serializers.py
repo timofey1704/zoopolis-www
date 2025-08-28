@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.utils import timezone
 
 from sitemanagement.models import Pet
-from dictionaries.models import Cities
+from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 class BasePetSerializer(serializers.ModelSerializer):
     """Базовый сериализатор с общей валидацией"""
@@ -33,3 +33,27 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Cities
         fields = ('id', 'name', 'country', 'display_name')
+        
+class CityListSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи списка городов"""
+    class Meta:
+        model = Cities
+        fields = ('id', 'name', 'country')
+
+class PetTypeSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи типов питомцев"""
+    class Meta:
+        model = PetsTypes
+        fields = ('id', 'name')
+        
+class PetBreedSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи пород питомцев"""
+    class Meta:
+        model = PetsBreeds
+        fields = ('id', 'name')
+        
+class PetColorSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи цветов питомцев"""
+    class Meta:
+        model = PetsColors
+        fields = ('id', 'name', 'hex_code')

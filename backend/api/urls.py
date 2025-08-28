@@ -11,6 +11,7 @@ from api.auth.views import (
 from api.account.actions.userActions import UserDataView
 from api.account.actions.petActions import PetView
 from api.account.actions.accountActions import AccountActionsView, CityView
+from api.account.actions.dictionariesActions import DictionariesView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -37,6 +38,13 @@ urlpatterns = [
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
     
     path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
-    path('v1/account/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities')
+    path('v1/account/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
+    
+    path('v1/dictionaries/', DictionariesView.as_view({
+        'get': 'cities',
+        'get': 'pet_types',
+        'get': 'pet_breeds',
+        'get': 'pet_colors'
+    }), name='dictionaries'),
     
 ]

@@ -5,7 +5,7 @@ import PhoneInput from '@/components/ui/PhoneInput'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import useUserStore from '@/app/store/userStore'
-import LocationSelect from '@/components/LocationSelector'
+import LocationSelect from '@/components/selectors/LocationSelector'
 
 const validationRules = {
   firstName: { required: true },

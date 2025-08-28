@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { LocationSelectProps, CityResponse } from '@/app/types'
-import Selector, { Option } from './ui/Selector'
+import { LocationSelectProps, CityResponse, CityData } from '@/app/types'
+import Selector, { Option } from '../ui/Selector'
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
   name,
@@ -18,6 +18,16 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     label: city.display_name,
   })
 
+  const transformSelectedValue = (option: Option | undefined): CityData | null => {
+    if (!option) return null
+    return {
+      id: option.id,
+      name: option.value,
+      country: option.label.split(', ')[1],
+      display_name: option.label,
+    }
+  }
+
   const handleSelectorChange = (e: {
     target: {
       id: string
@@ -29,14 +39,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     handleChange({
       target: {
         id: name,
-        value: selectedOption
-          ? {
-              id: selectedOption.id,
-              name: selectedOption.value,
-              country: selectedOption.label.split(', ')[1],
-              display_name: selectedOption.label,
-            }
-          : null,
+        value: transformSelectedValue(selectedOption),
         selectedOption: selectedOption || undefined,
       },
     })
