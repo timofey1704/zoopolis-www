@@ -67,7 +67,9 @@ const Selector = <T extends DataItem>({
     },
   })
 
-  const options = data?.results.map(mapDataToOptions) || []
+  // проверяем является ли дата с бекенда массивом или объектом с results
+  const dataArray = Array.isArray(data) ? data : data?.results || []
+  const options = dataArray.map(mapDataToOptions) || []
 
   if (error) {
     console.error(`Error fetching data from ${endpoint}:`, error)

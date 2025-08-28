@@ -53,7 +53,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
       label={label}
       tooltip={tooltip}
       placeholder={placeholder}
-      endpoint="/account/cities/"
+      endpoint="/dictionaries/cities/"
       mapDataToOptions={mapCityToOption}
     />
   )

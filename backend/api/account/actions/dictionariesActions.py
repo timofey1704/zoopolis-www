@@ -12,7 +12,6 @@ from api.utils.decorators import handle_exceptions
 
 class DictionariesView(ViewSet):
     """Эндпоинт для получения данных для выбора (изначальные словари заполняются админами)"""
-    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['get'])
     @handle_exceptions

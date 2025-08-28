@@ -38,13 +38,10 @@ urlpatterns = [
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
     
     path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
-    path('v1/account/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
     
-    path('v1/dictionaries/', DictionariesView.as_view({
-        'get': 'cities',
-        'get': 'pet_types',
-        'get': 'pet_breeds',
-        'get': 'pet_colors'
-    }), name='dictionaries'),
+    path('v1/dictionaries/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
+    path('v1/dictionaries/pet-types/', DictionariesView.as_view({'get': 'pet_types'}), name='pet_types'),
+    path('v1/dictionaries/pet-breeds/', DictionariesView.as_view({'get': 'pet_breeds'}), name='pet_breeds'),
+    path('v1/dictionaries/pet-colors/', DictionariesView.as_view({'get': 'pet_colors'}), name='pet_colors'),
     
 ]

@@ -6,6 +6,7 @@ import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
+import PetTypeSelector from '@/components/selectors/PetTypeSelector'
 
 const validationRules = {
   imageURL: { required: false },
@@ -140,13 +141,12 @@ const PetForm = () => {
                 placeholder="Как зовут вашего питомца?"
                 style="register"
               />
-              <TextInput
+              <PetTypeSelector
                 name="type"
                 value={values.type}
                 handleChange={handleChange}
                 label="Вид"
                 placeholder="Какой у вас питомец?"
-                style="register"
               />
               <TextInput
                 name="birthday"
