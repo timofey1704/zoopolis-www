@@ -30,7 +30,11 @@ class DictionariesView(ViewSet):
     @action(detail=False, methods=['get'])
     @handle_exceptions
     def pet_breeds(self, request):
-        pet_breeds = PetsBreeds.objects.all()
+        pet_type = request.query_params.get('pet_type')
+        if not pet_type:
+            return Response({"error": "pet_type parameter is required"}, status=400)
+            
+        pet_breeds = PetsBreeds.objects.filter(pet_type_id=pet_type)
         serializer = PetBreedSerializer(pet_breeds, many=True)
         return Response(serializer.data)
     

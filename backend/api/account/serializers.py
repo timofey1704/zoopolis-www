@@ -48,9 +48,11 @@ class PetTypeSerializer(serializers.ModelSerializer):
         
 class PetBreedSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи пород питомцев"""
+    pet_type = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = PetsBreeds
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'pet_type')
         
 class PetColorSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи цветов питомцев"""

@@ -43,6 +43,12 @@ export interface SelectorProps<T extends DataItem> {
   mapDataToOptions: (data: T) => Option
   searchParam?: string
   staticOptions?: T[]
+  config?: {
+    params?: Record<string, any>
+    queryOptions?: {
+      enabled?: boolean
+    }
+  }
 }
 
 const Selector = <T extends DataItem>({
@@ -56,19 +62,26 @@ const Selector = <T extends DataItem>({
   mapDataToOptions,
   searchParam = 'search',
   staticOptions,
+  config = {},
 }: SelectorProps<T>) => {
   const [search, setSearch] = useState('')
 
-  const { data, isLoading, error } = useClientFetch<PaginatedResponse<T>>(endpoint || '', {
-    config: {
-      params: search ? { [searchParam]: search } : undefined,
-    },
-    queryOptions: {
-      staleTime: 60 * 60 * 1000, // кешируем на час
-      refetchOnWindowFocus: false,
-      enabled: !staticOptions, // отключаем запрос если используем статические опции
-    },
-  })
+  const { data, isLoading, error } = useClientFetch<PaginatedResponse<T>>(
+    endpoint || '/404-no-endpoint',
+    {
+      config: {
+        params: {
+          ...(search ? { [searchParam]: search } : {}),
+          ...(config.params || {}),
+        },
+      },
+      queryOptions: {
+        staleTime: 60 * 60 * 1000, // кешируем на час
+        refetchOnWindowFocus: false,
+        enabled: !staticOptions && endpoint !== undefined && config.queryOptions?.enabled !== false, // отключаем запрос если используем статические опции, нет endpoint или явно выключен в конфиге
+      },
+    }
+  )
 
   let options: Option[] = []
 

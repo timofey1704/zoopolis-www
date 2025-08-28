@@ -6,8 +6,10 @@ import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
-import PetTypeSelector from '@/components/selectors/PetTypeSelector'
+import PetTypeSelector, { PetType } from '@/components/selectors/PetTypeSelector'
 import GenderSelector from '@/components/selectors/GenderSelector'
+import BreedSelector from '@/components/selectors/BreedSelector'
+import ColorSelector from '@/components/selectors/ColorSelector'
 
 const validationRules = {
   imageURL: { required: false },
@@ -39,7 +41,7 @@ const PetForm = () => {
     {
       imageURL: '',
       name: '',
-      type: '',
+      type: null as PetType | null,
       birthday: '',
       gender: '',
       breed: '',
@@ -58,7 +60,12 @@ const PetForm = () => {
         // добавляем все текстовые поля
         Object.entries(values).forEach(([key, value]) => {
           if (key !== 'imageURL') {
-            formData.append(key, value.toString())
+            // Для PetType отправляем только id
+            if (key === 'type' && value) {
+              formData.append(key, (value as PetType).id.toString())
+            } else {
+              formData.append(key, value?.toString() || '')
+            }
           }
         })
 
@@ -165,13 +172,13 @@ const PetForm = () => {
                 label="Пол"
                 placeholder="Выберите пол питомца"
               />
-              <TextInput
+              <BreedSelector
                 name="breed"
                 value={values.breed}
+                petTypeId={values.type?.id}
                 handleChange={handleChange}
                 label="Порода"
-                placeholder="Порода"
-                style="register"
+                placeholder="Выберите породу питомца"
               />
               <TextInput
                 name="color"
