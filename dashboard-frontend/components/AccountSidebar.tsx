@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -8,26 +8,71 @@ import { AccountSidebarProps } from '@/app/types'
 import Logout from './Logout'
 import noPhoto from '../public/images/noPhoto.svg'
 import { TbPhotoUp } from 'react-icons/tb'
-import { usePhotoUpload } from '@/app/hooks/usePhotoUpload'
-import useUserStore from '@/app/store/userStore'
+import showToast from './ui/showToast'
+import { uploadImage } from '@/lib/imageUpload'
+
+type ProfileImageResponse = {
+  user: {
+    image: string
+    [key: string]: string
+  }
+  message: string
+}
 
 const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => {
   const pathname = usePathname()
-  const setUser = useUserStore(state => state.setUser)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>(user?.image || '')
 
-  const { fileInputRef, displayUrl, openFileDialog, handleFileChange, isUploading } =
-    usePhotoUpload({
-      uploadUrl: '/account/upload-photo',
-      defaultImage: '/images/noPhoto.svg',
-      onUploadSuccess: url => {
-        if (user) {
-          setUser({
-            ...user,
-            image: url,
-          })
-        }
-      },
-    })
+  const handlePhotoChange = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    try {
+      const file = files[0]
+
+      if (!file.type.startsWith('image/')) {
+        showToast({
+          type: 'error',
+          message: 'Пожалуйста, выберите изображение',
+        })
+        return
+      }
+
+      // создаем превью
+      const previewUrl = URL.createObjectURL(file)
+      setPreviewUrl(previewUrl)
+
+      // загружаем на сервер
+      const response = await uploadImage<ProfileImageResponse>(
+        file,
+        '/api/profile/update-userimage',
+        'PATCH'
+      )
+
+      if (response.user?.image) {
+        setPreviewUrl(response.user.image)
+      }
+
+      showToast({
+        type: 'success',
+        message: 'Фотография успешно обновлена',
+      })
+
+      // очищаем инпут
+      e.target.value = ''
+    } catch (error) {
+      showToast({
+        type: 'error',
+        message: 'Ошибка при загрузке фотографии',
+      })
+      console.error('Error handling file:', error)
+    }
+  }, [])
 
   if (!user) {
     return null
@@ -52,7 +97,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
     <div className="space-y-3">
       <div className="flex w-full items-center space-x-4 rounded-2xl bg-white p-4 shadow">
         <div className="flex items-center justify-center">
-          <div className="group relative w-full cursor-pointer" onClick={openFileDialog}>
+          <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
             <input
               type="file"
               id="image"
@@ -62,22 +107,16 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
               accept="image/*"
             />
             <Image
-              src={displayUrl || user.image || noPhoto}
+              src={previewUrl || user.image || noPhoto}
               alt="profile image"
               height={84}
               width={84}
               priority
               className="aspect-square w-full rounded-2xl object-cover md:w-[84px]"
             />
-            {isUploading ? (
-              <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded-2xl bg-black">
-                <span className="text-white">Загрузка...</span>
-              </div>
-            ) : (
-              <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
-                <TbPhotoUp className="text-3xl text-white" />
-              </div>
-            )}
+            <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
+              <TbPhotoUp className="text-3xl text-white" />
+            </div>
           </div>
         </div>
         <div className="space-y-1">

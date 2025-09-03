@@ -45,13 +45,6 @@ SMS_API_KEY = os.environ.get("SMS_API_KEY")
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 REDIS_PORT = 6379
 
-#CDN
-BUNNY_STORAGE_API_KEY = os.environ.get("BUNNY_STORAGE_API_KEY")
-BUNNY_STORAGE_API_KEY_RO = os.environ.get("BUNNY_STORAGE_API_KEY_RO")
-BUNNY_STORAGE_ZONE_NAME = os.environ.get("BUNNY_STORAGE_ZONE_NAME")
-BUNNY_STORAGE_ZONE_REGION = os.environ.get("BUNNY_STORAGE_ZONE_REGION")
-BUNNY_CDN_BASE_URL = os.environ.get("BUNNY_CDN_BASE_URL")
-
 LOGIN_URL = '/admin/login/'
 
 REST_FRAMEWORK = {
@@ -94,7 +87,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
