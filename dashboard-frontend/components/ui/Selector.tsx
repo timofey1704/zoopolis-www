@@ -8,7 +8,7 @@ import { useClientFetch } from '@/app/hooks/useClientFetch'
 export interface Option {
   id: number
   value: string
-  label: string
+  label: string | React.ReactNode
 }
 
 export interface DataItem {

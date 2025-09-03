@@ -187,7 +187,7 @@ const PetForm = () => {
               )}
             </div>
             <div className="h-[2px] w-full bg-white" />
-            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
               <TextInput
                 name="name"
                 value={values.name}
@@ -227,13 +227,12 @@ const PetForm = () => {
                 label="Порода"
                 placeholder="Выберите породу питомца"
               />
-              <TextInput
+              <ColorSelector
                 name="color"
                 value={values.color}
                 handleChange={handleChange}
                 label="Цвет"
-                placeholder="Цвет"
-                style="register"
+                placeholder="Выберите цвет питомца"
               />
             </div>
 
