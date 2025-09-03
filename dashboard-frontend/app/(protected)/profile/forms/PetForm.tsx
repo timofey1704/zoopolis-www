@@ -1,6 +1,6 @@
-import React from 'react'
-import { usePhotoUpload } from '@/app/hooks/usePhotoUpload'
+import React, { useRef, useState } from 'react'
 import { useForm } from '@/app/hooks/useForm'
+import { uploadImage } from '@/lib/imageUpload'
 import TextInput from '@/components/ui/TextInput'
 import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
@@ -23,19 +23,66 @@ const validationRules = {
   allergies: { required: false },
 }
 
+type PetImageResponse = {
+  imageUrl: string
+  message: string
+}
+
 const PetForm = () => {
-  const { fileInputRef, displayUrl, openFileDialog, handleFileChange } = usePhotoUpload({
-    defaultImage: '/images/noPet.svg',
-    onUploadSuccess: url => {
-      // обновляем локальное превью в форме
-      handleChange({
-        target: {
-          id: 'imageURL',
-          value: url,
-        },
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>('')
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    try {
+      const file = files[0]
+
+      if (!file.type.startsWith('image/')) {
+        showToast({
+          type: 'error',
+          message: 'Пожалуйста, выберите изображение',
+        })
+        return
+      }
+
+      // создаем локальное превью
+      const localPreviewUrl = URL.createObjectURL(file)
+      setPreviewUrl(localPreviewUrl)
+
+      // загружаем на сервер
+      const response = await uploadImage<PetImageResponse>(file, '/api/pets/update-image')
+
+      if (response.imageUrl) {
+        setPreviewUrl(response.imageUrl)
+        handleChange({
+          target: {
+            id: 'imageURL',
+            value: response.imageUrl,
+          },
+        })
+      }
+
+      showToast({
+        type: 'success',
+        message: 'Фотография успешно загружена',
       })
-    },
-  })
+
+      // очищаем инпут
+      e.target.value = ''
+    } catch (error) {
+      showToast({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Ошибка при загрузке фотографии',
+      })
+      console.error('Error handling file:', error)
+    }
+  }
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -117,7 +164,7 @@ const PetForm = () => {
                     accept="image/*"
                   />
                   <Image
-                    src={displayUrl}
+                    src={previewUrl || '/images/noPet.svg'}
                     alt="Pet"
                     height={160}
                     width={160}

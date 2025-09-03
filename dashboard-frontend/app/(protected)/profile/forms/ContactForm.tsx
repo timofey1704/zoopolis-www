@@ -31,7 +31,7 @@ const ContactForm = () => {
     validationRules,
     async values => {
       try {
-        const response = await fetch('/api/profile/contacts', {
+        const response = await fetch('/api/profile/contacts/update-image', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

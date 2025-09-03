@@ -29,12 +29,12 @@ urlpatterns = [
     
     path('v1/user/', UserDataView.as_view({'get': 'user_data'}), name="user"),
     
-    path('v1/pets/', PetView.as_view({
-        'get': 'get_pets',
-        'post': 'create_pet', 
-        'patch': 'update_pet', 
-        'delete': 'delete_pet'
-    }), name="pets"),
+    path('v1/pets/get-pets', PetView.as_view({'get': 'get_pets'}), name="get-pets"),
+    path('v1/pets/create-pet', PetView.as_view({'post': 'create_pet'}), name="create-pet"),
+    path('v1/pets/update-pet', PetView.as_view({'patch': 'update_pet'}), name="update-pet"),
+    path('v1/pets/delete-pet', PetView.as_view({'delete': 'delete_pet'}), name="delete-pet"),
+    
+    
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
     
     path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
