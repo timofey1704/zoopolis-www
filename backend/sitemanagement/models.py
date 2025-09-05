@@ -87,3 +87,15 @@ class QRCode(models.Model):
         
     def __str__(self):
         return self.code
+    
+class MapPoints(models.Model):
+    location = models.CharField(max_length=255, verbose_name='Координаты локации')
+    title = models.CharField(max_length=255, verbose_name='Название локации')
+    category = models.CharField(max_length=20, verbose_name='Категория', choices=[('clinic', 'Ветклиника'), ('pharmacy', 'Ветаптека'), ('salon', 'Зоосалон')])
+    
+    class Meta:
+        verbose_name = 'Маркер на карте'
+        verbose_name_plural = 'Маркеры на карте'
+    
+    def __str__(self):
+        return self.title
