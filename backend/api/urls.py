@@ -10,7 +10,7 @@ from api.auth.views import (
 
 from api.account.actions.userActions import UserDataView
 from api.account.actions.petActions import PetView
-from api.account.actions.accountActions import AccountActionsView, MapPointsView
+from api.account.actions.accountActions import AccountActionsView, MapPointsView, ServicesView
 from api.account.actions.dictionariesActions import DictionariesView, CityView
 
 urlpatterns = [
@@ -39,6 +39,8 @@ urlpatterns = [
     
     path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
     path('v1/account/map-points/', MapPointsView.as_view({'get': 'get_map_points'}), name='get_map_points'),
+    path('v1/account/services/', ServicesView.as_view({'get': 'get_services'}), name='get_services'),
+    path('v1/account/services/<int:pk>/request_service/', ServicesView.as_view({'post': 'request_service'}), name='request_service'),
     
     path('v1/dictionaries/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
     path('v1/dictionaries/pet-types/', DictionariesView.as_view({'get': 'pet_types'}), name='pet_types'),

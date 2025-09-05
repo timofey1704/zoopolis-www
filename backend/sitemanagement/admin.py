@@ -1,8 +1,37 @@
 from django.contrib import admin
 from .models import *
+from django import forms
 
 admin.site.register(FAQ)
 admin.site.register(MainPageMedia)
+
+
+class ServicesForm(forms.ModelForm):
+    available_for = forms.MultipleChoiceField(
+        choices=account_types,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        help_text='Выберите тарифные планы, для которых доступна услуга',
+        label='Доступно для тарифов'
+    )
+    
+    class Meta:
+        model = Services
+        fields = '__all__'
+
+@admin.register(Services)
+class ServicesAdmin(admin.ModelAdmin):
+    form = ServicesForm
+    list_display = ['title', 'actual_before', 'get_available_for_display']
+    list_filter = ['available_for', 'actual_before']
+    search_fields = ['title', 'description']
+    ordering = ['id']
+    
+    def get_available_for_display(self, obj):
+        if obj.available_for and len(obj.available_for) > 0:
+            return ", ".join(obj.available_for)
+        return "Все тарифы"
+    get_available_for_display.short_description = 'Доступно для'
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):

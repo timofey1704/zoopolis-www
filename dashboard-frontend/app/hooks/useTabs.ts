@@ -11,10 +11,11 @@ interface TabIndicatorStyle {
 interface UseTabsOptions<T extends string> {
   defaultTab?: T | null
   allowDeselect?: boolean
+  onTabChange?: (tab: T) => void
 }
 
 export function useTabs<T extends string>(tabs: T[], options: UseTabsOptions<T> = {}) {
-  const { defaultTab = null, allowDeselect = false } = options
+  const { defaultTab = null, allowDeselect = false, onTabChange } = options
 
   const [selectedTab, setSelectedTab] = useState<T | null>(defaultTab)
   const [indicatorStyle, setIndicatorStyle] = useState<TabIndicatorStyle>({
@@ -64,7 +65,11 @@ export function useTabs<T extends string>(tabs: T[], options: UseTabsOptions<T> 
   }, [updateIndicator])
 
   const handleTabChange = (tab: T) => {
-    setSelectedTab(allowDeselect && tab === selectedTab ? null : tab)
+    const newTab = allowDeselect && tab === selectedTab ? null : tab
+    setSelectedTab(newTab)
+    if (newTab !== null && onTabChange) {
+      onTabChange(newTab)
+    }
   }
 
   return {

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
 
-from sitemanagement.models import Pet, MapPoints
+from sitemanagement.models import Pet, MapPoints, Services
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 class BasePetSerializer(serializers.ModelSerializer):
@@ -65,3 +65,9 @@ class MapPointsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MapPoints
         fields = ('id', 'location', 'title', 'category')
+        
+class ServicesSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи услуг"""
+    class Meta:
+        model = Services
+        fields = ('id', 'title', 'description', 'imageURL', 'actual_before')

@@ -7,14 +7,15 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from api.models import UserProfile
 from api.auth.serializers import UserResponseSerializer
-from api.account.serializers import MapPointsSerializer
+from api.account.serializers import MapPointsSerializer, ServicesSerializer
 from api.utils.decorators import handle_exceptions
 
 from dictionaries.models import Cities
-from sitemanagement.models import MapPoints
+from sitemanagement.models import MapPoints, Services
 from api.account.serializers import MapPointsSerializer
 
 class AccountActionsView(ViewSet):
@@ -85,10 +86,75 @@ class AccountActionsView(ViewSet):
 class MapPointsView(ViewSet):
     """Получаем список маркеров на карте"""
     
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['get'])
     @handle_exceptions
     def get_map_points(self, request):
         map_points = MapPoints.objects.all()
         return Response(MapPointsSerializer(map_points, many=True).data, status=status.HTTP_200_OK)
+    
+class ServicesView(ViewSet):
+    """Взаимодействие с функционалом услуг"""
+    
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    @handle_exceptions
+    def get_services(self, request):
+        # Получаем тип фильтрации из query параметров
+        filter_type = request.query_params.get('filter', 'all')
+        
+        # Получаем тарифный план пользователя
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        user_plan = user_profile.account_type
+        
+        # Базовый queryset
+        services = Services.objects.all()
+        
+        # Фильтруем в зависимости от запроса
+        if filter_type == 'available':
+            # Услуги доступные для тарифа пользователя
+            services = services.filter(available_for__contains=[user_plan])
+        elif filter_type == 'blocked':
+            # Услуги недоступные для тарифа пользователя
+            services = services.exclude(available_for__contains=[user_plan])
+        
+        return Response(ServicesSerializer(services, many=True).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    @handle_exceptions
+    def request_service(self, request, pk=None):
+        """Запрос на получение услуги"""
+        # Получаем услугу
+        service = get_object_or_404(Services, id=pk)
+        
+        # Получаем тарифный план пользователя
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        user_plan = user_profile.account_type
+        
+        # Проверяем доступность услуги для тарифа
+        if user_plan not in service.available_for:
+            return Response({
+                'success': False,
+                'message': 'Услуга недоступна для вашего тарифного плана',
+                'required_plans': service.available_for
+            }, status=status.HTTP_403_FORBIDDEN)
+            
+        # Проверяем актуальность услуги
+        if service.actual_before < timezone.now().date():
+            return Response({
+                'success': False,
+                'message': 'Услуга больше не актуальна'
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        # TODO: Здесь можно добавить дополнительные проверки
+        # например, количество доступных слотов, время работы и т.д.
+        
+        # Если все проверки пройдены, создаем заявку
+        # TODO: Создание заявки в отдельной таблице
+        
+        return Response({
+            'success': True,
+            'message': 'Заявка успешно создана'
+        }, status=status.HTTP_200_OK)

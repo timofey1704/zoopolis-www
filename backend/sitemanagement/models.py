@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
@@ -99,3 +100,25 @@ class MapPoints(models.Model):
     
     def __str__(self):
         return self.title
+    
+class Services (models.Model):
+    title = models.CharField(max_length=50, verbose_name='Название услуги')
+    description = models.CharField(max_length=100, verbose_name='Описание услуги')
+    imageURL = models.CharField(max_length=255, verbose_name='Ссылка на картинку')
+    actual_before = models.DateField(verbose_name='Действует до')
+    available_for = ArrayField(
+        models.CharField(max_length=20, choices=account_types),
+        verbose_name='Доступно для тарифов',
+        blank=True,
+        null=True,
+        default=list,
+        help_text='Выберите тарифные планы, для которых доступна услуга'
+    )
+
+    class Meta:
+        verbose_name = 'Услуга'
+        verbose_name_plural = 'Услуги'
+
+    def __str__(self):
+        return self.title
+    

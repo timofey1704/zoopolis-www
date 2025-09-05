@@ -1,5 +1,6 @@
 import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import { useSession } from 'next-auth/react'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -24,22 +25,29 @@ interface MutationResult<TData, TVariables, TError> {
   data: TData | undefined
 }
 
-export function useClientFetch<TData = unknown, TVariables = void, TError = AxiosError>(
+export function useClientFetch<TData = unknown, TVariables = undefined, TError = AxiosError>(
   url: string,
   options: FetchOptions<TData, TVariables, TError> = {}
-): TVariables extends void
+): TVariables extends undefined
   ? QueryResult<TData, TError>
   : MutationResult<TData, TVariables, TError> {
   const { method = 'GET', config = {}, queryOptions = {}, mutationOptions = {} } = options
+  const { data: session } = useSession()
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`
+
+  // добавляем токен в заголовки -- нужно чтобы хук получал данные закрытые под авторизацию
+  const headers = {
+    ...config.headers,
+    Authorization: session?.accessToken ? `Bearer ${session.accessToken}` : undefined,
+  }
 
   // всегда вызываем оба хука
   const query = useQuery<TData, TError>({
     queryKey: [url, config.params],
     queryFn: async () => {
-      const response = await axios.get(fullUrl, config)
+      const response = await axios.get(fullUrl, { ...config, headers })
       return response.data
     },
     ...queryOptions,
@@ -54,6 +62,7 @@ export function useClientFetch<TData = unknown, TVariables = void, TError = Axio
         url: fullUrl,
         data: variables,
         ...config,
+        headers,
       })
       return response.data
     },
@@ -67,7 +76,7 @@ export function useClientFetch<TData = unknown, TVariables = void, TError = Axio
       isLoading: query.isLoading,
       error: query.error,
       refetch: query.refetch,
-    } as TVariables extends void ? QueryResult<TData, TError> : never
+    } as TVariables extends undefined ? QueryResult<TData, TError> : never
   }
 
   return {
@@ -75,7 +84,7 @@ export function useClientFetch<TData = unknown, TVariables = void, TError = Axio
     isLoading: mutation.isPending,
     error: mutation.error,
     data: mutation.data,
-  } as TVariables extends void ? never : MutationResult<TData, TVariables, TError>
+  } as TVariables extends undefined ? never : MutationResult<TData, TVariables, TError>
 }
 
 // примеры использования:
