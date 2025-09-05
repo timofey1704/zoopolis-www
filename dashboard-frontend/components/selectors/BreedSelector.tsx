@@ -11,19 +11,22 @@ interface BreedResponse {
   id: number
   name: string
   pet_type: number
+  [key: string]: unknown
+}
+
+interface BreedChangeEvent {
+  target: {
+    id: string
+    value: string
+    selectedOption?: Option
+  }
 }
 
 interface BreedSelectorProps {
   name: string
   value: string
   petTypeId?: number | null
-  handleChange: (e: {
-    target: {
-      id: string
-      value: any
-      selectedOption?: Option
-    }
-  }) => void
+  handleChange: (e: BreedChangeEvent) => void
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
@@ -47,7 +50,7 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
   const handleSelectorChange = (e: {
     target: {
       id: string
-      value: any
+      value: Option | null
       selectedOption?: Option
     }
   }) => {
@@ -56,7 +59,7 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
       target: {
         id: name,
         value: selectedOption?.value || '',
-        selectedOption: selectedOption || undefined,
+        selectedOption,
       },
     })
   }
@@ -65,7 +68,8 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
   const currentValue = value
     ? {
         id: 0, // будет заменено при получении данных
-        name: value,
+        value,
+        label: value,
       }
     : null
 
@@ -82,7 +86,7 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
       searchParam="search"
       config={{
         params: {
-          pet_type: petTypeId,
+          pet_type: petTypeId || undefined,
         },
         queryOptions: {
           enabled: !!petTypeId, // включаем запрос только если выбран тип питомца

@@ -1,6 +1,5 @@
 import React from 'react'
-import Selector, { Option } from '../ui/Selector'
-import { ChangeEvent } from 'react'
+import Selector, { Option as SelectorOption } from '../ui/Selector'
 
 export interface PetType {
   id: number
@@ -10,21 +9,25 @@ export interface PetType {
 interface PetTypeResponse {
   id: number
   name: string
+  [key: string]: unknown
 }
 
-type CustomChangeEvent = {
+interface PetTypeOption extends SelectorOption {
+  label: string
+}
+
+interface PetTypeChangeEvent {
   target: {
     id: string
-    value: string | number | boolean | string[] | number[] | PetType | null
-    type?: string
-    checked?: boolean
+    value: PetType | null
+    type: 'select'
   }
 }
 
 interface PetTypeSelectorProps {
   name: string
   value: string | PetType | null
-  handleChange: (e: ChangeEvent<HTMLSelectElement> | CustomChangeEvent) => void
+  handleChange: (e: PetTypeChangeEvent) => void
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
@@ -38,13 +41,13 @@ const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
   tooltip,
   placeholder,
 }) => {
-  const mapPetTypeToOption = (petType: PetTypeResponse): Option => ({
+  const mapPetTypeToOption = (petType: PetTypeResponse): PetTypeOption => ({
     id: petType.id,
     value: petType.name,
     label: petType.name,
   })
 
-  const transformSelectedValue = (option: Option | undefined): PetType | null => {
+  const transformSelectedValue = (option: PetTypeOption | undefined): PetType | null => {
     if (!option) return null
     return {
       id: option.id,
@@ -55,11 +58,11 @@ const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
   const handleSelectorChange = (e: {
     target: {
       id: string
-      value: any
-      selectedOption?: Option
+      value: SelectorOption | null
+      selectedOption?: SelectorOption
     }
   }) => {
-    const selectedOption = e.target.selectedOption
+    const selectedOption = e.target.selectedOption as PetTypeOption | undefined
     handleChange({
       target: {
         id: name,
@@ -70,7 +73,16 @@ const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
   }
 
   // Преобразуем value в формат, понятный для Selector
-  const selectorValue = typeof value === 'string' ? null : value
+  const selectorValue =
+    typeof value === 'string'
+      ? null
+      : value
+        ? {
+            id: value.id,
+            value: value.name,
+            label: value.name,
+          }
+        : null
 
   return (
     <Selector<PetTypeResponse>

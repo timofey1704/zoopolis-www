@@ -1,7 +1,7 @@
 import React from 'react'
 
-const page = () => {
-  return <div>page</div>
+const DevicesPage = () => {
+  return <h1>УСТРОЙСТВА</h1>
 }
 
-export default page
+export default DevicesPage

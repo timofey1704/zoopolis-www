@@ -13,7 +13,7 @@ export interface Option {
 
 export interface DataItem {
   id: number
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface PaginatedResponse<T> {
@@ -25,14 +25,11 @@ export interface PaginatedResponse<T> {
 
 export interface SelectorProps<T extends DataItem> {
   name: string
-  value?: {
-    id: number | string
-    [key: string]: any
-  } | null
+  value?: Option | null
   handleChange: (e: {
     target: {
       id: string
-      value: any
+      value: Option | null
       selectedOption?: Option
     }
   }) => void
@@ -44,7 +41,7 @@ export interface SelectorProps<T extends DataItem> {
   searchParam?: string
   staticOptions?: T[]
   config?: {
-    params?: Record<string, any>
+    params?: Record<string, string | number | boolean | undefined>
     queryOptions?: {
       enabled?: boolean
     }

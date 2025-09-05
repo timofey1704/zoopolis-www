@@ -1,8 +1,12 @@
 'use client'
 
 import React from 'react'
-import { LocationSelectProps, CityResponse, CityData } from '@/app/types'
-import Selector, { Option } from '../ui/Selector'
+import { LocationSelectProps, CityResponse, CityData, LocationOption } from '@/app/types'
+import Selector, { Option as SelectorOption } from '../ui/Selector'
+
+interface ExtendedCityResponse extends CityResponse {
+  [key: string]: unknown
+}
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
   name,
@@ -12,13 +16,13 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   tooltip,
   placeholder,
 }) => {
-  const mapCityToOption = (city: CityResponse): Option => ({
+  const mapCityToOption = (city: ExtendedCityResponse): LocationOption => ({
     id: city.id,
     value: city.name,
     label: city.display_name,
   })
 
-  const transformSelectedValue = (option: Option | undefined): CityData | null => {
+  const transformSelectedValue = (option: LocationOption | undefined): CityData | null => {
     if (!option) return null
     return {
       id: option.id,
@@ -28,27 +32,51 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     }
   }
 
+  // Преобразуем CityData в Option для Selector
+  const selectorValue = value
+    ? {
+        id: value.id,
+        value: value.name,
+        label: value.display_name,
+      }
+    : null
+
   const handleSelectorChange = (e: {
     target: {
       id: string
-      value: any
-      selectedOption?: Option
+      value: SelectorOption | null
+      selectedOption?: SelectorOption
     }
   }) => {
     const selectedOption = e.target.selectedOption
-    handleChange({
-      target: {
-        id: name,
-        value: transformSelectedValue(selectedOption),
-        selectedOption: selectedOption || undefined,
-      },
-    })
+    if (selectedOption) {
+      const locationOption: LocationOption = {
+        id: selectedOption.id,
+        value: selectedOption.value,
+        label: selectedOption.label as string,
+      }
+      handleChange({
+        target: {
+          id: name,
+          value: transformSelectedValue(locationOption),
+          selectedOption: locationOption,
+        },
+      })
+    } else {
+      handleChange({
+        target: {
+          id: name,
+          value: null,
+          selectedOption: undefined,
+        },
+      })
+    }
   }
 
   return (
-    <Selector<CityResponse>
+    <Selector<ExtendedCityResponse>
       name={name}
-      value={value}
+      value={selectorValue}
       handleChange={handleSelectorChange}
       label={label}
       tooltip={tooltip}

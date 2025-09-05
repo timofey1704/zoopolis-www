@@ -5,24 +5,27 @@ export interface Gender {
   id: number
   value: string
   label: string
+  [key: string]: unknown
+}
+
+interface GenderChangeEvent {
+  target: {
+    id: string
+    value: string
+    selectedOption?: Option
+  }
 }
 
 interface GenderSelectorProps {
   name: string
   value: string
-  handleChange: (e: {
-    target: {
-      id: string
-      value: any
-      selectedOption?: Option
-    }
-  }) => void
+  handleChange: (e: GenderChangeEvent) => void
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
 }
 
-const GENDERS = [
+const GENDERS: Gender[] = [
   { id: 1, value: 'male', label: 'Мужской' },
   { id: 2, value: 'female', label: 'Женский' },
 ]
@@ -38,7 +41,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
   const handleSelectorChange = (e: {
     target: {
       id: string
-      value: any
+      value: Option | null
       selectedOption?: Option
     }
   }) => {
@@ -47,7 +50,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
       target: {
         id: name,
         value: selectedOption?.value || '',
-        selectedOption: selectedOption || undefined,
+        selectedOption,
       },
     })
   }
