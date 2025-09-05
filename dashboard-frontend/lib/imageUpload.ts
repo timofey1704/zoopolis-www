@@ -1,6 +1,6 @@
 interface BaseUploadResponse {
   message?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export const uploadImage = async <T extends BaseUploadResponse>(

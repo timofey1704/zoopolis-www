@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 interface MapPoint {
@@ -26,7 +27,7 @@ const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), {
 })
 
 export default function MapComponent({ points }: MapComponentProps) {
-  const [L, setL] = useState<any>(null)
+  const [leaflet, setLeaflet] = useState<typeof L | null>(null)
 
   // Вычисляем центр карты на основе всех точек
   const center = useMemo(() => {
@@ -58,15 +59,15 @@ export default function MapComponent({ points }: MapComponentProps) {
 
   useEffect(() => {
     // импортируем Leaflet только на клиенте
-    import('leaflet').then(L => {
-      setL(L.default)
+    import('leaflet').then(mod => {
+      setLeaflet(mod.default)
     })
   }, [])
 
-  if (!L || points.length === 0) return null
+  if (!leaflet || points.length === 0) return null
 
   // Настройка иконки маркера
-  const icon = L.icon({
+  const icon = leaflet.icon({
     iconUrl: '/images/marker-icon.png',
     iconRetinaUrl: '/images/marker-icon-2x.png',
     shadowUrl: '/images/marker-shadow.png',
