@@ -1,7 +1,12 @@
-import React from 'react'
+'use client'
 
-const page = () => {
-  return <div>page</div>
+import React from 'react'
+import useUserStore from '@/app/store/userStore'
+
+const DashboardPage = () => {
+  const user = useUserStore()
+
+  return <h1>ПРИВЕТ, {user.user?.name}</h1>
 }
 
-export default page
+export default DashboardPage
