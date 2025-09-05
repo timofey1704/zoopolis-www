@@ -16,8 +16,10 @@ class PricingAdmin(admin.ModelAdmin):
     search_fields = ['plan']
     filter_horizontal = ['features']
     
-from django.contrib import admin
-from .models import Pet
+@admin.register(MapPoints)
+class MapPointsAdmin(admin.ModelAdmin):
+    list_display = ['title', 'location', 'category']
+    search_fields = ['title', 'location', 'category']
 
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):

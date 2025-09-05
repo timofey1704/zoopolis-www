@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Loader from '@/components/ui/Loader'
 import useUserStore from '@/app/store/userStore'
+import Loader from '@/components/ui/Loader'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
@@ -127,7 +127,7 @@ const LoginPage = () => {
               />
             </div>
           </div>
-          <div className="w-full items-center justify-center md:w-[35%] lg:w-[40%] hidden sm:block">
+          <div className="hidden w-full items-center justify-center sm:block md:w-[35%] lg:w-[40%]">
             <Image
               src="/images/login-dog.svg"
               alt="login-dog"

@@ -19,6 +19,7 @@ django-oauth-toolkit = "*"
 requests-oauthlib = "*"
 djangorestframework-simplejwt = "*"
 qrcode = "*"
+python-magic = "*"
 
 [dev-packages]
 

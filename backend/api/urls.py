@@ -8,7 +8,10 @@ from api.auth.views import (
     RegisterViewSet
 )
 
-from api.account.views import UserDataView, PetView
+from api.account.actions.userActions import UserDataView
+from api.account.actions.petActions import PetView
+from api.account.actions.accountActions import AccountActionsView, MapPointsView
+from api.account.actions.dictionariesActions import DictionariesView, CityView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -26,12 +29,20 @@ urlpatterns = [
     
     path('v1/user/', UserDataView.as_view({'get': 'user_data'}), name="user"),
     
-    path('v1/pets/', PetView.as_view({
-        'get': 'get_pets',
-        'post': 'create_pet', 
-        'patch': 'update_pet', 
-        'delete': 'delete_pet'
-    }), name="pets"),
+    path('v1/pets/get-pets', PetView.as_view({'get': 'get_pets'}), name="get-pets"),
+    path('v1/pets/create-pet', PetView.as_view({'post': 'create_pet'}), name="create-pet"),
+    path('v1/pets/update-pet', PetView.as_view({'patch': 'update_pet'}), name="update-pet"),
+    path('v1/pets/delete-pet', PetView.as_view({'delete': 'delete_pet'}), name="delete-pet"),
+    
+    
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),
+    
+    path('v1/account/profile/contacts/', AccountActionsView.as_view({'patch':'change_profile_contacts_data'}), name='change_profile_contacts_data'),
+    path('v1/account/map-points/', MapPointsView.as_view({'get': 'get_map_points'}), name='get_map_points'),
+    
+    path('v1/dictionaries/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
+    path('v1/dictionaries/pet-types/', DictionariesView.as_view({'get': 'pet_types'}), name='pet_types'),
+    path('v1/dictionaries/pet-breeds/', DictionariesView.as_view({'get': 'pet_breeds'}), name='pet_breeds'),
+    path('v1/dictionaries/pet-colors/', DictionariesView.as_view({'get': 'pet_colors'}), name='pet_colors'),
     
 ]

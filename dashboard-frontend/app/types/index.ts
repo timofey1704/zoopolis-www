@@ -1,3 +1,10 @@
+export interface CityData {
+  id: number
+  name: string
+  country: string
+  display_name: string
+}
+
 export interface User {
   id?: number | undefined | string
   uuid?: string
@@ -7,6 +14,8 @@ export interface User {
   phone_number?: string
   email: string
   account_type?: string
+  city?: CityData | null
+  address?: string
 }
 
 export interface UserState {
@@ -43,7 +52,7 @@ export interface TextInputProps {
   label?: string
   placeholder?: string
   name: string
-  type?: 'text' | 'email' | 'password'
+  type?: 'text' | 'email' | 'password' | 'datetime-local' | 'date'
   className?: string
   maxLength?: number
   tooltip?: string | React.ReactNode
@@ -52,6 +61,7 @@ export interface TextInputProps {
   isVisible?: boolean
   togglePasswordVisibility?: () => void
   error?: string
+  min?: string
 }
 
 export interface ValidationRules {
@@ -81,4 +91,44 @@ export interface PhoneInputProps {
 export interface AccountSidebarProps {
   user: User
   navigation: NavigationItem[]
+}
+
+export interface PaginatedResponse<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
+export interface CityResponse {
+  id: number
+  name: string
+  country: string
+  display_name: string
+}
+
+export interface LocationOption {
+  value: string
+  label: string
+  id: number
+}
+
+export interface LocationSelectProps {
+  name: string
+  value: CityData | null
+  handleChange: (e: {
+    target: { id: string; value: CityData | null; selectedOption?: LocationOption }
+  }) => void
+  label: string
+  placeholder: string
+  tooltip?: string | React.ReactNode
+}
+
+export interface TextAreaProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  label: string
+  name: string
+  placeholder: string
+  height?: string | number
 }

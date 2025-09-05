@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
-import Loader from '@/components/ui/Loader'
+
 import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
@@ -31,7 +31,7 @@ const RegisterPage = () => {
     // проверяем логин
     if (isAuthenticated) {
       // распределяем
-      router.replace('/account')
+      router.replace('/profile')
       return
     }
 
@@ -83,10 +83,6 @@ const RegisterPage = () => {
     }
   )
 
-  if (isLoading) {
-    return <Loader />
-  }
-
   const handleVerificationSubmit = async () => {
     try {
       setIsLoading(true)
@@ -123,7 +119,7 @@ const RegisterPage = () => {
       }
 
       showToast({ type: 'success', message: 'Регистрация успешна!' })
-      router.push('/account')
+      router.push('/profile')
     } catch {
       showToast({ type: 'error', message: 'Ошибка при регистрации' })
     } finally {

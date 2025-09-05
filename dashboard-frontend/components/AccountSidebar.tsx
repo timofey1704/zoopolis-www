@@ -1,15 +1,23 @@
 'use client'
 
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { AccountSidebarProps } from '@/app/types'
 import Logout from './Logout'
 import noPhoto from '../public/images/noPhoto.svg'
-import showToast from './ui/showToast'
 import { TbPhotoUp } from 'react-icons/tb'
-// import { uploadImage } from '@/lib/account/uploadImage'
+import showToast from './ui/showToast'
+import { uploadImage } from '@/lib/imageUpload'
+
+type ProfileImageResponse = {
+  user: {
+    image: string
+    [key: string]: string
+  }
+  message: string
+}
 
 const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => {
   const pathname = usePathname()
@@ -40,10 +48,15 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
       setPreviewUrl(previewUrl)
 
       // загружаем на сервер
-      //   const response = await uploadImage(file)
-      //   if (response.user?.image) {
-      //     setPreviewUrl(response.user.image)
-      //   }
+      const response = await uploadImage<ProfileImageResponse>(
+        file,
+        '/api/profile/update-userimage',
+        'PATCH'
+      )
+
+      if (response.user?.image) {
+        setPreviewUrl(response.user.image)
+      }
 
       showToast({
         type: 'success',

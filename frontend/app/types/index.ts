@@ -58,3 +58,12 @@ export interface Membership {
 export interface PricingCardProps {
   memberships: Membership[]
 }
+
+export interface TextAreaProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  label: string
+  name: string
+  placeholder: string
+  height?: string | number
+}
