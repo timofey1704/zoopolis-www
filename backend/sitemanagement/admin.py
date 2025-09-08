@@ -56,6 +56,32 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_filter = ['service', 'created_at']
     search_fields = ['user__username', 'service__title']
     readonly_fields = ('created_at',)
+    
+class BonusApplicationInline(admin.TabularInline):
+    model = BonusApplication
+    extra = 0
+    readonly_fields = ('applied_at',)
+    verbose_name = 'Применение бонуса'
+    verbose_name_plural = 'Применения бонуса'
+
+@admin.register(Bonuses)
+class BonusesAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description', 'is_active', 'start_date', 'end_date', 'get_applications_count']
+    list_filter = ['is_active', 'created_at', 'start_date', 'end_date']
+    search_fields = ['name', 'description']
+    readonly_fields = ('created_at',)
+    inlines = [BonusApplicationInline]
+
+    def get_applications_count(self, obj):
+        return obj.bonusapplication_set.count()
+    get_applications_count.short_description = 'Количество применений'
+
+@admin.register(BonusApplication)
+class BonusApplicationAdmin(admin.ModelAdmin):
+    list_display = ['user', 'bonus', 'applied_at']
+    list_filter = ['applied_at', 'bonus']
+    search_fields = ['user__username', 'user__email', 'bonus__name']
+    readonly_fields = ('applied_at',)
 
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
@@ -78,13 +104,13 @@ class PetAdmin(admin.ModelAdmin):
             return readonly_for_staff
 
     def has_change_permission(self, request, obj=None):
-        # Только суперюзеры и staff могут менять
+        # только суперюзеры и staff могут менять
         return request.user.is_superuser or request.user.is_staff
 
     def has_add_permission(self, request):
-        # Добавление только для суперюзеров
+        # добавление только для суперюзеров
         return request.user.is_superuser
 
     def has_delete_permission(self, request, obj=None):
-        # Удалять могут только суперюзеры
+        # удалять могут только суперюзеры
         return request.user.is_superuser

@@ -3,15 +3,16 @@ import Image from 'next/image'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import { ServiceData } from '../page'
 import { AxiosError } from 'axios'
+import { formatDate } from '@/lib/utils/dateFormatter'
+import Button from '@/components/ui/Button'
+import SuccessPopup from './SuccessPopup'
+import RejectPopup from './RejectPopup'
 
 interface ServiceRequestResponse {
   success: boolean
   message: string
   required_plans?: string[]
 }
-import Button from '@/components/ui/Button'
-import SuccessPopup from './SuccessPopup'
-import RejectPopup from './RejectPopup'
 
 const ServiceCard = ({ service }: { service: ServiceData }) => {
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false)
@@ -47,20 +48,13 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-3xl border bg-white p-6">
+    <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
       <div className="flex flex-grow flex-col space-y-4">
         <div>
           <Image src={service.imageURL} alt={service.title} width={56} height={56} />
         </div>
 
-        <p className="text-sm text-gray-500">
-          до{' '}
-          {new Date(service.actual_before).toLocaleDateString('ru-RU', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
+        <p className="text-sm text-gray-500">до {formatDate(service.actual_before)}</p>
         <h3>{service.title}</h3>
         <p className="text-sm text-gray-500">{service.description}</p>
       </div>

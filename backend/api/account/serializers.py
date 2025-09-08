@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
 
-from sitemanagement.models import Pet, MapPoints, Services
+from sitemanagement.models import Pet, MapPoints, Services, Bonuses
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 class BasePetSerializer(serializers.ModelSerializer):
@@ -71,3 +71,9 @@ class ServicesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Services
         fields = ('id', 'title', 'description', 'imageURL', 'actual_before')
+        
+class BonusesSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи бонусов"""
+    class Meta:
+        model = Bonuses
+        fields = ('id', 'name', 'description', 'imageURL', 'category', 'start_date', 'end_date', 'code')

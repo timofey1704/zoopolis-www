@@ -11,11 +11,11 @@ from django.utils import timezone
 
 from api.models import UserProfile
 from api.auth.serializers import UserResponseSerializer
-from api.account.serializers import MapPointsSerializer, ServicesSerializer
+from api.account.serializers import MapPointsSerializer, ServicesSerializer, BonusesSerializer
 from api.utils.decorators import handle_exceptions
 
 from dictionaries.models import Cities
-from sitemanagement.models import MapPoints, Services, Appointment
+from sitemanagement.models import MapPoints, Services, Appointment, Bonuses
 from api.account.serializers import MapPointsSerializer
 
 class AccountActionsView(ViewSet):
@@ -150,4 +150,34 @@ class ServicesView(ViewSet):
         return Response({
             'success': True,
             'message': 'Заявка успешно создана'
+        }, status=status.HTTP_200_OK)
+
+class BonusesView(ViewSet):
+    """Взаимодействие с функционалом бонусов"""
+    
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    @handle_exceptions
+    def get_bonuses(self, request):
+        # получаем активные бонусы, которые не были использованы текущим пользователем
+        bonuses = Bonuses.objects.filter(
+            is_active=True,
+            start_date__lte=timezone.now().date(),  # начало действия уже наступило
+            end_date__gte=timezone.now().date(),    # срок действия еще не истек
+        ).exclude(
+            applied_by=request.user  # исключаем бонусы, которые пользователь уже использовал юзер
+        )
+        return Response(BonusesSerializer(bonuses, many=True).data, status=status.HTTP_200_OK)
+    
+
+    @handle_exceptions
+    def apply_bonus(self, request, pk=None):
+        """Применение бонуса"""
+        bonus = get_object_or_404(Bonuses, id=pk)
+        bonus.applied_by.add(request.user)
+        bonus.save()
+        return Response({
+            'success': True,
+            'message': 'Бонус успешно применен'
         }, status=status.HTTP_200_OK)

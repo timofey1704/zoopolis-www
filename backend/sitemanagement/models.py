@@ -130,3 +130,46 @@ class Appointment(models.Model):
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
+        ordering = ['id']
+    
+    def __str__(self):
+        return self.user.username + ' - ' + self.service.title
+
+class BonusApplication(models.Model):
+    """Модель для отслеживания использования бонусов пользователями"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    bonus = models.ForeignKey('Bonuses', on_delete=models.CASCADE, verbose_name='Бонус')
+    applied_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата применения')
+
+    class Meta:
+        verbose_name = 'Применение бонуса'
+        verbose_name_plural = 'Применения бонусов'
+        unique_together = ('user', 'bonus')  # пользователь может использовать бонус только один раз
+
+    def __str__(self):
+        return f"{self.user.username} - {self.bonus.name}"
+
+
+class Bonuses(models.Model):
+    name = models.CharField(max_length=255, verbose_name='Название бонуса')
+    description = models.TextField(max_length=255, verbose_name='Описание бонуса')
+    imageURL = models.CharField(max_length=255, verbose_name='Ссылка на картинку', null=True, blank=True)
+    category = models.CharField(max_length=255, verbose_name='Категория', choices=[('discount', 'Скидки'), ('promo', 'Промокоды'), ('promotion', 'Акции')])
+    start_date = models.DateField(verbose_name='Дата начала')
+    end_date = models.DateField(verbose_name='Дата окончания')
+    code = models.CharField(max_length=10, verbose_name='Промокод', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    is_active = models.BooleanField(default=True, verbose_name='Активность')
+    applied_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='BonusApplication',
+        related_name='applied_bonuses',
+        verbose_name='Использован пользователями'
+    )
+    class Meta:
+        verbose_name = 'Бонус'
+        verbose_name_plural = 'Бонусы'
+        ordering = ['id']
+        
+    def __str__(self):
+        return self.name

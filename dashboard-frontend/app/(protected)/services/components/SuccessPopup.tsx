@@ -7,7 +7,7 @@ interface SuccessPopupProps {
   serviceName: string
 }
 
-const SuccessPopup = ({ isOpen, onClose, serviceName }: SuccessPopupProps) => {
+const SuccessPopup = ({ isOpen, onClose }: SuccessPopupProps) => {
   return (
     <Dialog
       isOpen={isOpen}
