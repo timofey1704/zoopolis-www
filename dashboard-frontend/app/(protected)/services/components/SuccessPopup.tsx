@@ -12,15 +12,36 @@ const SuccessPopup = ({ isOpen, onClose, serviceName }: SuccessPopupProps) => {
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Заявка принята"
       description={
         <>
-          <p className="mb-4">Ваша заявка на услугу &quot;{serviceName}&quot; успешно создана.</p>
-          <p>В ближайшее время с вами свяжется наш специалист для уточнения деталей.</p>
+          <div className="mb-6 flex justify-center">
+            <div className="relative h-20 w-20">
+              <div className="absolute inset-0 animate-[scale_0.3s_ease-in-out] rounded-full bg-green-100" />
+              <svg
+                className="absolute inset-0 animate-[scale_0.3s_ease-in-out_0.1s] text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                  className="animate-[dash_0.5s_ease-in-out_0.3s_forwards]"
+                  strokeDasharray="30"
+                  strokeDashoffset="30"
+                />
+              </svg>
+            </div>
+          </div>
+          <h1 className="mb-4 text-center">УСЛУГА ОФОРМЛЕНА</h1>
+          <p className="text-center text-base">
+            Спасибо! В ближайшее время наш менеджер свяжется с Вами
+          </p>
         </>
       }
-      submitText="Отлично"
-      onSubmit={onClose}
+      showSubmit={false}
       showCancel={false}
     />
   )

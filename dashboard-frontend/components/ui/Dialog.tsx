@@ -1,14 +1,15 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import Button from './Button'
 
 interface DialogProps {
   isOpen: boolean
   onClose: () => void
-  title: string
+  title?: string
   description: ReactNode
   submitText?: string
   onSubmit?: () => void
   showCancel?: boolean
+  showSubmit?: boolean
   cancelText?: string
 }
 
@@ -20,33 +21,60 @@ export const Dialog = ({
   submitText = 'OK',
   onSubmit,
   showCancel = true,
+  showSubmit = true,
   cancelText = 'Отмена',
 }: DialogProps) => {
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="bg-opacity-50 fixed inset-0 bg-black transition-opacity" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
 
-      {/* Dialog */}
-      <div className="relative z-50 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div className="relative z-50 w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
         <h2 className="mb-4 text-xl font-semibold">{title}</h2>
         <div className="mb-6">{description}</div>
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex w-full gap-3">
           {showCancel && (
             <Button
               text={cancelText}
               onClick={onClose}
-              className="rounded-xl bg-gray-100 px-4 py-2 text-gray-700 hover:bg-gray-200"
+              className="flex-1 rounded-xl bg-gray-100 py-3 text-gray-700 hover:bg-gray-200"
             />
           )}
-          <Button
-            text={submitText}
-            onClick={onSubmit || onClose}
-            className="from-orange rounded-xl bg-gradient-to-r to-orange-600 px-4 py-2 text-white hover:opacity-90"
-          />
+          {showSubmit && (
+            <Button
+              text={submitText}
+              onClick={onSubmit || onClose}
+              className="from-orange flex-1 rounded-xl bg-gradient-to-r to-orange-600 py-3 text-white hover:opacity-90"
+            />
+          )}
         </div>
       </div>
     </div>

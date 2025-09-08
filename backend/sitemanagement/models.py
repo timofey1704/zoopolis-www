@@ -121,4 +121,12 @@ class Services (models.Model):
 
     def __str__(self):
         return self.title
+
+class Appointment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    service = models.ForeignKey(Services, on_delete=models.CASCADE, verbose_name='Услуга')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
+    class Meta:
+        verbose_name = 'Запись'
+        verbose_name_plural = 'Записи'

@@ -27,7 +27,7 @@ const RejectPopup = ({ isOpen, onClose, serviceName, requiredPlans }: RejectPopu
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Недостаточный тариф"
+      title="К сожалению, уровня вашей подписки недостаточно"
       description={
         <>
           <p className="mb-4">
@@ -37,20 +37,17 @@ const RejectPopup = ({ isOpen, onClose, serviceName, requiredPlans }: RejectPopu
             Для доступа к этой услуге необходимо перейти на один из тарифов:{' '}
             {requiredPlans.map(formatPlanName).join(' или ')}.
           </p>
-          <p>
-            <Link
-              href="/pricing"
-              className="text-orange-600 underline hover:text-orange-700"
-              onClick={onClose}
-            >
-              Перейти к тарифам
+          <div className="mt-3 flex w-full">
+            <Link href="/membership" className="flex-1" onClick={onClose}>
+              <div className="from-orange flex w-full cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r to-orange-600 py-3 text-white hover:opacity-90">
+                Перейти к тарифам
+              </div>
             </Link>
-          </p>
+          </div>
         </>
       }
-      submitText="Понятно"
-      onSubmit={onClose}
       showCancel={false}
+      showSubmit={false}
     />
   )
 }

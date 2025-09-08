@@ -49,6 +49,13 @@ class PricingAdmin(admin.ModelAdmin):
 class MapPointsAdmin(admin.ModelAdmin):
     list_display = ['title', 'location', 'category']
     search_fields = ['title', 'location', 'category']
+    
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'service', 'created_at']
+    list_filter = ['service', 'created_at']
+    search_fields = ['user__username', 'service__title']
+    readonly_fields = ('created_at',)
 
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
