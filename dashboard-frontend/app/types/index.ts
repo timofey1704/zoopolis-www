@@ -146,6 +146,7 @@ export interface Membership {
   description: string
   is_popular: boolean
   is_available: boolean
+  is_active: boolean
   features: MembershipFeature[]
 }
 
