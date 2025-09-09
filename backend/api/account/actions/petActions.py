@@ -9,7 +9,7 @@ from rest_framework.exceptions import PermissionDenied
 from api.account.serializers import PetSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
-
+from api.utils.QRGenerator import save_pet_qr
 class PetView(ViewSet):
     """Эндпоинт для работы с питомцами"""
     permission_classes = [IsAuthenticated]
@@ -51,8 +51,29 @@ class PetView(ViewSet):
         """Создание нового питомца"""
         serializer = PetSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # cохраняем питомца
+            pet = serializer.save(owner=request.user)
+            
+            try:
+                # генерируем и сохраняем QR код
+                qr_code = save_pet_qr(pet)
+                
+                # добавляем информацию о QR коде в ответ
+                response_data = serializer.data
+                response_data['qr_code'] = {
+                    'code': qr_code.code,
+                    'imageURL': qr_code.imageURL
+                }
+                
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                # если что-то пошло не так с QR кодом, удаляем питомца
+                pet.delete()
+                return Response(
+                    {"error": "Ошибка при создании QR кода"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+                
         return Response(
             {"errors": serializer.errors}, 
             status=status.HTTP_400_BAD_REQUEST

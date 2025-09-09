@@ -62,6 +62,7 @@ export interface TextInputProps {
   togglePasswordVisibility?: () => void
   error?: string
   min?: string
+  max?: string
 }
 
 export interface ValidationRules {

@@ -121,7 +121,7 @@ const PetForm = () => {
           formData.append('image', fileInputRef.current.files[0])
         }
 
-        const response = await fetch('/api/pets', {
+        const response = await fetch('/api/profile/pets', {
           method: 'POST',
           body: formData, // FormData автоматически установит правильный Content-Type
         })
@@ -206,7 +206,12 @@ const PetForm = () => {
               <TextInput
                 name="birthday"
                 type="date"
-                min={new Date().toISOString().split('T')[0]}
+                max={new Date().toISOString().split('T')[0]}
+                min={
+                  new Date(new Date().setFullYear(new Date().getFullYear() - 15))
+                    .toISOString()
+                    .split('T')[0]
+                }
                 value={values.birthday}
                 handleChange={handleChange}
                 label="Дата рождения"

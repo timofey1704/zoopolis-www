@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       sendFormData.append('image', image)
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/profile/create_pet/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pets/create-pet/`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.accessToken}`,

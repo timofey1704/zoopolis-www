@@ -8,7 +8,8 @@ class BasePetSerializer(serializers.ModelSerializer):
     """Базовый сериализатор с общей валидацией"""
     class Meta:
         model = Pet
-        exclude = ('owner', 'created_at')
+        fields = '__all__'
+        read_only_fields = ('owner', 'created_at')
 
     def validate_birthday(self, value):
         """Проверка, что дата рождения не в будущем"""
@@ -18,9 +19,7 @@ class BasePetSerializer(serializers.ModelSerializer):
 
 class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
-    class Meta(BasePetSerializer.Meta):
-        fields = '__all__'
-        read_only_fields = ('owner', 'created_at')
+    pass
         
 class CitySerializer(serializers.ModelSerializer):
     "Сериалиалайзер для выдачи городов"
