@@ -7,6 +7,7 @@ import { formatDate } from '@/lib/utils/dateFormatter'
 import Button from '@/components/ui/Button'
 import SuccessPopup from './SuccessPopup'
 import RejectPopup from './RejectPopup'
+import showToast from '@/components/ui/showToast'
 
 interface ServiceRequestResponse {
   success: boolean
@@ -36,7 +37,10 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
           setIsRejectPopupOpen(true)
           setRequiredPlans(error.response.data.required_plans || [])
         } else {
-          // TODO: Показать общую ошибку
+          showToast({
+            type: 'error',
+            message: 'Не смогли заказать услугу',
+          })
           console.error('Error requesting service:', error)
         }
       },
@@ -48,23 +52,30 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-      <div className="flex flex-grow flex-col space-y-4">
-        <div>
-          <Image src={service.imageURL} alt={service.title} width={56} height={56} />
+    <>
+      <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <div className="flex flex-grow flex-col space-y-4">
+          <div>
+            <Image src={service.imageURL} alt={service.title} width={56} height={56} />
+          </div>
+
+          <p className="text-sm text-gray-500">до {formatDate(service.actual_before)}</p>
+          <h3>{service.title}</h3>
+          <p className="text-sm text-gray-500">{service.description}</p>
         </div>
 
-        <p className="text-sm text-gray-500">до {formatDate(service.actual_before)}</p>
-        <h3>{service.title}</h3>
-        <p className="text-sm text-gray-500">{service.description}</p>
+        <Button
+          text={!service.is_available ? 'Скоро появится' : isLoading ? 'Отправка...' : 'Заказать'}
+          className={`mt-6 flex w-full items-center justify-center rounded-[20px] py-4 font-semibold shadow-lg transition-all duration-200 ${
+            service.is_available
+              ? 'from-orange cursor-pointer bg-gradient-to-r to-orange-600 text-white hover:opacity-90'
+              : 'pointer-events-none bg-gray-200 text-gray-500'
+          } disabled:opacity-50`}
+          onClick={handleServiceRequest}
+          disabled={isLoading || !service.is_available}
+        />
       </div>
 
-      <Button
-        text={isLoading ? 'Отправка...' : 'Заказать'}
-        className="from-orange mt-6 flex w-full cursor-pointer items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50"
-        onClick={handleServiceRequest}
-        disabled={isLoading}
-      />
       <SuccessPopup
         isOpen={isSuccessPopupOpen}
         onClose={() => setIsSuccessPopupOpen(false)}
@@ -77,7 +88,7 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
         serviceName={service.title}
         requiredPlans={requiredPlans}
       />
-    </div>
+    </>
   )
 }
 

@@ -15,6 +15,7 @@ export interface ServiceData {
   imageURL: string
   actual_before: Date
   available_for: string[]
+  is_available: boolean
 }
 
 const TABS: TabConfig<TabType>[] = [

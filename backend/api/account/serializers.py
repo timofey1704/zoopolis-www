@@ -70,7 +70,7 @@ class ServicesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи услуг"""
     class Meta:
         model = Services
-        fields = ('id', 'title', 'description', 'imageURL', 'actual_before')
+        fields = ('id', 'title', 'description', 'imageURL', 'actual_before', 'is_available')
         
 class BonusesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи бонусов"""

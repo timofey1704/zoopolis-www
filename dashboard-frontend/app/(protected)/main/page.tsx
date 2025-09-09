@@ -54,7 +54,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="mt-7 overflow-hidden rounded-2xl">
+      <div className="relative z-0 mt-7 overflow-hidden rounded-2xl">
         <MapComponent points={mapPoints} />
       </div>
 

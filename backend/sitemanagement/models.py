@@ -114,10 +114,12 @@ class Services (models.Model):
         default=list,
         help_text='Выберите тарифные планы, для которых доступна услуга'
     )
+    is_available = models.BooleanField(default=True, verbose_name='Доступность услуги')
 
     class Meta:
         verbose_name = 'Услуга'
         verbose_name_plural = 'Услуги'
+        ordering = ['id']
 
     def __str__(self):
         return self.title
