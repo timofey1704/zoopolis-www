@@ -8,8 +8,8 @@ import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
 import PetTypeSelector, { PetType } from '@/components/selectors/PetTypeSelector'
 import GenderSelector from '@/components/selectors/GenderSelector'
-import BreedSelector from '@/components/selectors/BreedSelector'
-import ColorSelector from '@/components/selectors/ColorSelector'
+import BreedSelector, { Breed } from '@/components/selectors/BreedSelector'
+import ColorSelector, { PetColor } from '@/components/selectors/ColorSelector'
 
 const validationRules = {
   imageURL: { required: false },
@@ -91,8 +91,8 @@ const PetForm = () => {
       type: null as PetType | null,
       birthday: '',
       gender: '',
-      breed: '',
-      color: '',
+      breed: '' as string | Breed | null,
+      color: '' as string | PetColor | null,
       comment: '',
       allergies: '',
       QRImage: '',
@@ -107,9 +107,14 @@ const PetForm = () => {
         // добавляем все текстовые поля
         Object.entries(values).forEach(([key, value]) => {
           if (key !== 'imageURL') {
-            // Для PetType отправляем только id
-            if (key === 'type' && value) {
-              formData.append(key, (value as PetType).id.toString())
+            // для полей с id отправляем только id
+            if (
+              ['type', 'breed', 'color'].includes(key) &&
+              value &&
+              typeof value === 'object' &&
+              'id' in value
+            ) {
+              formData.append(key, value.id.toString())
             } else {
               formData.append(key, value?.toString() || '')
             }

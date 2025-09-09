@@ -11,6 +11,9 @@ DEBUG = os.environ.get("DEBUG_MODE", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'media')
+
 CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
 CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist
 CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")

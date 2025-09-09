@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 import qrcode
 from qrcode import constants
 import json
@@ -115,6 +117,8 @@ def generate_unique_qr_code() -> str:
         if not QRCode.objects.filter(code=code).exists():
             return code
 
+
+
 def save_pet_qr(pet: Pet) -> QRCode:
     """
     Генерация и сохранение QR кода для питомца.
@@ -125,13 +129,29 @@ def save_pet_qr(pet: Pet) -> QRCode:
     Returns:
         Созданный экземпляр модели QRCode
     """
-    qr_image, qr_base64 = generate_pet_qr(pet)
+    # генерируем уникальный код
+    qr_code_string = generate_unique_qr_code()
     
-    # сохраняем QRкод в базу
+    # генерируем QR изображение
+    qr_image, _ = generate_pet_qr(pet)
+    
+    # создаем путь для сохранения
+    qr_dir = os.path.join(settings.MEDIA_ROOT, 'qr_codes')
+    os.makedirs(qr_dir, exist_ok=True)
+    
+    # сохраняем изображение
+    image_filename = f"{qr_code_string}.png"
+    image_path = os.path.join(qr_dir, image_filename)
+    qr_image.save(image_path)
+    
+    # создаем URL для изображения
+    image_url = f"/media/qr_codes/{image_filename}"
+    
+    # сохраняем QR код в базу
     qr_code = QRCode.objects.create(
         pet=pet,
-        code=generate_unique_qr_code(),
-        imageURL=f"data:image/png;base64,{qr_base64}"
+        code=qr_code_string,
+        imageURL=image_url
     )
     
     return qr_code

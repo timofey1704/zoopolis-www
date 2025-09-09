@@ -17,14 +17,14 @@ interface BreedResponse {
 interface BreedChangeEvent {
   target: {
     id: string
-    value: string
+    value: Breed | string | null
     selectedOption?: Option
   }
 }
 
 interface BreedSelectorProps {
   name: string
-  value: string
+  value: Breed | string | null
   petTypeId?: number | null
   handleChange: (e: BreedChangeEvent) => void
   label?: string
@@ -58,7 +58,13 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
     handleChange({
       target: {
         id: name,
-        value: selectedOption?.value || '',
+        value: selectedOption
+          ? {
+              id: selectedOption.id,
+              name: selectedOption.value,
+              pet_type: petTypeId || 0,
+            }
+          : '',
         selectedOption,
       },
     })
@@ -67,9 +73,9 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
   // находим текущее значение для отображения
   const currentValue = value
     ? {
-        id: 0, // будет заменено при получении данных
-        value,
-        label: value,
+        id: typeof value === 'object' ? value.id : 0,
+        value: typeof value === 'object' ? value.name : value,
+        label: typeof value === 'object' ? value.name : value,
       }
     : null
 

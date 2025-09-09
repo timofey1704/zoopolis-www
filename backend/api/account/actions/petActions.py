@@ -5,11 +5,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
-
+import logging
 from api.account.serializers import PetSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from api.utils.QRGenerator import save_pet_qr
+
+logger = logging.getLogger(__name__)
 class PetView(ViewSet):
     """Эндпоинт для работы с питомцами"""
     permission_classes = [IsAuthenticated]
@@ -65,15 +67,18 @@ class PetView(ViewSet):
                     'imageURL': qr_code.imageURL
                 }
                 
+                logger.info("Питомец и QR код успешно созданы")
                 return Response(response_data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 # если что-то пошло не так с QR кодом, удаляем питомца
+                logger.error(f"Ошибка при создании QR кода: {str(e)}")
                 pet.delete()
                 return Response(
                     {"error": "Ошибка при создании QR кода"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-                
+        
+        logger.error(f"Ошибки валидации: {serializer.errors}")
         return Response(
             {"errors": serializer.errors}, 
             status=status.HTTP_400_BAD_REQUEST
