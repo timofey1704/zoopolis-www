@@ -40,9 +40,14 @@ const BonusItem: React.FC<BonusItemProps> = ({ bonus }) => {
           </div>
         </div>
         <Button
-          text="Применить"
+          text={!bonus.is_available ? 'Скоро появится' : 'Применить'}
+          className={`mt-6 flex w-full items-center justify-center rounded-[20px] py-4 font-semibold shadow-lg transition-all duration-200 ${
+            bonus.is_available
+              ? 'from-orange cursor-pointer bg-gradient-to-r to-orange-600 text-white hover:opacity-90'
+              : 'pointer-events-none bg-gray-200 text-gray-500'
+          } disabled:opacity-50`}
           onClick={handleApply}
-          className="from-orange mt-4 w-full cursor-pointer items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50"
+          disabled={!bonus.is_available}
         />
       </div>
 

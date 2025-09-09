@@ -162,7 +162,7 @@ class BonusesView(ViewSet):
     def get_bonuses(self, request):
         # получаем активные бонусы, которые не были использованы текущим пользователем
         bonuses = Bonuses.objects.filter(
-            is_active=True,
+            # is_active=True, fix : ZOO-50 - отображаем все бонусы, даже если is_active = false
             start_date__lte=timezone.now().date(),  # начало действия уже наступило
             end_date__gte=timezone.now().date(),    # срок действия еще не истек
         ).exclude(

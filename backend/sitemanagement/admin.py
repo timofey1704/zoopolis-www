@@ -66,8 +66,8 @@ class BonusApplicationInline(admin.TabularInline):
 
 @admin.register(Bonuses)
 class BonusesAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'is_active', 'start_date', 'end_date', 'get_applications_count']
-    list_filter = ['is_active', 'created_at', 'start_date', 'end_date']
+    list_display = ['name', 'description', 'is_available', 'start_date', 'end_date', 'get_applications_count']
+    list_filter = ['is_available', 'created_at', 'start_date', 'end_date']
     search_fields = ['name', 'description']
     readonly_fields = ('created_at',)
     inlines = [BonusApplicationInline]

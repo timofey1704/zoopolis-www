@@ -161,7 +161,7 @@ class Bonuses(models.Model):
     end_date = models.DateField(verbose_name='Дата окончания')
     code = models.CharField(max_length=10, verbose_name='Промокод', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    is_active = models.BooleanField(default=True, verbose_name='Активность')
+    is_available = models.BooleanField(default=True, verbose_name='Активность')
     applied_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='BonusApplication',

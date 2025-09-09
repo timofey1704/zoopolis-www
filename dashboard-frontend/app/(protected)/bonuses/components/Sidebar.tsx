@@ -45,10 +45,36 @@ const BonusImage: React.FC<{ url: string; alt: string }> = ({ url, alt }) => (
   </div>
 )
 
-const InfoBlock: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className="rounded-lg bg-gray-50 p-4">
+const InfoBlock: React.FC<{ label: string; value: string; onClick?: () => void }> = ({
+  label,
+  value,
+  onClick,
+}) => (
+  <div
+    className={`rounded-lg bg-gray-50 p-4 ${
+      onClick ? 'cursor-pointer transition-colors hover:bg-gray-100' : ''
+    }`}
+    onClick={onClick}
+  >
     <p className="text-sm text-gray-600">{label}:</p>
-    <p className="font-medium">{value}</p>
+    <div className="flex items-center gap-2">
+      <p className="font-medium">{value}</p>
+      {onClick && (
+        <svg
+          className="h-4 w-4 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+          />
+        </svg>
+      )}
+    </div>
   </div>
 )
 
@@ -113,7 +139,19 @@ export default function Sidebar({ isOpen, onClose, bonus }: BonusSidebarProps) {
                 <div className="space-y-4">
                   <h3 className="text-2xl font-semibold">{bonus.name}</h3>
 
-                  {bonus.code && <InfoBlock label="Промокод" value={bonus.code} />}
+                  {bonus.code && (
+                    <InfoBlock
+                      label="Промокод"
+                      value={bonus.code}
+                      onClick={() => {
+                        navigator.clipboard.writeText(bonus.code)
+                        showToast({
+                          type: 'success',
+                          message: 'Промокод скопирован',
+                        })
+                      }}
+                    />
+                  )}
 
                   <InfoBlock
                     label="Период действия"

@@ -18,6 +18,7 @@ export interface BonusCard {
   code: string
   start_date: string
   end_date: string
+  is_available: boolean
 }
 
 const TABS: TabConfig<TabType>[] = [

@@ -76,4 +76,4 @@ class BonusesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи бонусов"""
     class Meta:
         model = Bonuses
-        fields = ('id', 'name', 'description', 'imageURL', 'category', 'start_date', 'end_date', 'code')
+        fields = ('id', 'name', 'description', 'imageURL', 'category', 'start_date', 'end_date', 'code', 'is_available')
