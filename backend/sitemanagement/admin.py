@@ -64,6 +64,13 @@ class BonusApplicationInline(admin.TabularInline):
     verbose_name = 'Применение бонуса'
     verbose_name_plural = 'Применения бонуса'
 
+class QRCodeInline(admin.TabularInline):
+    model = QRCode
+    extra = 0
+    readonly_fields = ('created_at',)
+    verbose_name = 'QR код'
+    verbose_name_plural = 'QR коды'
+
 @admin.register(Bonuses)
 class BonusesAdmin(admin.ModelAdmin):
     list_display = ['name', 'description', 'is_available', 'start_date', 'end_date', 'get_applications_count']
@@ -89,7 +96,8 @@ class PetAdmin(admin.ModelAdmin):
     list_filter = ['type']
     search_fields = ['owner__username', 'name']
     readonly_fields = ('created_at',)
-
+    inlines = [QRCodeInline]
+    
     def get_readonly_fields(self, request, obj=None):
         # created_at всегда readonly
         base_readonly = ['created_at']

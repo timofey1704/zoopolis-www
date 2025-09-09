@@ -28,7 +28,11 @@ type PetImageResponse = {
   message: string
 }
 
-const PetForm = () => {
+interface CreatePetFormProps {
+  onClose: () => void
+}
+
+const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>('')
 
@@ -136,7 +140,26 @@ const PetForm = () => {
           throw new Error(error.error || 'Ошибка при обновлении данных')
         }
 
-        showToast({ type: 'success', message: 'Данные успешно обновлены!' })
+        const data = await response.json()
+
+        // Обновляем значения QR кода в форме
+        if (data.qr_code) {
+          handleChange({
+            target: {
+              id: 'QRImage',
+              value: data.qr_code.imageURL,
+            },
+          })
+          handleChange({
+            target: {
+              id: 'QRCode',
+              value: data.qr_code.code,
+            },
+          })
+        }
+
+        showToast({ type: 'success', message: 'Питомец успешно добавлен!' })
+        onClose()
       } catch (error) {
         showToast({
           type: 'error',
@@ -178,18 +201,22 @@ const PetForm = () => {
                   />
                 </div>
               </div>
-              <Image
-                src={values.QRImage || '/images/noQR.svg'}
-                alt="qrcode"
-                width={160}
-                height={160}
-                className="rounded-full object-cover"
-              />
-              {values.QRCode && (
-                <div className="flex items-center justify-center">
-                  <span className="text-sm text-gray-500">{values.QRCode}</span>
-                </div>
-              )}
+              <div className="flex flex-col items-center gap-2">
+                <Image
+                  src={values.QRImage || '/images/noQR.svg'}
+                  alt="qrcode"
+                  width={160}
+                  height={160}
+                  className="rounded-2xl object-contain"
+                />
+                {values.QRCode && (
+                  <div className="flex items-center justify-center rounded-lg bg-gray-100 px-4 py-2">
+                    <span className="font-mono text-lg font-semibold text-gray-700">
+                      {values.QRCode}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="h-[2px] w-full bg-white" />
             <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
@@ -277,4 +304,4 @@ const PetForm = () => {
   )
 }
 
-export default PetForm
+export default CreatePetForm
