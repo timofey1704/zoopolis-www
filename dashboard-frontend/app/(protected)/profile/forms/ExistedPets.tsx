@@ -1,19 +1,16 @@
 import React from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Image from 'next/image'
-import { PetType } from '@/components/selectors/PetTypeSelector'
-import { Breed } from '@/components/selectors/BreedSelector'
-import { PetColor } from '@/components/selectors/ColorSelector'
 import Loader from '@/components/ui/Loader'
 
 interface Pet {
   id: number
   name: string
-  type: PetType
+  clear_type: string
   birthday: string
-  gender: string
-  breed: Breed
-  color: PetColor
+  clear_gender: string
+  clear_breed: string
+  clear_color: string
   comment: string
   allergies: string
   imageURL: string
@@ -36,7 +33,9 @@ const ExistedPets = () => {
         pets.map(pet => (
           <div key={pet.id} className="my-3 overflow-hidden rounded-2xl bg-white p-6 shadow-sm">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">{pet.name}</h2>
+              <h2 className="text-xl font-semibold">
+                {pet.clear_type} {pet.name}
+              </h2>
             </div>
 
             <div className="flex items-center justify-around gap-4 py-4">
@@ -70,16 +69,12 @@ const ExistedPets = () => {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div>
-                <p className="text-sm text-gray-500">Вид</p>
-                <p className="font-medium">{pet.type.name}</p>
-              </div>
-              <div>
                 <p className="text-sm text-gray-500">Порода</p>
-                <p className="font-medium">{pet.breed.name}</p>
+                <p className="font-medium">{pet.clear_breed}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Цвет</p>
-                <p className="font-medium">{pet.color.name}</p>
+                <p className="font-medium">{pet.clear_color}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Дата рождения</p>
@@ -87,26 +82,21 @@ const ExistedPets = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Пол</p>
-                <p className="font-medium">{pet.gender === 'male' ? 'Мужской' : 'Женский'}</p>
+                <p className="font-medium">{pet.clear_gender}</p>
               </div>
+              {pet.comment && (
+                <div>
+                  <p className="text-sm text-gray-500">Комментарий</p>
+                  <p className="font-medium">{pet.comment}</p>
+                </div>
+              )}
+              {pet.allergies && (
+                <div>
+                  <p className="text-sm text-gray-500">Аллергии</p>
+                  <p className="font-medium">{pet.allergies}</p>
+                </div>
+              )}
             </div>
-
-            {(pet.comment || pet.allergies) && (
-              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                {pet.comment && (
-                  <div>
-                    <p className="text-sm text-gray-500">Комментарий</p>
-                    <p className="font-medium">{pet.comment}</p>
-                  </div>
-                )}
-                {pet.allergies && (
-                  <div>
-                    <p className="text-sm text-gray-500">Аллергии</p>
-                    <p className="font-medium">{pet.allergies}</p>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         ))
       )}

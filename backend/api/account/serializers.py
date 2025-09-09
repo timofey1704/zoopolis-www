@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.utils import timezone
+from django.conf import settings
 
 from sitemanagement.models import Pet, MapPoints, Services, Bonuses
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
@@ -21,13 +22,18 @@ class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
     QRImage = serializers.SerializerMethodField()
     QRCode = serializers.SerializerMethodField()
+    clear_type = serializers.SerializerMethodField()
+    clear_breed = serializers.SerializerMethodField()
+    clear_color = serializers.SerializerMethodField()
+    clear_gender = serializers.SerializerMethodField()
     
     def get_QRImage(self, obj):
         """Возвращает URL QR изображения питомца"""
         qr = obj.qr_code.filter(is_active=True).last()
         if not qr:
             return None
-        return qr.imageURL
+        # Добавляем базовый URL к пути изображения
+        return f"{settings.BASE_URL}{qr.imageURL}"
     
     def get_QRCode(self, obj):
         """Возвращает код QR питомца"""
@@ -35,6 +41,26 @@ class PetSerializer(BasePetSerializer):
         if not qr:
             return None
         return qr.code
+        
+    def get_clear_type(self, obj):
+        """Возвращает название типа питомца"""
+        return obj.type.name if obj.type else None
+        
+    def get_clear_breed(self, obj):
+        """Возвращает название породы питомца"""
+        return obj.breed.name if obj.breed else None
+        
+    def get_clear_color(self, obj):
+        """Возвращает название цвета питомца"""
+        return obj.color.name if obj.color else None
+        
+    def get_clear_gender(self, obj):
+        """Возвращает пол питомца в читаемом виде"""
+        gender_map = {
+            'male': 'Мужской',
+            'female': 'Женский'
+        }
+        return gender_map.get(obj.gender)
         
 class CitySerializer(serializers.ModelSerializer):
     "Сериалиалайзер для выдачи городов"
