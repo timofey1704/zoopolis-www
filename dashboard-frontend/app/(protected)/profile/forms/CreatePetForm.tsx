@@ -23,7 +23,7 @@ const validationRules = {
   allergies: { required: false },
 }
 
-type PetImageResponse = {
+export type PetImageResponse = {
   imageUrl: string
   message: string
 }

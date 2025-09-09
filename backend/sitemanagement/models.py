@@ -74,9 +74,10 @@ class Pet(models.Model):
     class Meta:
         verbose_name = 'Питомец'
         verbose_name_plural = 'Питомцы'
+        ordering = ['-id']
         
 class QRCode(models.Model):
-    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, verbose_name='Питомец')
+    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, verbose_name='Питомец', related_name='qr_code')
     code = models.CharField(max_length=255, verbose_name='Код')
     imageURL = models.CharField(max_length=255, verbose_name='Фото QR кода')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')

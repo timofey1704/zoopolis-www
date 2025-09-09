@@ -19,7 +19,22 @@ class BasePetSerializer(serializers.ModelSerializer):
 
 class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
-    pass
+    QRImage = serializers.SerializerMethodField()
+    QRCode = serializers.SerializerMethodField()
+    
+    def get_QRImage(self, obj):
+        """Возвращает URL QR изображения питомца"""
+        qr = obj.qr_code.filter(is_active=True).last()
+        if not qr:
+            return None
+        return qr.imageURL
+    
+    def get_QRCode(self, obj):
+        """Возвращает код QR питомца"""
+        qr = obj.qr_code.filter(is_active=True).last()
+        if not qr:
+            return None
+        return qr.code
         
 class CitySerializer(serializers.ModelSerializer):
     "Сериалиалайзер для выдачи городов"
