@@ -9,7 +9,7 @@ import { TabsContainer, TabConfig } from '@/components/ui/TabsContainer'
 
 type TabType = 'clinic' | 'pharmacy' | 'salon'
 
-interface MapPoint {
+export interface MapPoint {
   id: number
   location: string
   title: string

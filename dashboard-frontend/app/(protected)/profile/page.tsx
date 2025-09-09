@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import ContactForm from './forms/ContactForm'
 import PetForm from './forms/PetForm'
 import { useTabs } from '@/app/hooks/useTabs'
 import { TabsContainer, TabConfig } from '@/components/ui/TabsContainer'
+import { useSearchParams } from 'next/navigation'
 
 type TabType = 'contacts' | 'pets'
 
@@ -22,10 +23,19 @@ const TABS: TabConfig<TabType>[] = [
 ]
 
 const ProfilePage = () => {
+  const searchParams = useSearchParams()
+  const tabFromUrl = searchParams.get('tab') as TabType
+
   const { selectedTab, indicatorStyle, refs, handleTabChange } = useTabs<TabType>(
     ['contacts', 'pets'],
-    { defaultTab: 'contacts' }
+    { defaultTab: tabFromUrl || 'contacts' }
   )
+
+  useEffect(() => {
+    if (tabFromUrl && tabFromUrl !== selectedTab) {
+      handleTabChange(tabFromUrl)
+    }
+  }, [tabFromUrl, selectedTab, handleTabChange])
 
   return (
     <div>

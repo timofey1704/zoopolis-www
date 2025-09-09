@@ -2,11 +2,69 @@
 
 import React from 'react'
 import useUserStore from '@/app/store/userStore'
+import Button from '@/components/ui/Button'
+import { useClientFetch } from '@/app/hooks/useClientFetch'
+import MapComponent from '../map/components/MapComponent'
+import { MapPoint } from '../map/page'
+import Loader from '@/components/ui/Loader'
+import { BonusCard } from '../bonuses/page'
+import BonusItem from '../bonuses/components/BonusItem'
+import { useRouter } from 'next/navigation'
 
 const DashboardPage = () => {
+  const router = useRouter()
   const user = useUserStore()
 
-  return <h1>ПРИВЕТ, {user.user?.name}</h1>
+  const {
+    data: mapPoints = [],
+    isLoading: isLoadingMap,
+    error: mapError,
+  } = useClientFetch<MapPoint[]>('/account/map-points/')
+
+  const {
+    data: BonusCard = [],
+    isLoading: isLoadingBonuses,
+    error: bonusError,
+  } = useClientFetch<BonusCard[]>('/account/bonuses/')
+
+  if (isLoadingMap || isLoadingBonuses) {
+    return <Loader />
+  }
+
+  if (mapError || bonusError) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="mb-3">ПРИВЕТ, {user.user?.name}</h1>
+
+      <div className="flex w-full flex-row items-center justify-between rounded-[40px] bg-black p-6">
+        <div className="flex flex-col gap-5">
+          <h3 className="text-white">Сообщить о пропаже</h3>
+          <span className="text-white">
+            В течении 1 минуты наш менеджер свяжется с вами для уточнения информации
+          </span>
+
+          <Button
+            text="Заявить о пропаже"
+            onClick={() => router.push('/profile?tab=pets')}
+            className="from-orange mt-4 w-full cursor-pointer items-center justify-center bg-gradient-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 md:w-md"
+          />
+        </div>
+      </div>
+
+      <div className="mt-7 overflow-hidden rounded-2xl">
+        <MapComponent points={mapPoints} />
+      </div>
+
+      <div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {BonusCard.map(bonus => (
+          <BonusItem key={bonus.id} bonus={bonus} />
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default DashboardPage

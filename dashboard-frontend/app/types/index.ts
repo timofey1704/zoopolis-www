@@ -132,3 +132,23 @@ export interface TextAreaProps {
   placeholder: string
   height?: string | number
 }
+
+interface MembershipFeature {
+  id: number
+  name: string
+}
+
+export interface Membership {
+  id: number
+  plan: string
+  bg_color: string
+  price: number
+  description: string
+  is_popular: boolean
+  is_available: boolean
+  features: MembershipFeature[]
+}
+
+export interface PricingCardProps {
+  memberships: Membership[]
+}
