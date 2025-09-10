@@ -52,7 +52,7 @@ const ExistedPets = () => {
       )
 
       showToast({ type: 'success', message: data.message })
-    } catch (error) {
+    } catch {
       showToast({ type: 'error', message: 'Упс, что то пошло не так..' })
     } finally {
       setLoadingPetId(null)
@@ -78,7 +78,7 @@ const ExistedPets = () => {
       const data = await response.json()
       setPets(prevPets => prevPets.filter(pet => pet.id !== id))
       showToast({ type: 'success', message: data.message })
-    } catch (error) {
+    } catch {
       showToast({ type: 'error', message: 'Упс, что то пошло не так..' })
     } finally {
       setLoadingPetId(null)
