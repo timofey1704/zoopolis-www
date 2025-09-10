@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
-from api.account.serializers import PetSerializer
+from api.account.serializers import PetSerializer, PetCreateSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
@@ -52,7 +52,10 @@ class PetView(ViewSet):
     @handle_exceptions
     def create_pet(self, request):
         """Создание нового питомца"""
-        serializer = PetSerializer(data=request.data)
+        serializer = PetCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            logger.error(f"Serializer errors: {serializer.errors}")
+        
         if serializer.is_valid():
             # cохраняем питомца
             pet = cast(Pet, serializer.save(owner=request.user))
@@ -61,8 +64,8 @@ class PetView(ViewSet):
                 # генерируем и сохраняем QR код
                 qr_code = save_pet_qr(pet)
                 
-                # добавляем информацию о QR коде в ответ
-                response_data = dict(serializer.data)
+                response_serializer = PetSerializer(pet)
+                response_data = dict(response_serializer.data)
                 response_data.update({
                     'qr_code': {
                         'code': qr_code.code,
@@ -98,10 +101,12 @@ class PetView(ViewSet):
             )
         
         pet = self.get_object(pet_id)
-        serializer = PetSerializer(pet, data=request.data, partial=True)
+        serializer = PetCreateSerializer(pet, data=request.data, partial=True)
+        
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            response_serializer = PetSerializer(pet)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
         return Response(
             {"errors": serializer.errors}, 
             status=status.HTTP_400_BAD_REQUEST

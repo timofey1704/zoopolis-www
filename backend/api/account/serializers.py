@@ -1,9 +1,12 @@
+import logging
 from rest_framework import serializers
 from django.utils import timezone
 from django.conf import settings
 
 from sitemanagement.models import Pet, MapPoints, Services, Bonuses
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
+
+logger = logging.getLogger(__name__)
 
 class BasePetSerializer(serializers.ModelSerializer):
     """Базовый сериализатор с общей валидацией"""
@@ -18,6 +21,12 @@ class BasePetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Дата рождения не может быть в будущем")
         return value
 
+class PetCreateSerializer(BasePetSerializer):
+    """Сериализатор для создания питомца с поддержкой загрузки изображений"""
+    class Meta:
+        model = Pet
+        fields = ['name', 'type', 'birthday', 'gender', 'breed', 'color', 'comment', 'allergies', 'image']
+        read_only_fields = ('owner', 'created_at')
 class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
     imageURL = serializers.SerializerMethodField()

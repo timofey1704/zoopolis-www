@@ -34,38 +34,7 @@ interface CreatePetFormProps {
 const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>('')
-
-  const openFileDialog = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      showToast({ type: 'error', message: 'Пожалуйста, выберите изображение' })
-      return
-    }
-
-    const localPreviewUrl = URL.createObjectURL(file)
-    setPreviewUrl(localPreviewUrl)
-
-    // сохраняем только локальное значение (файл уйдет вместе с формой)
-    handleChange({
-      target: { id: 'imageURL', value: file.name }, // можно просто имя файла или пустую строку
-    })
-
-    e.target.value = ''
-  }
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl)
-      }
-    }
-  }, [previewUrl])
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -105,8 +74,10 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
         })
 
         // если есть файл для загрузки, добавляем его
-        if (fileInputRef.current?.files?.[0]) {
-          formData.append('image', fileInputRef.current.files[0])
+        if (selectedFile) {
+          formData.append('image', selectedFile)
+        } else {
+          console.log('No file found in selectedFile state')
         }
 
         const response = await fetch('/api/profile/pets', {
@@ -147,6 +118,41 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
       }
     }
   )
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      showToast({ type: 'error', message: 'Пожалуйста, выберите изображение' })
+      return
+    }
+
+    // cохраняем файл в стейте
+    setSelectedFile(file)
+
+    const localPreviewUrl = URL.createObjectURL(file)
+    setPreviewUrl(localPreviewUrl)
+
+    // сохраняем только локальное значение (файл уйдет вместе с формой)
+    handleChange({
+      target: { id: 'imageURL', value: file.name }, // можно просто имя файла или пустую строку
+    })
+
+    e.target.value = ''
+  }
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
 
   return (
     <div className="space-y-3 py-3">
