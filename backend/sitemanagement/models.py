@@ -97,8 +97,6 @@ class QRCode(models.Model):
     image = models.ImageField(
         upload_to=pet_qr_upload_path,
         verbose_name="Фото QR кода",
-        null=True,
-        blank=True 
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     is_active = models.BooleanField(default=True, verbose_name='Активность')
@@ -196,3 +194,20 @@ class Bonuses(models.Model):
         
     def __str__(self):
         return self.name
+    
+class Tranasctions(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    membership = models.ForeignKey(Pricing, on_delete=models.CASCADE, verbose_name='Тарифный план')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма')
+    auto_renewal = models.BooleanField(default=False, verbose_name='Автоматическое продление')
+    status = models.CharField(max_length=10, verbose_name='Статус', choices=[('pending', 'Ожидание'), ('completed', 'Выполнено'), ('failed', 'Не выполнено')])
+    transaction_id = models.CharField(max_length=255, verbose_name='ID транзакции')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
+        ordering = ['id']
+        
+    def __str__(self):
+        return f'{self.user.username} - {self.membership.plan}'

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Loader from '@/components/ui/Loader'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
+import { MdOutlineEdit, MdOutlineDelete } from 'react-icons/md'
 
 interface Pet {
   id: number
@@ -46,7 +47,6 @@ const ExistedPets = () => {
       }
       const data = await response.json()
 
-      // Update the local state
       setPets(prevPets =>
         prevPets.map(pet => (pet.id === id ? { ...pet, is_lost: !pet.is_lost } : pet))
       )
@@ -59,7 +59,14 @@ const ExistedPets = () => {
     }
   }
 
-  console.log(pets)
+  const handleEdit = (id: number) => {
+    console.log('Редактировать питомца', id)
+  }
+
+  const handleDelete = (id: number) => {
+    console.log('Удалить питомца', id)
+  }
+
   return (
     <div className="space-y-8">
       {pets.length === 0 ? (
@@ -68,28 +75,43 @@ const ExistedPets = () => {
         pets.map(pet => (
           <div key={pet.id} className="my-3 overflow-hidden rounded-2xl bg-white p-6 shadow-sm">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">
-                {pet.clear_type} {pet.name}
+              <h2 className="flex items-center gap-2 text-xl font-semibold">
+                <span className="hidden md:block">{pet.clear_type}</span> <span>{pet.name}</span>
               </h2>
 
-              <Button
-                text={pet.is_lost ? 'Питомец потерян' : 'Питомец потерялся?'}
-                className={`${pet.is_lost ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
-                onClick={() => handleLostPet(pet.id)}
-                disabled={loadingPetId === pet.id}
-                loading={loadingPetId === pet.id}
-              />
+              <div className="hidden items-center gap-3 md:flex">
+                <button
+                  onClick={() => handleEdit(pet.id)}
+                  className="text-gray-500 transition hover:cursor-pointer hover:text-blue-600"
+                >
+                  <MdOutlineEdit className="text-2xl" />
+                </button>
+                <button
+                  onClick={() => handleDelete(pet.id)}
+                  className="text-gray-500 transition hover:cursor-pointer hover:text-red-600"
+                >
+                  <MdOutlineDelete className="text-2xl" />
+                </button>
+                <Button
+                  text={pet.is_lost ? 'Питомец потерян' : 'Питомец потерялся?'}
+                  className={`${pet.is_lost ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
+                  onClick={() => handleLostPet(pet.id)}
+                  disabled={loadingPetId === pet.id}
+                  loading={loadingPetId === pet.id}
+                  size="md"
+                />
+              </div>
             </div>
 
             <div className="flex items-center justify-around gap-4 py-4">
-              <div className="flex items-center justify-center md:w-[160px]">
+              <div className="flex items-center justify-center md:w-[180px]">
                 <Image
                   src={pet.imageURL || '/images/noPet.svg'}
                   alt={pet.name}
-                  height={160}
-                  width={160}
+                  height={180}
+                  width={180}
                   priority
-                  className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
+                  className="aspect-square w-full rounded-2xl object-cover md:w-[180px]"
                 />
               </div>
               <div className="flex flex-col items-center gap-2">
@@ -139,6 +161,29 @@ const ExistedPets = () => {
                   <p className="font-medium">{pet.allergies}</p>
                 </div>
               )}
+            </div>
+
+            <div className="mt-6 flex justify-center gap-6 md:hidden">
+              <button
+                onClick={() => handleEdit(pet.id)}
+                className="text-gray-500 transition hover:text-blue-600"
+              >
+                <MdOutlineEdit className="text-2xl" />
+              </button>
+              <button
+                onClick={() => handleDelete(pet.id)}
+                className="text-gray-500 transition hover:text-red-600"
+              >
+                <MdOutlineDelete className="text-2xl" />
+              </button>
+              <Button
+                text={pet.is_lost ? 'Питомец потерян' : 'Питомец потерялся?'}
+                className={`${pet.is_lost ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
+                onClick={() => handleLostPet(pet.id)}
+                disabled={loadingPetId === pet.id}
+                loading={loadingPetId === pet.id}
+                size="sm"
+              />
             </div>
           </div>
         ))

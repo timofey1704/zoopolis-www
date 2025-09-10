@@ -17,18 +17,18 @@ const Button = ({
   const sizeClasses = {
     sm: 'h-10 text-sm',
     md: 'h-12 text-base',
-    lg: 'h-14 text-xl',
+    lg: 'h-14 text-lg',
   }
 
   const variantClasses = {
-    default: 'w-60 rounded-[52px] font-medium text-black hover:shadow-2xl',
+    default: 'rounded-[52px] font-medium text-black hover:shadow-2xl',
     text: '',
   }
 
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer transition-all duration-500 ${sizeClasses[size]} ${variantClasses[variant]} ${className} ${disabled || loading ? 'cursor-not-allowed opacity-50' : ''}`}
+      className={`cursor-pointer px-3 transition-all duration-500 ${sizeClasses[size]} ${variantClasses[variant]} ${className} ${disabled || loading ? 'cursor-not-allowed opacity-50' : ''}`}
       type={type}
       disabled={disabled || loading}
     >
