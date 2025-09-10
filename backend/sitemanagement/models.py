@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
 from sitemanagement.constants.qr_code_path import pet_qr_upload_path
+from sitemanagement.constants.pet_image_path import pet_image_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -60,7 +61,12 @@ class MainPageMedia(models.Model):
         return self.url
 class Pet(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
-    imageURL = models.CharField(max_length=255, verbose_name='Фото питомца', null=True, blank=True)
+    image = models.ImageField(
+        upload_to=pet_image_upload_path,
+        verbose_name="Фото питомца",
+        null=True,
+        blank=True
+    )
     name = models.CharField(max_length=255, verbose_name='Кличка')
     type = models.ForeignKey(PetsTypes, on_delete=models.CASCADE, verbose_name='Тип питомца')
     birthday = models.DateField(verbose_name='Дата рождения')

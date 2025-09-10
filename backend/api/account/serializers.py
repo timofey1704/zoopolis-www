@@ -20,6 +20,7 @@ class BasePetSerializer(serializers.ModelSerializer):
 
 class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
+    imageURL = serializers.SerializerMethodField()
     QRImage = serializers.SerializerMethodField()
     QRCode = serializers.SerializerMethodField()
     clear_type = serializers.SerializerMethodField()
@@ -27,12 +28,15 @@ class PetSerializer(BasePetSerializer):
     clear_color = serializers.SerializerMethodField()
     clear_gender = serializers.SerializerMethodField()
     
+    def get_imageURL(self, obj):
+        """Фото питомца с BASE_URL"""
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
+    
     def get_QRImage(self, obj):
         """Возвращает URL QR изображения питомца"""
         qr = obj.qr_code.filter(is_active=True).last()
         if not qr:
             return None
-        # формируем урл для фронта
         return f"{settings.BASE_URL}{qr.image.url}" if qr.image else None
     
     def get_QRCode(self, obj):
