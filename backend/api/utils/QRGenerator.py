@@ -123,36 +123,38 @@ def generate_unique_qr_code() -> str:
 def save_pet_qr(pet: Pet) -> QRCode:
     """
     Генерация и сохранение QR кода для питомца.
-    
     Args:
         pet: Экземпляр модели Pet
-    
-    Returns:
-        Созданный экземпляр модели QRCode
+    Returns: Созданный экземпляр модели QRCode
     """
     # генерируем уникальный код
     qr_code_string = generate_unique_qr_code()
-    
+
     # генерируем QR изображение
     qr_image, _ = generate_pet_qr(pet)
-    
-    # создаем путь для сохранения
-    qr_dir = os.path.join(settings.MEDIA_ROOT, 'qr_codes')
+
+    # имя пользователя
+    username = User.objects.get(id=pet.owner.id).username
+
+    # директория для сохранения
+    qr_dir = os.path.join(settings.MEDIA_ROOT, username, "qrcodes")
     os.makedirs(qr_dir, exist_ok=True)
-    
-    # сохраняем изображение
+
+    # имя и путь файла
     image_filename = f"{qr_code_string}.png"
-    image_path = os.path.join(qr_dir, image_filename)
-    qr_image.save(image_path)
-    
-    # создаем URL для изображения
-    image_url = f"/media/{User.objects.get(id=pet.owner.id).username}/qr_codes/{image_filename}"
-    
-    # сохраняем QR код в базу
+    image_full_path = os.path.join(qr_dir, image_filename)
+
+    # сохраняем изображение в файловую систему
+    qr_image.save(image_full_path)
+
+    # путь для хранения в БД (URL)
+    image_url = f"/media/{username}/qrcodes/{image_filename}"
+
+    # сохраняем QR код в БД
     qr_code = QRCode.objects.create(
         pet=pet,
         code=qr_code_string,
         imageURL=image_url
     )
-    
+
     return qr_code
