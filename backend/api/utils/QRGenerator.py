@@ -11,6 +11,7 @@ from typing import List, Dict, Tuple
 from PIL import Image as PILImage
 from sitemanagement.models import Pet, QRCode
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 def generate_qr_from_objects(data: List[Dict], *, 
                            box_size: int = 10,
@@ -127,34 +128,17 @@ def save_pet_qr(pet: Pet) -> QRCode:
         pet: Экземпляр модели Pet
     Returns: Созданный экземпляр модели QRCode
     """
-    # генерируем уникальный код
     qr_code_string = generate_unique_qr_code()
-
-    # генерируем QR изображение
     qr_image, _ = generate_pet_qr(pet)
 
-    # имя пользователя
-    username = User.objects.get(id=pet.owner.id).username
+    # сохраняем изображение c QR
+    image_io = io.BytesIO()
+    qr_image.save(image_io, format="PNG")
 
-    # директория для сохранения
-    qr_dir = os.path.join(settings.MEDIA_ROOT, username, "qrcodes")
-    os.makedirs(qr_dir, exist_ok=True)
-
-    # имя и путь файла
-    image_filename = f"{qr_code_string}.png"
-    image_full_path = os.path.join(qr_dir, image_filename)
-
-    # сохраняем изображение в файловую систему
-    qr_image.save(image_full_path)
-
-    # путь для хранения в БД (URL)
-    image_url = f"/media/{username}/qrcodes/{image_filename}"
-
-    # сохраняем QR код в БД
-    qr_code = QRCode.objects.create(
+    qr_code = QRCode(
         pet=pet,
         code=qr_code_string,
-        imageURL=image_url
     )
+    qr_code.image.save(f"{qr_code_string}.png", ContentFile(image_io.getvalue()), save=True)
 
     return qr_code

@@ -1,3 +1,4 @@
+import logging
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -5,7 +6,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
-import logging
 from api.account.serializers import PetSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
@@ -66,7 +66,7 @@ class PetView(ViewSet):
                 response_data.update({
                     'qr_code': {
                         'code': qr_code.code,
-                        'imageURL': qr_code.imageURL
+                        'imageURL': qr_code.image.url if qr_code.image else None
                     }
                 })
                 

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
+from sitemanagement.constants.qr_code_path import pet_qr_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -76,10 +77,23 @@ class Pet(models.Model):
         verbose_name_plural = 'Питомцы'
         ordering = ['-id']
         
+    def __str__(self):
+        return f'{self.type} {self.name} - Владелец: {self.owner.username}'
+        
 class QRCode(models.Model):
-    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, verbose_name='Питомец', related_name='qr_code')
+    pet = models.ForeignKey(
+        'Pet',
+        on_delete=models.CASCADE,
+        verbose_name='Питомец',
+        related_name='qr_code'
+    )
     code = models.CharField(max_length=255, verbose_name='Код')
-    imageURL = models.CharField(max_length=255, verbose_name='Фото QR кода')
+    image = models.ImageField(
+        upload_to=pet_qr_upload_path,
+        verbose_name="Фото QR кода",
+        null=True,
+        blank=True 
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     is_active = models.BooleanField(default=True, verbose_name='Активность')
     

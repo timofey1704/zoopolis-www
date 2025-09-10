@@ -32,8 +32,8 @@ class PetSerializer(BasePetSerializer):
         qr = obj.qr_code.filter(is_active=True).last()
         if not qr:
             return None
-        # Добавляем базовый URL к пути изображения
-        return f"{settings.BASE_URL}{qr.imageURL}"
+        # формируем урл для фронта
+        return f"{settings.BASE_URL}{qr.image.url}" if qr.image else None
     
     def get_QRCode(self, obj):
         """Возвращает код QR питомца"""
