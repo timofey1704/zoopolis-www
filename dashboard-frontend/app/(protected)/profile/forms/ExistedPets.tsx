@@ -63,8 +63,26 @@ const ExistedPets = () => {
     console.log('Редактировать питомца', id)
   }
 
-  const handleDelete = (id: number) => {
-    console.log('Удалить питомца', id)
+  const handleDelete = async (id: number) => {
+    try {
+      setLoadingPetId(id)
+      const response = await fetch(`/api/profile/pets/delete`, {
+        method: 'DELETE',
+        body: JSON.stringify({ id }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete pet')
+      }
+
+      const data = await response.json()
+      setPets(prevPets => prevPets.filter(pet => pet.id !== id))
+      showToast({ type: 'success', message: data.message })
+    } catch (error) {
+      showToast({ type: 'error', message: 'Упс, что то пошло не так..' })
+    } finally {
+      setLoadingPetId(null)
+    }
   }
 
   return (
