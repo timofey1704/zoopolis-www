@@ -9,6 +9,7 @@ import logging
 from api.account.serializers import PetSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
+from typing import cast
 from api.utils.QRGenerator import save_pet_qr
 
 logger = logging.getLogger(__name__)
@@ -54,20 +55,21 @@ class PetView(ViewSet):
         serializer = PetSerializer(data=request.data)
         if serializer.is_valid():
             # cохраняем питомца
-            pet = serializer.save(owner=request.user)
+            pet = cast(Pet, serializer.save(owner=request.user))
             
             try:
                 # генерируем и сохраняем QR код
                 qr_code = save_pet_qr(pet)
                 
                 # добавляем информацию о QR коде в ответ
-                response_data = serializer.data
-                response_data['qr_code'] = {
-                    'code': qr_code.code,
-                    'imageURL': qr_code.imageURL
-                }
+                response_data = dict(serializer.data)
+                response_data.update({
+                    'qr_code': {
+                        'code': qr_code.code,
+                        'imageURL': qr_code.imageURL
+                    }
+                })
                 
-                logger.info("Питомец и QR код успешно созданы")
                 return Response(response_data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 # если что-то пошло не так с QR кодом, удаляем питомца
@@ -120,5 +122,23 @@ class PetView(ViewSet):
         pet.delete()
         return Response(
             {"message": "Питомец успешно удален"},
+            status=status.HTTP_200_OK
+        )
+        
+    @action(detail=False, methods=['patch'])
+    @handle_exceptions
+    def is_lost_pet(self, request):
+        """Пометить питомца как потерянный"""
+        pet_id = request.data.get('id')
+        if not pet_id:
+            return Response(
+                {"error": "Не указан ID питомца"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        pet = self.get_object(pet_id)
+        pet.is_lost = not pet.is_lost
+        pet.save()
+        return Response(
+            {"message": "Питомец успешно помечен как потерянный" if pet.is_lost else "Питомец успешно помечен как найденный"},
             status=status.HTTP_200_OK
         )

@@ -44,6 +44,7 @@ export interface ButtonProps {
   disabled?: boolean
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'text'
+  loading?: boolean
 }
 
 export interface TextInputProps {

@@ -33,6 +33,7 @@ urlpatterns = [
     path('v1/pets/create-pet/', PetView.as_view({'post': 'create_pet'}), name="create-pet"),
     path('v1/pets/update-pet/', PetView.as_view({'patch': 'update_pet'}), name="update-pet"),
     path('v1/pets/delete-pet/', PetView.as_view({'delete': 'delete_pet'}), name="delete-pet"),
+    path('v1/pets/is-lost-pet/', PetView.as_view({'patch': 'is_lost_pet'}), name="is-lost-pet"),
     
     
     path('v1/pets/detail/', PetView.as_view({'get': 'get_pet'}), name="pet-detail"),

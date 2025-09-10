@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Image from 'next/image'
 import Loader from '@/components/ui/Loader'
+import Button from '@/components/ui/Button'
+import showToast from '@/components/ui/showToast'
 
 interface Pet {
   id: number
@@ -16,13 +18,46 @@ interface Pet {
   imageURL: string
   QRImage: string
   QRCode: string
+  is_lost: boolean
 }
 
 const ExistedPets = () => {
-  const { data: pets = [], isLoading, error } = useClientFetch<Pet[]>('/pets/get-pets/')
+  const { data: initialPets = [], isLoading, error } = useClientFetch<Pet[]>('/pets/get-pets/')
+  const [pets, setPets] = useState<Pet[]>([])
+  const [loadingPetId, setLoadingPetId] = useState<number | null>(null)
+
+  useEffect(() => {
+    setPets(initialPets)
+  }, [initialPets])
 
   if (isLoading) return <Loader />
-  if (error) return <div>Error: {error.message}</div>
+  if (error) return <div>Ошибка: {error.message}</div>
+
+  const handleLostPet = async (id: number) => {
+    try {
+      setLoadingPetId(id)
+      const response = await fetch(`/api/profile/pets/is-lost`, {
+        method: 'PATCH',
+        body: JSON.stringify({ id }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update pet')
+      }
+      const data = await response.json()
+
+      // Update the local state
+      setPets(prevPets =>
+        prevPets.map(pet => (pet.id === id ? { ...pet, is_lost: !pet.is_lost } : pet))
+      )
+
+      showToast({ type: 'success', message: data.message })
+    } catch (error) {
+      showToast({ type: 'error', message: 'Упс, что то пошло не так..' })
+    } finally {
+      setLoadingPetId(null)
+    }
+  }
 
   console.log(pets)
   return (
@@ -36,6 +71,14 @@ const ExistedPets = () => {
               <h2 className="text-xl font-semibold">
                 {pet.clear_type} {pet.name}
               </h2>
+
+              <Button
+                text={pet.is_lost ? 'Питомец потерян' : 'Питомец потерялся?'}
+                className={`${pet.is_lost ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
+                onClick={() => handleLostPet(pet.id)}
+                disabled={loadingPetId === pet.id}
+                loading={loadingPetId === pet.id}
+              />
             </div>
 
             <div className="flex items-center justify-around gap-4 py-4">
@@ -67,7 +110,7 @@ const ExistedPets = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
               <div>
                 <p className="text-sm text-gray-500">Порода</p>
                 <p className="font-medium">{pet.clear_breed}</p>

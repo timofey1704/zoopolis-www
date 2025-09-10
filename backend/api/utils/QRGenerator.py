@@ -10,6 +10,7 @@ import string
 from typing import List, Dict, Tuple
 from PIL import Image as PILImage
 from sitemanagement.models import Pet, QRCode
+from django.contrib.auth.models import User
 
 def generate_qr_from_objects(data: List[Dict], *, 
                            box_size: int = 10,
@@ -145,7 +146,7 @@ def save_pet_qr(pet: Pet) -> QRCode:
     qr_image.save(image_path)
     
     # создаем URL для изображения
-    image_url = f"/media/qr_codes/{image_filename}"
+    image_url = f"/media/{User.objects.get(id=pet.owner.id).username}/qr_codes/{image_filename}"
     
     # сохраняем QR код в базу
     qr_code = QRCode.objects.create(
