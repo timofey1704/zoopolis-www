@@ -25,7 +25,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
         >
           <div className="flex-1">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-2xl font-bold">{membership.plan}</h3>
+              <h3>{membership.plan}</h3>
               {accountTypeToDisplayName[
                 user?.account_type as keyof typeof accountTypeToDisplayName
               ] === membership.plan ? (

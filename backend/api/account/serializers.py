@@ -1,14 +1,19 @@
+import logging
 from rest_framework import serializers
 from django.utils import timezone
+from django.conf import settings
 
 from sitemanagement.models import Pet, MapPoints, Services, Bonuses
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
+
+logger = logging.getLogger(__name__)
 
 class BasePetSerializer(serializers.ModelSerializer):
     """Базовый сериализатор с общей валидацией"""
     class Meta:
         model = Pet
-        exclude = ('owner', 'created_at')
+        fields = '__all__'
+        read_only_fields = ('owner', 'created_at')
 
     def validate_birthday(self, value):
         """Проверка, что дата рождения не в будущем"""
@@ -16,11 +21,59 @@ class BasePetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Дата рождения не может быть в будущем")
         return value
 
+class PetCreateSerializer(BasePetSerializer):
+    """Сериализатор для создания питомца с поддержкой загрузки изображений"""
+    class Meta:
+        model = Pet
+        fields = ['name', 'type', 'birthday', 'gender', 'breed', 'color', 'comment', 'allergies', 'image']
+        read_only_fields = ('owner', 'created_at')
 class PetSerializer(BasePetSerializer):
     """Сериализатор для чтения данных питомца"""
-    class Meta(BasePetSerializer.Meta):
-        fields = '__all__'
-        read_only_fields = ('owner', 'created_at')
+    imageURL = serializers.SerializerMethodField()
+    QRImage = serializers.SerializerMethodField()
+    QRCode = serializers.SerializerMethodField()
+    clear_type = serializers.SerializerMethodField()
+    clear_breed = serializers.SerializerMethodField()
+    clear_color = serializers.SerializerMethodField()
+    clear_gender = serializers.SerializerMethodField()
+    
+    def get_imageURL(self, obj):
+        """Фото питомца с BASE_URL"""
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
+    
+    def get_QRImage(self, obj):
+        """Возвращает URL QR изображения питомца"""
+        qr = obj.qr_code.filter(is_active=True).last()
+        if not qr:
+            return None
+        return f"{settings.BASE_URL}{qr.image.url}" if qr.image else None
+    
+    def get_QRCode(self, obj):
+        """Возвращает код QR питомца"""
+        qr = obj.qr_code.filter(is_active=True).last()
+        if not qr:
+            return None
+        return qr.code
+        
+    def get_clear_type(self, obj):
+        """Возвращает название типа питомца"""
+        return obj.type.name if obj.type else None
+        
+    def get_clear_breed(self, obj):
+        """Возвращает название породы питомца"""
+        return obj.breed.name if obj.breed else None
+        
+    def get_clear_color(self, obj):
+        """Возвращает название цвета питомца"""
+        return obj.color.name if obj.color else None
+        
+    def get_clear_gender(self, obj):
+        """Возвращает пол питомца в читаемом виде"""
+        gender_map = {
+            'male': 'Мужской',
+            'female': 'Женский'
+        }
+        return gender_map.get(obj.gender)
         
 class CitySerializer(serializers.ModelSerializer):
     "Сериалиалайзер для выдачи городов"

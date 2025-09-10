@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useForm } from '@/app/hooks/useForm'
-import { uploadImage } from '@/lib/imageUpload'
 import TextInput from '@/components/ui/TextInput'
 import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
@@ -8,8 +7,8 @@ import showToast from '@/components/ui/showToast'
 import Image from 'next/image'
 import PetTypeSelector, { PetType } from '@/components/selectors/PetTypeSelector'
 import GenderSelector from '@/components/selectors/GenderSelector'
-import BreedSelector from '@/components/selectors/BreedSelector'
-import ColorSelector from '@/components/selectors/ColorSelector'
+import BreedSelector, { Breed } from '@/components/selectors/BreedSelector'
+import ColorSelector, { PetColor } from '@/components/selectors/ColorSelector'
 
 const validationRules = {
   imageURL: { required: false },
@@ -23,66 +22,19 @@ const validationRules = {
   allergies: { required: false },
 }
 
-type PetImageResponse = {
+export type PetImageResponse = {
   imageUrl: string
   message: string
 }
 
-const PetForm = () => {
+interface CreatePetFormProps {
+  onClose: () => void
+}
+
+const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>('')
-
-  const openFileDialog = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    try {
-      const file = files[0]
-
-      if (!file.type.startsWith('image/')) {
-        showToast({
-          type: 'error',
-          message: 'Пожалуйста, выберите изображение',
-        })
-        return
-      }
-
-      // создаем локальное превью
-      const localPreviewUrl = URL.createObjectURL(file)
-      setPreviewUrl(localPreviewUrl)
-
-      // загружаем на сервер
-      const response = await uploadImage<PetImageResponse>(file, '/api/pets/update-image')
-
-      if (response.imageUrl) {
-        setPreviewUrl(response.imageUrl)
-        handleChange({
-          target: {
-            id: 'imageURL',
-            value: response.imageUrl,
-          },
-        })
-      }
-
-      showToast({
-        type: 'success',
-        message: 'Фотография успешно загружена',
-      })
-
-      // очищаем инпут
-      e.target.value = ''
-    } catch (error) {
-      showToast({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'Ошибка при загрузке фотографии',
-      })
-      console.error('Error handling file:', error)
-    }
-  }
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -91,8 +43,8 @@ const PetForm = () => {
       type: null as PetType | null,
       birthday: '',
       gender: '',
-      breed: '',
-      color: '',
+      breed: null as Breed | null,
+      color: null as PetColor | null,
       comment: '',
       allergies: '',
       QRImage: '',
@@ -107,9 +59,14 @@ const PetForm = () => {
         // добавляем все текстовые поля
         Object.entries(values).forEach(([key, value]) => {
           if (key !== 'imageURL') {
-            // Для PetType отправляем только id
-            if (key === 'type' && value) {
-              formData.append(key, (value as PetType).id.toString())
+            // для полей с id отправляем только id
+            if (
+              ['type', 'breed', 'color'].includes(key) &&
+              value &&
+              typeof value === 'object' &&
+              'id' in value
+            ) {
+              formData.append(key, value.id.toString())
             } else {
               formData.append(key, value?.toString() || '')
             }
@@ -117,11 +74,13 @@ const PetForm = () => {
         })
 
         // если есть файл для загрузки, добавляем его
-        if (fileInputRef.current?.files?.[0]) {
-          formData.append('image', fileInputRef.current.files[0])
+        if (selectedFile) {
+          formData.append('image', selectedFile)
+        } else {
+          console.log('No file found in selectedFile state')
         }
 
-        const response = await fetch('/api/pets', {
+        const response = await fetch('/api/profile/pets', {
           method: 'POST',
           body: formData, // FormData автоматически установит правильный Content-Type
         })
@@ -131,7 +90,26 @@ const PetForm = () => {
           throw new Error(error.error || 'Ошибка при обновлении данных')
         }
 
-        showToast({ type: 'success', message: 'Данные успешно обновлены!' })
+        const data = await response.json()
+
+        // Обновляем значения QR кода в форме
+        if (data.qr_code) {
+          handleChange({
+            target: {
+              id: 'QRImage',
+              value: data.qr_code.imageURL,
+            },
+          })
+          handleChange({
+            target: {
+              id: 'QRCode',
+              value: data.qr_code.code,
+            },
+          })
+        }
+
+        showToast({ type: 'success', message: 'Питомец успешно добавлен!' })
+        onClose()
       } catch (error) {
         showToast({
           type: 'error',
@@ -140,6 +118,41 @@ const PetForm = () => {
       }
     }
   )
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      showToast({ type: 'error', message: 'Пожалуйста, выберите изображение' })
+      return
+    }
+
+    // cохраняем файл в стейте
+    setSelectedFile(file)
+
+    const localPreviewUrl = URL.createObjectURL(file)
+    setPreviewUrl(localPreviewUrl)
+
+    // сохраняем только локальное значение (файл уйдет вместе с формой)
+    handleChange({
+      target: { id: 'imageURL', value: file.name }, // можно просто имя файла или пустую строку
+    })
+
+    e.target.value = ''
+  }
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
 
   return (
     <div className="space-y-3 py-3">
@@ -173,18 +186,22 @@ const PetForm = () => {
                   />
                 </div>
               </div>
-              <Image
-                src={values.QRImage || '/images/noQR.svg'}
-                alt="qrcode"
-                width={160}
-                height={160}
-                className="rounded-full object-cover"
-              />
-              {values.QRCode && (
-                <div className="flex items-center justify-center">
-                  <span className="text-sm text-gray-500">{values.QRCode}</span>
-                </div>
-              )}
+              <div className="flex flex-col items-center gap-2">
+                <Image
+                  src={values.QRImage || '/images/noQR.svg'}
+                  alt="qrcode"
+                  width={160}
+                  height={160}
+                  className="rounded-2xl object-contain"
+                />
+                {values.QRCode && (
+                  <div className="flex items-center justify-center rounded-lg bg-gray-100 px-4 py-2">
+                    <span className="font-mono text-lg font-semibold text-gray-700">
+                      {values.QRCode}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="h-[2px] w-full bg-white" />
             <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
@@ -206,7 +223,12 @@ const PetForm = () => {
               <TextInput
                 name="birthday"
                 type="date"
-                min={new Date().toISOString().split('T')[0]}
+                max={new Date().toISOString().split('T')[0]}
+                min={
+                  new Date(new Date().setFullYear(new Date().getFullYear() - 15))
+                    .toISOString()
+                    .split('T')[0]
+                }
                 value={values.birthday}
                 handleChange={handleChange}
                 label="Дата рождения"
@@ -267,4 +289,4 @@ const PetForm = () => {
   )
 }
 
-export default PetForm
+export default CreatePetForm

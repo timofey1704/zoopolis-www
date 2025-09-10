@@ -9,7 +9,13 @@ load_dotenv(dotenv_path=BASE_DIR / './.env', override=True)
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEBUG_MODE", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+
+# Base URL for media files
+BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'media')
 
 CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
 CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist

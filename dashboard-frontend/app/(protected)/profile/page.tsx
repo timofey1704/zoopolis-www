@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ContactForm from './forms/ContactForm'
-import PetForm from './forms/PetForm'
+import CreatePetForm from './forms/CreatePetForm'
+import ExistedPets from './forms/ExistedPets'
 import { useTabs } from '@/app/hooks/useTabs'
 import { TabsContainer, TabConfig } from '@/components/ui/TabsContainer'
 import { useSearchParams } from 'next/navigation'
@@ -23,6 +24,7 @@ const TABS: TabConfig<TabType>[] = [
 ]
 
 const ProfilePage = () => {
+  const [showCreateForm, setShowCreateForm] = useState(false)
   const searchParams = useSearchParams()
   const tabFromUrl = searchParams.get('tab') as TabType
 
@@ -48,11 +50,22 @@ const ProfilePage = () => {
         onTabChange={handleTabChange}
         rightContent={
           selectedTab === 'pets' && (
-            <span className="mr-4 hover:cursor-pointer">Добавить питомца</span>
+            <span
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="text-orange hover:text-orange/80 mr-4 cursor-pointer"
+            >
+              {showCreateForm ? 'Список питомцев' : 'Добавить питомца'}
+            </span>
           )
         }
       />
-      {selectedTab === 'contacts' ? <ContactForm /> : <PetForm />}
+      {selectedTab === 'contacts' ? (
+        <ContactForm />
+      ) : showCreateForm ? (
+        <CreatePetForm onClose={() => setShowCreateForm(false)} />
+      ) : (
+        <ExistedPets />
+      )}
     </div>
   )
 }

@@ -44,6 +44,7 @@ export interface ButtonProps {
   disabled?: boolean
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'text'
+  loading?: boolean
 }
 
 export interface TextInputProps {
@@ -62,6 +63,7 @@ export interface TextInputProps {
   togglePasswordVisibility?: () => void
   error?: string
   min?: string
+  max?: string
 }
 
 export interface ValidationRules {

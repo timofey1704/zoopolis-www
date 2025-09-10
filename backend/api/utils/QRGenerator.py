@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 import qrcode
 from qrcode import constants
 import json
@@ -8,6 +10,8 @@ import string
 from typing import List, Dict, Tuple
 from PIL import Image as PILImage
 from sitemanagement.models import Pet, QRCode
+from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 def generate_qr_from_objects(data: List[Dict], *, 
                            box_size: int = 10,
@@ -115,23 +119,26 @@ def generate_unique_qr_code() -> str:
         if not QRCode.objects.filter(code=code).exists():
             return code
 
+
+
 def save_pet_qr(pet: Pet) -> QRCode:
     """
     Генерация и сохранение QR кода для питомца.
-    
     Args:
         pet: Экземпляр модели Pet
-    
-    Returns:
-        Созданный экземпляр модели QRCode
+    Returns: Созданный экземпляр модели QRCode
     """
-    qr_image, qr_base64 = generate_pet_qr(pet)
-    
-    # сохраняем QRкод в базу
-    qr_code = QRCode.objects.create(
+    qr_code_string = generate_unique_qr_code()
+    qr_image, _ = generate_pet_qr(pet)
+
+    # сохраняем изображение c QR
+    image_io = io.BytesIO()
+    qr_image.save(image_io, format="PNG")
+
+    qr_code = QRCode(
         pet=pet,
-        code=generate_unique_qr_code(),
-        imageURL=f"data:image/png;base64,{qr_base64}"
+        code=qr_code_string,
     )
-    
+    qr_code.image.save(f"{qr_code_string}.png", ContentFile(image_io.getvalue()), save=True)
+
     return qr_code

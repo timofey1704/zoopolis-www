@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
+from sitemanagement.constants.qr_code_path import pet_qr_upload_path
+from sitemanagement.constants.pet_image_path import pet_image_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -28,6 +30,7 @@ class Pricing(models.Model):
     class Meta:
         verbose_name = 'Тарифный план'
         verbose_name_plural = 'Тарифные планы'
+        ordering = ['id']
         
     def __str__(self):
         return self.plan
@@ -59,7 +62,12 @@ class MainPageMedia(models.Model):
         return self.url
 class Pet(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
-    imageURL = models.CharField(max_length=255, verbose_name='Фото питомца', null=True, blank=True)
+    image = models.ImageField(
+        upload_to=pet_image_upload_path,
+        verbose_name="Фото питомца",
+        null=True,
+        blank=True
+    )
     name = models.CharField(max_length=255, verbose_name='Кличка')
     type = models.ForeignKey(PetsTypes, on_delete=models.CASCADE, verbose_name='Тип питомца')
     birthday = models.DateField(verbose_name='Дата рождения')
@@ -74,11 +82,23 @@ class Pet(models.Model):
     class Meta:
         verbose_name = 'Питомец'
         verbose_name_plural = 'Питомцы'
+        ordering = ['-id']
+        
+    def __str__(self):
+        return f'{self.type} {self.name} - Владелец: {self.owner.username}'
         
 class QRCode(models.Model):
-    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, verbose_name='Питомец')
+    pet = models.ForeignKey(
+        'Pet',
+        on_delete=models.CASCADE,
+        verbose_name='Питомец',
+        related_name='qr_code'
+    )
     code = models.CharField(max_length=255, verbose_name='Код')
-    imageURL = models.CharField(max_length=255, verbose_name='Фото QR кода')
+    image = models.ImageField(
+        upload_to=pet_qr_upload_path,
+        verbose_name="Фото QR кода",
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     is_active = models.BooleanField(default=True, verbose_name='Активность')
     
@@ -175,3 +195,20 @@ class Bonuses(models.Model):
         
     def __str__(self):
         return self.name
+    
+class Tranasctions(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    membership = models.ForeignKey(Pricing, on_delete=models.CASCADE, verbose_name='Тарифный план')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма')
+    auto_renewal = models.BooleanField(default=False, verbose_name='Автоматическое продление')
+    status = models.CharField(max_length=10, verbose_name='Статус', choices=[('pending', 'Ожидание'), ('completed', 'Выполнено'), ('failed', 'Не выполнено')])
+    transaction_id = models.CharField(max_length=255, verbose_name='ID транзакции')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
+        ordering = ['id']
+        
+    def __str__(self):
+        return f'{self.user.username} - {self.membership.plan}'
