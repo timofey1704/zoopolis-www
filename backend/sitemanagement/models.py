@@ -30,6 +30,7 @@ class Pricing(models.Model):
     class Meta:
         verbose_name = 'Тарифный план'
         verbose_name_plural = 'Тарифные планы'
+        ordering = ['id']
         
     def __str__(self):
         return self.plan

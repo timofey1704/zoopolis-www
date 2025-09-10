@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useForm } from '@/app/hooks/useForm'
-import { uploadImage } from '@/lib/imageUpload'
 import TextInput from '@/components/ui/TextInput'
 import TextAreaInput from '@/components/ui/TextAreaInput'
 import Button from '@/components/ui/Button'
@@ -40,53 +39,33 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
     fileInputRef.current?.click()
   }
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    try {
-      const file = files[0]
-
-      if (!file.type.startsWith('image/')) {
-        showToast({
-          type: 'error',
-          message: 'Пожалуйста, выберите изображение',
-        })
-        return
-      }
-
-      // создаем локальное превью
-      const localPreviewUrl = URL.createObjectURL(file)
-      setPreviewUrl(localPreviewUrl)
-
-      // загружаем на сервер
-      const response = await uploadImage<PetImageResponse>(file, '/api/pets/update-image')
-
-      if (response.imageUrl) {
-        setPreviewUrl(response.imageUrl)
-        handleChange({
-          target: {
-            id: 'imageURL',
-            value: response.imageUrl,
-          },
-        })
-      }
-
-      showToast({
-        type: 'success',
-        message: 'Фотография успешно загружена',
-      })
-
-      // очищаем инпут
-      e.target.value = ''
-    } catch (error) {
-      showToast({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'Ошибка при загрузке фотографии',
-      })
-      console.error('Error handling file:', error)
+    if (!file.type.startsWith('image/')) {
+      showToast({ type: 'error', message: 'Пожалуйста, выберите изображение' })
+      return
     }
+
+    const localPreviewUrl = URL.createObjectURL(file)
+    setPreviewUrl(localPreviewUrl)
+
+    // сохраняем только локальное значение (файл уйдет вместе с формой)
+    handleChange({
+      target: { id: 'imageURL', value: file.name }, // можно просто имя файла или пустую строку
+    })
+
+    e.target.value = ''
   }
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
 
   const { values, handleChange, handleSubmit } = useForm(
     {
@@ -95,8 +74,8 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
       type: null as PetType | null,
       birthday: '',
       gender: '',
-      breed: '' as string | Breed | null,
-      color: '' as string | PetColor | null,
+      breed: null as Breed | null,
+      color: null as PetColor | null,
       comment: '',
       allergies: '',
       QRImage: '',
