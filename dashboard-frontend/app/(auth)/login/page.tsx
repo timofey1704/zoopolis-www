@@ -57,7 +57,7 @@ const LoginPage = () => {
         }
 
         showToast({ type: 'success', message: 'Авторизация успешна!' })
-        router.push('/profile')
+        router.push('/main')
       } catch {
         showToast({ type: 'error', message: 'Ошибка при входе в аккаунт' })
       }
