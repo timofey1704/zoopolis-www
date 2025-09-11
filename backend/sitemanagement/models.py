@@ -60,6 +60,7 @@ class MainPageMedia(models.Model):
         
     def __str__(self):
         return self.url
+    
 class Pet(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
     image = models.ImageField(

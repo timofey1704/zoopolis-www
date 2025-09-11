@@ -1,5 +1,3 @@
-import os
-from django.conf import settings
 import qrcode
 from qrcode import constants
 import json
@@ -10,7 +8,6 @@ import string
 from typing import List, Dict, Tuple
 from PIL import Image as PILImage
 from sitemanagement.models import Pet, QRCode
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 def generate_qr_from_objects(data: List[Dict], *, 
@@ -49,7 +46,7 @@ def generate_qr_from_objects(data: List[Dict], *,
     qr.make(fit=True)
     
     # создаем QR код
-    qr_image = qr.make_image(fill_color=fill_color, back_color=back_color)
+    qr_image = qr.make_image(fill_color="black", back_color="white").get_image()
     
     # преобразовываем в base64
     buffered = io.BytesIO()

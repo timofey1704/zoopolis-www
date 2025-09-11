@@ -1,8 +1,14 @@
-from django.contrib.auth.models import User
-from sitemanagement.constants.account_types import account_types
-from django.db import models
-from dictionaries.models import Cities
+import io
 import uuid
+from django.contrib.auth.models import User
+from django.db import models
+from django.core.files.base import ContentFile
+
+from sitemanagement.constants.account_types import account_types
+from sitemanagement.constants.qr_code_path import register_qr_upload_path
+from dictionaries.models import Cities
+
+from api.utils.generate_qr_register import generate_registration_qr
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -16,3 +22,38 @@ class UserProfile(models.Model):
    
     def __str__(self):
         return str(self.phone_number)
+    
+class RegisterQRCode(models.Model):
+    user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    verbose_name="Пользователь",
+    null=True,
+    blank=True
+    )
+    code = models.CharField(max_length=255, verbose_name="Код")
+    image = models.ImageField(upload_to=register_qr_upload_path, verbose_name="Фото QR кода")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    is_active = models.BooleanField(default=True, verbose_name="Активность")
+    is_used = models.BooleanField(default=False, verbose_name="Использован")
+    is_printed = models.BooleanField(default=False, verbose_name='Статус распечатки кода')
+    
+    class Meta:
+        verbose_name = "QR код регистрации"
+        verbose_name_plural = "QR коды регистрации"
+
+    def __str__(self):
+        return self.code
+
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # только при создании
+            qr_image, _, unique_code = generate_registration_qr("https://account.zoopolis.org/register")
+            self.code = unique_code
+
+            # сохраняем изображение во временный буфер
+            image_io = io.BytesIO()
+            qr_image.save(image_io, format="PNG")
+            self.image.save(f"{unique_code}.png", ContentFile(image_io.getvalue()), save=False)
+            
+        super().save(*args, **kwargs)
