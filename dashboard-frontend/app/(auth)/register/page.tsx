@@ -67,7 +67,7 @@ const RegisterPage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ phone_number: values.phone_number, code: values.promocode }),
+          body: JSON.stringify({ phone_number: values.phone_number, promocode: values.promocode }),
         })
 
         const verificationData = await verificationResponse.json()
@@ -101,6 +101,7 @@ const RegisterPage = () => {
         body: JSON.stringify({
           ...values,
           verification_code: verificationCode,
+          promocode: values.promocode,
         }),
       })
 

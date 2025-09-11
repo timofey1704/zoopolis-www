@@ -48,7 +48,7 @@ class RegisterQRCode(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:  # только при создании
-            qr_image, _, unique_code = generate_registration_qr("http://192.168.0.7:3000/register") #! поменяй в проде
+            qr_image, _, unique_code = generate_registration_qr() #! поменяй в проде
             self.code = unique_code
 
             # сохраняем изображение во временный буфер

@@ -7,12 +7,12 @@ from PIL import Image as PILImage
 from api.utils.QRGenerator import generate_unique_qr_code
 
 
-def generate_registration_qr(base_url: str = "https://account.zoopolis.org/register") -> Tuple[PILImage.Image, str, str]:
+def generate_registration_qr(base_url: str = "http://192.168.0.7:3000/is_lost/") -> Tuple[PILImage.Image, str, str]:
     """
     Генерация QR кода для страницы регистрации с уникальным параметром.
 
     Args:
-        base_url: Базовый URL для регистрации (по умолчанию https://account.zoopolis.org/register)
+        base_url: Базовый URL для регистрации (по умолчанию http://192.168.0.7:3000/is_lost/)
 
     Returns:
         - PIL Image объект QR кода
