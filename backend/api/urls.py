@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from api.main.views import FAQView, MediaMainView, MembershipPlansView, SmsSendView
+from api.main.views import FAQView, MediaMainView, MembershipPlansView, SmsSendView, IsLostPetView
 from api.auth.views import (
     LoginViewSet,
     RefreshTokenView,
@@ -18,6 +18,8 @@ urlpatterns = [
     path("v1/media/", MediaMainView.as_view(), name='mediaMain'),
     path("v1/account/memberships/", MembershipPlansView.as_view(), name='memberships'),
     path("v1/send-sms/", SmsSendView.as_view(), name='send-sms'),
+    path("v1/is-lost/", IsLostPetView.as_view(), name='check-lost-pet'),
+    
     
     path('oauth/', include('api.oauth.urls')),
     

@@ -6,6 +6,7 @@ from django.core.files.base import ContentFile
 
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.qr_code_path import register_qr_upload_path
+from sitemanagement.models import Pet
 from dictionaries.models import Cities
 
 from api.utils.generate_qr_register import generate_registration_qr
@@ -37,7 +38,8 @@ class RegisterQRCode(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активность")
     is_used = models.BooleanField(default=False, verbose_name="Использован")
     is_printed = models.BooleanField(default=False, verbose_name='Статус распечатки кода')
-    
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="Питомец", null=True, blank=True)
+        
     class Meta:
         verbose_name = "QR код регистрации"
         verbose_name_plural = "QR коды регистрации"
