@@ -16,7 +16,7 @@ from api.utils.cookiesSetter import AuthBaseViewSet
 from datetime import datetime
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
-from api.models import User, UserProfile
+from api.models import User, UserProfile, RegisterQRCode
 
 
 
@@ -75,6 +75,7 @@ class RegisterViewSet(AuthBaseViewSet):
     def send_verification_code(self, request):
         """Отправка кода верификации на email"""
         phone_number = request.data.get('phone_number')
+        promocode = request.data.get('code')
         
         if not phone_number:
             return Response(
@@ -86,6 +87,13 @@ class RegisterViewSet(AuthBaseViewSet):
         if UserProfile.objects.filter(phone_number=phone_number).exists():
             return Response(
                 {"error": "Пользователь с таким номером телефона уже существует"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # проверяем не использован ли промокод
+        if RegisterQRCode.objects.filter(code=promocode, is_used=True).exists():
+            return Response(
+                {"error": "Промокод уже использован"},
                 status=status.HTTP_400_BAD_REQUEST
             )
             

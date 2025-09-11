@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
+import { useSearchParams } from 'next/navigation'
 
 import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
@@ -18,6 +19,7 @@ const validationRules = {
   surname: { required: true },
   password: { required: true, minLength: 8 },
   privacy_accepted: { required: true },
+  promocode: { required: false },
 }
 
 const RegisterPage = () => {
@@ -26,6 +28,8 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [verificationStep, setVerificationStep] = useState(false)
   const [verificationCode, setVerificationCode] = useState('')
+  const searchParams = useSearchParams()
+  const ref = searchParams.get('ref')
 
   useEffect(() => {
     // проверяем логин
@@ -50,6 +54,7 @@ const RegisterPage = () => {
       phone_number: '',
       password: '',
       privacy_accepted: false,
+      promocode: ref || '',
     },
     validationRules,
     async values => {
@@ -62,7 +67,7 @@ const RegisterPage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ phone_number: values.phone_number }),
+          body: JSON.stringify({ phone_number: values.phone_number, code: values.promocode }),
         })
 
         const verificationData = await verificationResponse.json()
@@ -221,6 +226,15 @@ const RegisterPage = () => {
               isPassword={true}
               isVisible={isVisible}
               togglePasswordVisibility={togglePasswordVisibility}
+            />
+
+            <TextInput
+              value={values.promocode}
+              name="promocode"
+              handleChange={handleChange}
+              placeholder="Промокод"
+              style="register"
+              label="Промокод"
             />
           </div>
 
