@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
+import Scroll from './ui/Scroll'
 
 const Burger = () => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const handleClose = () => setIsOpen(false)
 
   return (
     <>
@@ -17,17 +19,17 @@ const Burger = () => {
             className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-8 rotate-45' : 'top-2 w-8'
             }`}
-          ></span>
+          />
           <span
             className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-0 opacity-0' : 'top-4 w-8'
             }`}
-          ></span>
+          />
           <span
             className={`absolute h-0.5 bg-black transition-all duration-300 ease-in-out ${
               isOpen ? 'top-4 w-8 -rotate-45' : 'top-6 w-8'
             }`}
-          ></span>
+          />
         </div>
       </button>
 
@@ -44,36 +46,35 @@ const Burger = () => {
             isOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
           }`}
         >
-          <Link
-            href="/"
-            className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
-          >
-            Как это работает?
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
-          >
-            Тарифы
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
-          >
-            Отзывы
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
-          >
-            FAQ
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-orange transition-colors duration-300 hover:cursor-pointer"
-          >
-            О компании
-          </Link>
+          <Scroll moveTo="main" onClick={handleClose}>
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Как это работает?
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="pricing" onClick={handleClose}>
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Тарифы
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="reviews" onClick={handleClose}>
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Отзывы
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="faq" onClick={handleClose}>
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              FAQ
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="about-us" onClick={handleClose}>
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              О компании
+            </div>
+          </Scroll>
         </div>
       </div>
     </>

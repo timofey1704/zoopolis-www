@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Image from 'next/image'
 import Loader from '@/components/ui/Loader'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import { MdOutlineEdit, MdOutlineDelete } from 'react-icons/md'
+import EditPopup from '../components/EditPopup'
 
-interface Pet {
+export interface Pet {
   id: number
+  type: string
+  breed: string
+  color: string
+  gender: string
   name: string
   clear_type: string
   birthday: string
@@ -24,12 +29,17 @@ interface Pet {
 
 const ExistedPets = () => {
   const { data: initialPets = [], isLoading, error } = useClientFetch<Pet[]>('/pets/get-pets/')
-  const [pets, setPets] = useState<Pet[]>([])
+  const [pets, setPets] = useState<Pet[]>(initialPets)
   const [loadingPetId, setLoadingPetId] = useState<number | null>(null)
+  const [editingPet, setEditingPet] = useState<Pet | null>(null)
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false)
 
+  // обновляем локальное состояние когда приходят новые данные
   useEffect(() => {
-    setPets(initialPets)
-  }, [initialPets])
+    if (initialPets.length > 0) {
+      setPets(initialPets)
+    }
+  }, [initialPets.length]) // используем только длину массива как зависимость
 
   if (isLoading) return <Loader />
   if (error) return <div>Ошибка: {error.message}</div>
@@ -60,7 +70,13 @@ const ExistedPets = () => {
   }
 
   const handleEdit = (id: number) => {
-    console.log('Редактировать питомца', id)
+    setEditingPet(pets.find(pet => pet.id === id) || null)
+    setIsEditPopupOpen(true)
+  }
+
+  const handleCloseEditPopup = () => {
+    setIsEditPopupOpen(false)
+    setEditingPet(null)
   }
 
   const handleDelete = async (id: number) => {
@@ -206,6 +222,7 @@ const ExistedPets = () => {
           </div>
         ))
       )}
+      <EditPopup isOpen={isEditPopupOpen} onClose={handleCloseEditPopup} petData={editingPet} />
     </div>
   )
 }

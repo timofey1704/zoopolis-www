@@ -17,7 +17,10 @@ export default async function Home() {
 
   return (
     <div className="mx-auto flex flex-col items-center justify-center space-y-24 overflow-x-hidden">
-      <div className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]">
+      <div
+        id="main"
+        className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]"
+      >
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
         <div className="relative w-full pt-10">
           <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
@@ -33,10 +36,16 @@ export default async function Home() {
                   связаться с нашей службой поддержки, которая решит все нюансы по возвращению
                   питомца хозяину.
                 </p>
-                <Button
-                  text="Заказать"
-                  className="bg-orange hover:bg-orange/90 w-fit px-8 py-3 text-lg font-medium text-white transition-all"
-                />
+                <a
+                  href="https://account.zoopolis.org/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text="Заказать"
+                    className="bg-orange hover:bg-orange/90 w-fit px-8 py-3 text-lg font-medium text-white transition-all"
+                  />
+                </a>
               </div>
               <div className="relative mx-10 flex-shrink-0">
                 <Image
@@ -101,7 +110,10 @@ export default async function Home() {
         />
       </div>
 
-      <div className="container mx-auto max-w-[1216px] px-4 py-4 sm:py-6 md:py-8 lg:py-10">
+      <div
+        id="reviews"
+        className="container mx-auto max-w-[1216px] px-4 py-4 sm:py-6 md:py-8 lg:py-10"
+      >
         <div className="relative grid grid-cols-1 items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
           {/* плашка отзывов */}
           <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
@@ -158,7 +170,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="flex max-w-[1216px] flex-col items-center justify-center px-4">
+      <div id="pricing" className="flex max-w-[1216px] flex-col items-center justify-center px-4">
         <h2 className="space-x-4 text-white">
           <span className="text-black">УДОБНАЯ</span>
           <span className="relative mx-2 inline-block px-1">
@@ -174,7 +186,10 @@ export default async function Home() {
         <PricingCard memberships={memberships} />
       </div>
 
-      <div className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10">
+      <div
+        id="about-us"
+        className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10"
+      >
         <h2 className="text-white">
           <span className="text-black">МЫ НА</span>
           <span className="relative mx-2 inline-block px-1">
@@ -185,7 +200,9 @@ export default async function Home() {
         <MediaSlider />
       </div>
 
-      <FAQ faqs={faqs} />
+      <div id="faq">
+        <FAQ faqs={faqs} />
+      </div>
 
       <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-4 px-4 sm:my-6 sm:flex-row sm:gap-6 lg:my-8 lg:gap-10">
         <Image
@@ -209,7 +226,9 @@ export default async function Home() {
           <div className="px-4 text-center text-sm text-black sm:px-8 sm:text-base lg:px-0 lg:text-lg">
             3 месяца Зоо ID-подписки в подарок при покупке QR-кулона!
           </div>
-          <Button text="Защитить питомца" className="bg-orange text-white" />
+          <a href="https://account.zoopolis.org/login" target="_blank" rel="noopener noreferrer">
+            <Button text="Защитить питомца" className="bg-orange text-white" />
+          </a>
         </div>
         <Image
           src={Cat2}
