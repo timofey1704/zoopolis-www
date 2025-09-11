@@ -1,9 +1,14 @@
-from django.contrib.auth.models import User
-from sitemanagement.constants.account_types import account_types
-from django.db import models
-from dictionaries.models import Cities
+import io
 import uuid
+from django.contrib.auth.models import User
+from django.db import models
+from django.core.files.base import ContentFile
+
+from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.qr_code_path import register_qr_upload_path
+from dictionaries.models import Cities
+
+from api.utils.generate_qr_register import generate_registration_qr
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -38,3 +43,16 @@ class RegisterQRCode(models.Model):
 
     def __str__(self):
         return self.code
+
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # только при создании
+            qr_image, _, unique_code = generate_registration_qr("https://account.zoopolis.org/register")
+            self.code = unique_code
+
+            # сохраняем изображение во временный буфер
+            image_io = io.BytesIO()
+            qr_image.save(image_io, format="PNG")
+            self.image.save(f"{unique_code}.png", ContentFile(image_io.getvalue()), save=False)
+            
+        super().save(*args, **kwargs)

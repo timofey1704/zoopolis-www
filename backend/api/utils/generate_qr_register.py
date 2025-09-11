@@ -5,8 +5,6 @@ import base64
 from typing import Tuple
 from PIL import Image as PILImage
 from api.utils.QRGenerator import generate_unique_qr_code
-from api.models import RegisterQRCode
-from django.core.files.base import ContentFile
 
 
 def generate_registration_qr(base_url: str = "https://account.zoopolis.org/register") -> Tuple[PILImage.Image, str, str]:
@@ -44,22 +42,3 @@ def generate_registration_qr(base_url: str = "https://account.zoopolis.org/regis
     img_str = base64.b64encode(buffered.getvalue()).decode()
 
     return qr_image, img_str, unique_code
-
-def save_registration_qr() -> RegisterQRCode:
-    """
-    Генерация и сохранение регистрационного QR кода.
-    
-    Returns:
-        Экземпляр RegisterQRCode
-    """
-    qr_image, _, unique_code = generate_registration_qr("https://account.zoopolis.org/register")
-
-    image_io = io.BytesIO()
-    qr_image.save(image_io, format="PNG")
-
-    qr_code = RegisterQRCode(
-        code=unique_code,
-    )
-    qr_code.image.save(f"{unique_code}.png", ContentFile(image_io.getvalue()), save=True)
-
-    return qr_code
