@@ -16,7 +16,7 @@ from api.utils.cookiesSetter import AuthBaseViewSet
 from datetime import datetime
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
-from api.models import User, UserProfile
+from api.models import User, UserProfile, RegisterQRCode
 
 
 
@@ -75,6 +75,7 @@ class RegisterViewSet(AuthBaseViewSet):
     def send_verification_code(self, request):
         """Отправка кода верификации на email"""
         phone_number = request.data.get('phone_number')
+        promocode = request.data.get('promocode')
         
         if not phone_number:
             return Response(
@@ -88,6 +89,17 @@ class RegisterViewSet(AuthBaseViewSet):
                 {"error": "Пользователь с таким номером телефона уже существует"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+        # проверяем промокод (если предоставлен)
+        if promocode:
+            try:
+                qr_code = RegisterQRCode.objects.get(code=promocode)
+                if qr_code.is_used:
+                    return Response({"error": "Промокод уже использован"}, status=status.HTTP_400_BAD_REQUEST)
+                if not qr_code.is_active:
+                    return Response({"error": "Промокод неактивен"}, status=status.HTTP_400_BAD_REQUEST)
+            except RegisterQRCode.DoesNotExist:
+                return Response({"error": "Неверный промокод"}, status=status.HTTP_400_BAD_REQUEST)
             
         # проверяем можно ли отправить новый код
         can_send, error_message = redis_client.can_send_new_code(phone_number)
@@ -124,6 +136,7 @@ class RegisterViewSet(AuthBaseViewSet):
         
         phone_number = request.data.get('phone_number')
         verification_code = request.data.get('verification_code')
+        promocode = request.data.get('promocode')
 
         if not phone_number or not verification_code:
             return Response(
@@ -140,6 +153,16 @@ class RegisterViewSet(AuthBaseViewSet):
                 {"error": "Неверный или истекший код подтверждения"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+        # проверяем промокод если он предоставлен
+        if promocode:
+            try:
+                qr_code = RegisterQRCode.objects.get(code=promocode, is_active=True, is_used=False)
+            except RegisterQRCode.DoesNotExist:
+                return Response(
+                    {"error": "Неверный или уже использованный промокод"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         
         # продолжаем регистрацию
         serializer = ClientRegisterSerializer(data=request.data)
@@ -148,7 +171,21 @@ class RegisterViewSet(AuthBaseViewSet):
                 with transaction.atomic():
                     user = serializer.save()
                     
-                    refresh = RefreshToken.for_user(user)
+                    # активируем промокод если он был предоставлен
+                    if promocode:
+                        try:
+                            qr_code = RegisterQRCode.objects.get(code=promocode, is_active=True, is_used=False)
+                            qr_code.is_used = True
+                            qr_code.is_active = False
+                            qr_code.user = user  # type: ignore
+                            qr_code.save()
+                        except RegisterQRCode.DoesNotExist:
+                            return Response(
+                                {"error": "Промокод не найден"},
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
+                    
+                    refresh = RefreshToken.for_user(user) # type: ignore
                     user_data = UserResponseSerializer(user).data
                     
                     response = Response(
