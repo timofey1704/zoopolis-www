@@ -17,12 +17,12 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(RegisterQRCode)
 class RegisterQRCodeAdmin(admin.ModelAdmin):
-    list_display = ("code", "user", "is_active", "is_used", "created_at")
+    list_display = ("code", "user", "is_active", "is_used", "is_printed", "created_at")
     list_filter = ("is_active", "is_used", "created_at")
     search_fields = ("code", "user__username")
 
     # чтобы в форме не отображались автоматически заполняемые поля
-    readonly_fields = ("code", "image", "created_at")
+    readonly_fields = ("code", "image", "created_at", "user", 'is_printed', 'is_used', 'is_active')
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

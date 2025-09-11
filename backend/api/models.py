@@ -36,6 +36,7 @@ class RegisterQRCode(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     is_active = models.BooleanField(default=True, verbose_name="Активность")
     is_used = models.BooleanField(default=False, verbose_name="Использован")
+    is_printed = models.BooleanField(default=False, verbose_name='Статус распечатки кода')
     
     class Meta:
         verbose_name = "QR код регистрации"
