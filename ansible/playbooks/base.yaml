@@ -1,0 +1,47 @@
+- name: Base
+  hosts: servers
+  tasks:
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - git
+          - htop
+          - sudo
+          - tmux
+          - vim
+          - gpg
+        state: present
+    - name: Timezone
+      community.general.timezone:
+        name: "{{ timezone }}"
+    - name: Hostname
+      ansible.builtin.hostname:
+        name: "{{ domain }}"
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ user }}"
+        shell: /usr/bin/bash
+        groups: sudo
+        append: true
+    - name: Sudo config
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/sudo_no_pass
+        mode: "0644"
+        content: |
+          %sudo ALL=(ALL:ALL) NOPASSWD:ALL
+    - name: Ssh dir
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.ssh"
+        state: directory
+        mode: "0755"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+    - name: Ssh keys
+      ansible.builtin.copy:
+        dest: "/home/{{ user }}/.ssh/authorized_keys"
+        content: "{{ ssh_keys }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0600"
+        force: true

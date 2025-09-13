@@ -1,0 +1,25 @@
+servers:
+  hosts:
+    zoopolis:
+      ansible_host: zoopolis
+
+  vars:
+    ansible_user: root
+
+    app: zoopolis
+
+    user: zoo
+    timezone: Europe/Minsk
+    ssh_keys: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP+igmEmZ9KzELTgYKLrW/LcFIclzj0m2enPp5Bm4QSz promo@vhome6
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFIOJE+HAkS+l7kDMNsQAMsVxdBoKn6UKg1NwO/KJ5I+ timofey.syr17@gmail.com
+
+    db_user: zoopolis
+    db_password: eequeiTh0Yeiwoo4Ahra
+    db_name: zoopolis
+
+    registry_user: gitlab+deploy-token-8358595
+    registry_token: gldt-T_Vshyi9ZL4jHqDt_-w6
+
+    domain: zoopolis.com
+    enable_https: false

@@ -1,0 +1,5 @@
+
+run INVENTORY PLAYBOOK:
+  ansible-playbook -i inventory/{{ INVENTORY }}.yaml playbooks/{{ PLAYBOOK }}.yaml
+
+prod PLAYBOOK: (run "prod" PLAYBOOK)
