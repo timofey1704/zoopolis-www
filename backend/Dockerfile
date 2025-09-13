@@ -2,7 +2,7 @@ FROM python:3.13-alpine
 WORKDIR /app
 COPY requirements.txt .
 COPY --chmod=755 <<EOT ./entrypoint.sh
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 ./manage.py collectstatic -c --noinput &&
 gunicorn --bind 0.0.0.0:8000 base.wsgi:application
