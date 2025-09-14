@@ -1,0 +1,65 @@
+- name: Zoopolis service
+  hosts: servers
+  tasks:
+    - name: Docker compose project dir
+      ansible.builtin.file:
+        path: "/etc/docker/compose/{{ app }}"
+        state: directory
+
+    - name: Static dir
+      ansible.builtin.file:
+        path: "/home/{{ user }}/static"
+        state: directory
+        owner: "{{ user }}"
+
+    - name: Media dir
+      ansible.builtin.file:
+        path: "/home/{{ user }}/media"
+        state: directory
+        owner: "{{ user }}"
+
+    - name: Log into gitlab registry
+      become: true
+      become_user: "{{ user }}"
+      community.docker.docker_login:
+        registry_url: registry.gitlab.com
+        username: "{{ registry_user }}"
+        password: "{{ registry_token }}"
+        reauthorize: true
+
+    - name: Docker compose file
+      ansible.builtin.template:
+        src: "zoopolis/docker-compose.yml"
+        dest: "/etc/docker/compose/{{ app }}/docker-compose.yml"
+      notify: Restart compose service
+
+    - name: Pull images
+      become: true
+      become_user: "{{ user }}"
+      community.docker.docker_compose_v2_pull:
+        project_src: "/etc/docker/compose/{{ app }}"
+      notify:
+        - Restart compose service
+        - Prune docker
+
+    - name: Systemd service
+      ansible.builtin.systemd:
+        name: "compose@{{ app }}"
+        state: started
+        daemon_reload: true
+        enabled: true
+      notify: Restart compose service
+
+  handlers:
+    - name: Restart compose service
+      ansible.builtin.service:
+        name: "compose@{{ app }}"
+        state: restarted
+
+    - name: Prune docker
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+        builder_cache: true

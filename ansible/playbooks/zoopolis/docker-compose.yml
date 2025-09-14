@@ -1,0 +1,81 @@
+services:
+  backend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/backend:prod
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - "static:/static"
+      - "media:/media"
+    environment:
+      # django settings
+      ALLOWED_HOSTS: "{{domain}},backend"
+      SECRET_KEY: "django-insecure-13$_n#af_kof8dn=aaoh_kc4s%@sehqgh$%=iftn8cc#ueh=e)"
+      DEBUG_MODE: False
+      BASE_URL: "https://{{ domain }}"
+      MEDIA_ROOT: /media
+      STATIC_ROOT: /static
+      CORS_ALLOW_ALL_ORIGINS: False
+      CORS_ALLOWED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
+      CSRF_TRUSTED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
+
+      #database
+      DB_NAME: "{{ db_name }}"
+      DB_USER: "{{ db_user }}"
+      DB_PASSWORD: "{{ db_password }}"
+      DB_HOST: 172.56.0.1
+      DB_PORT: 5432
+
+      #telegram credentials
+      BOT_TOKEN: abc
+      CHAT_ID: -1002557491000
+
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.2
+
+  frontend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/frontend:prod
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.3
+    depends_on:
+      - backend
+
+  dashboard-frontend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/dashboard-frontend:prod
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+      BACKEND_URL: http://backend
+      NEXTAUTH_SECRET: abc
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.4
+    depends_on:
+      - backend
+
+networks:
+  zoopolis:
+    name: zoopolis_network
+    ipam:
+      config:
+        - subnet: 172.56.0.0/24
+
+volumes:
+  media:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/home/{{ user }}/media"
+  static:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/home/{{ user }}/static"
