@@ -8,15 +8,15 @@
 
     - name: Static dir
       ansible.builtin.file:
-        path: "/home/{{ user }}/static"
+        path: "/var/{{ app }}/static"
         state: directory
-        owner: "{{ user }}"
+        recurse: true
 
     - name: Media dir
       ansible.builtin.file:
-        path: "/home/{{ user }}/media"
+        path: "/var/{{ app }}/media"
         state: directory
-        owner: "{{ user }}"
+        recurse: true
 
     - name: Log into gitlab registry
       become: true
@@ -48,7 +48,6 @@
         state: started
         daemon_reload: true
         enabled: true
-      notify: Restart compose service
 
     - name: Configure frontend
       ansible.builtin.template:

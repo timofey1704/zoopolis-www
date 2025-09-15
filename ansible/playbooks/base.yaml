@@ -5,6 +5,7 @@
       ansible.builtin.package:
         name:
           - curl
+          - rsync
           - git
           - htop
           - sudo
