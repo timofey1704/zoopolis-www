@@ -80,6 +80,7 @@ const LoginPage = () => {
       <Image
         src="/images/login-up.svg"
         alt="login-bg-up"
+        priority
         width={1500}
         height={1500}
         className="absolute top-0 right-0 z-0"
@@ -133,6 +134,7 @@ const LoginPage = () => {
               alt="login-dog"
               width={323}
               height={543}
+              priority
               className="object-contain sm:hidden md:block"
             />
           </div>

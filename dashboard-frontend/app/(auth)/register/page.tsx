@@ -180,7 +180,7 @@ const RegisterPage = () => {
 
   return (
     <div className="flex items-center justify-center p-12">
-      <div className="flex w-full max-w-xl flex-col gap-4 rounded-2xl border border-gray-200 p-6 shadow-lg md:max-w-3xl lg:max-w-4xl">
+      <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
         <h1 className="py-1 text-2xl">Давайте познакомимся поближе!</h1>
         <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
           <div className="mb-2 space-y-4">
@@ -233,9 +233,9 @@ const RegisterPage = () => {
               value={values.promocode}
               name="promocode"
               handleChange={handleChange}
-              placeholder="Промокод"
+              placeholder="QWEZXC12"
               style="register"
-              label="Промокод"
+              label="Код"
             />
           </div>
 
