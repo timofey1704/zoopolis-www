@@ -108,7 +108,6 @@
    createdb zoopolisdb
    # Выполните миграции, если они имеются. В проекте откройте директорию backend
    cd backend
-   python manage.py makemigrations
    python manage.py migrate
    ```
 
@@ -180,7 +179,7 @@
    cd ansible
    ansible-playbook -i inventory/prod.yaml playbooks/zoopolis.yaml 
    ```
-   Эта команда собирает все контейнеры, отдельно собирать не нужно.
+   Эта создает и запускает все контейнеры, контейнеры должны быть до этого загружены в registry.
 
 ### Миграции в продакшне.
 

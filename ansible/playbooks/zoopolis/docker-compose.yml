@@ -9,8 +9,8 @@ services:
     environment:
       # django settings
       ALLOWED_HOSTS: "{{domain}},backend"
-      SECRET_KEY: "django-insecure-13$_n#af_kof8dn=aaoh_kc4s%@sehqgh$%=iftn8cc#ueh=e)"
-      DEBUG_MODE: False
+      SECRET_KEY: "bgl@ztmh!q70hk9#t&!u52x(o$$6y$yvnsx9#3=o*-^g1mo!-$"
+      DEBUG_MODE: True
       BASE_URL: "https://{{ domain }}"
       MEDIA_ROOT: /media
       STATIC_ROOT: /static
@@ -51,8 +51,8 @@ services:
       - "127.0.0.1:3002:3000"
     environment:
       NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
-      BACKEND_URL: http://backend
-      NEXTAUTH_SECRET: abc
+      BACKEND_URL: http://backend:8000/api/v1
+      NEXTAUTH_URL: https://{{ domain }}
     networks:
       zoopolis:
         ipv4_address: 172.56.0.4
