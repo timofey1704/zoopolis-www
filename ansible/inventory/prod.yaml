@@ -22,4 +22,5 @@ servers:
     registry_token: glpat-pgmIdGicFfqT65Za-TrMf286MQp1OjFkeTQ4Cw.01.120jn4dao
 
     domain: zoopolis.com
+    domain_dashboard: board.zoopolis.com
     enable_https: false

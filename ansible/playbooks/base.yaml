@@ -11,6 +11,8 @@
           - tmux
           - vim
           - gpg
+          - gnupg
+          - ca-certificates
         state: present
     - name: Timezone
       community.general.timezone:

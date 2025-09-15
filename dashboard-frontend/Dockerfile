@@ -3,7 +3,7 @@ WORKDIR /app
 COPY --chmod=755 <<EOT ./entrypoint.sh
 #!/usr/bin/env sh
 set -e
-npm run &&
+npm run build &&
 npm start
 EOT
 COPY . ./

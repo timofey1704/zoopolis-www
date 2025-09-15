@@ -1,0 +1,32 @@
+- name: Angie web server
+  hosts: servers
+  tasks:
+    - name: Add apt key
+      ansible.builtin.get_url:
+        url: https://angie.software/keys/angie-signing.gpg
+        dest: /etc/apt/trusted.gpg.d/angie-signing.gpg
+
+    - name: Add apt repo
+      ansible.builtin.apt_repository:
+        repo: "deb https://download.angie.software/angie/\
+          {{ ansible_facts['distribution'] | lower }}/{{ ansible_facts['distribution_major_version'] }} \
+          {{ ansible_facts['distribution_release'] }} main"
+        filename: angie
+        update_cache: true
+
+    - name: Install Angie
+      ansible.builtin.package:
+        name: angie
+
+    - name: Configure defaults
+      ansible.builtin.template:
+        src: angie/default.conf
+        dest: "/etc/angie/http.d/default.conf"
+        mode: "0644"
+      notify: Restart angie
+
+  handlers:
+    - name: Restart angie
+      ansible.builtin.service:
+        name: angie
+        state: restarted
