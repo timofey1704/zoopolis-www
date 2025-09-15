@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
 import { useSearchParams } from 'next/navigation'
-
+import Loader from '@/components/ui/Loader'
 import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
@@ -179,108 +179,110 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center p-12">
-      <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
-        <h1 className="py-1 text-2xl">Давайте познакомимся поближе!</h1>
-        <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
-          <div className="mb-2 space-y-4">
-            <TextInput
-              value={values.name}
-              name="name"
-              handleChange={handleChange}
-              placeholder="Иван"
-              style="register"
-              label="Ваше имя"
-            />
+    <Suspense fallback={<Loader />}>
+      <div className="flex items-center justify-center p-12">
+        <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
+          <h1 className="py-1 text-2xl">Давайте познакомимся поближе!</h1>
+          <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
+            <div className="mb-2 space-y-4">
+              <TextInput
+                value={values.name}
+                name="name"
+                handleChange={handleChange}
+                placeholder="Иван"
+                style="register"
+                label="Ваше имя"
+              />
 
-            <TextInput
-              value={values.surname}
-              name="surname"
-              handleChange={handleChange}
-              placeholder="Иванов"
-              style="register"
-              label="Ваша фамилия"
-            />
+              <TextInput
+                value={values.surname}
+                name="surname"
+                handleChange={handleChange}
+                placeholder="Иванов"
+                style="register"
+                label="Ваша фамилия"
+              />
 
-            <TextInput
-              value={values.email}
-              name="email"
-              handleChange={handleChange}
-              placeholder="my_email@gmail.com"
-              style="register"
-              label="Ваш еmail"
-            />
+              <TextInput
+                value={values.email}
+                name="email"
+                handleChange={handleChange}
+                placeholder="my_email@gmail.com"
+                style="register"
+                label="Ваш еmail"
+              />
 
-            <PhoneInput
-              value={values.phone_number}
-              handleChange={handleChange}
-              operatorsInfo={false}
-            />
+              <PhoneInput
+                value={values.phone_number}
+                handleChange={handleChange}
+                operatorsInfo={false}
+              />
 
-            <TextInput
-              value={values.password}
-              name="password"
-              handleChange={handleChange}
-              placeholder="Не менее 8 символов"
-              style="register"
-              label="Ваш пароль"
-              isPassword={true}
-              isVisible={isVisible}
-              togglePasswordVisibility={togglePasswordVisibility}
-            />
+              <TextInput
+                value={values.password}
+                name="password"
+                handleChange={handleChange}
+                placeholder="Не менее 8 символов"
+                style="register"
+                label="Ваш пароль"
+                isPassword={true}
+                isVisible={isVisible}
+                togglePasswordVisibility={togglePasswordVisibility}
+              />
 
-            <TextInput
-              value={values.promocode}
-              name="promocode"
-              handleChange={handleChange}
-              placeholder="QWEZXC12"
-              style="register"
-              label="Код"
-            />
+              <TextInput
+                value={values.promocode}
+                name="promocode"
+                handleChange={handleChange}
+                placeholder="QWEZXC12"
+                style="register"
+                label="Код"
+              />
+            </div>
+
+            <div className="flex items-start pb-2">
+              <input
+                type="checkbox"
+                id="privacy_accepted"
+                name="privacy_accepted"
+                onChange={handleChange}
+                checked={values.privacy_accepted}
+                className="mt-1 cursor-pointer"
+              />
+              <label
+                htmlFor="privacy_accepted"
+                className="cursor-pointer px-2 text-gray-700 select-none"
+              >
+                Даю согласие на обработку моих{' '}
+                <Link href="/privacy-policy" className="text-orange/60 hover:underline">
+                  персональных данных.
+                </Link>
+              </label>
+            </div>
+            <div className="my-2 flex w-full items-center justify-center">
+              <Button
+                text={isLoading ? 'Подождите...' : 'Продолжить'}
+                className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white"
+                type="submit"
+                disabled={isLoading}
+              />
+            </div>
+          </form>
+
+          <div className="flex items-center gap-4">
+            <div className="flex-1 border-t border-gray-300" />
+            <p className="shrink-0 px-2 text-gray-500">Или</p>
+            <div className="flex-1 border-t border-gray-300" />
           </div>
-
-          <div className="flex items-start pb-2">
-            <input
-              type="checkbox"
-              id="privacy_accepted"
-              name="privacy_accepted"
-              onChange={handleChange}
-              checked={values.privacy_accepted}
-              className="mt-1 cursor-pointer"
-            />
-            <label
-              htmlFor="privacy_accepted"
-              className="cursor-pointer px-2 text-gray-700 select-none"
-            >
-              Даю согласие на обработку моих{' '}
-              <Link href="/privacy-policy" className="text-orange/60 hover:underline">
-                персональных данных.
-              </Link>
-            </label>
-          </div>
-          <div className="my-2 flex w-full items-center justify-center">
-            <Button
-              text={isLoading ? 'Подождите...' : 'Продолжить'}
-              className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white"
-              type="submit"
-              disabled={isLoading}
-            />
-          </div>
-        </form>
-
-        <div className="flex items-center gap-4">
-          <div className="flex-1 border-t border-gray-300" />
-          <p className="shrink-0 px-2 text-gray-500">Или</p>
-          <div className="flex-1 border-t border-gray-300" />
+          <p className="text-center">
+            Уже есть аккаунт?{' '}
+            <span className="text-orange/60 hover:underline">
+              <Link href="/login">Войти</Link>
+            </span>
+          </p>
         </div>
-        <p className="text-center">
-          Уже есть аккаунт?{' '}
-          <span className="text-orange/60 hover:underline">
-            <Link href="/login">Войти</Link>
-          </span>
-        </p>
       </div>
-    </div>
+    </Suspense>
   )
 }
 

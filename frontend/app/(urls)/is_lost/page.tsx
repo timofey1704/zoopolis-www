@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import Loader from '@/components/ui/Loader'
@@ -24,8 +24,8 @@ const IsLostPetPage = () => {
       try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/is-lost/`, { code })
 
-        // Если получили редирект (статус 307), браузер автоматически перенаправит
-        // Если получили данные, отображаем статус
+        // если получили редирект (статус 307), браузер автоматически перенаправит
+        // если получили данные, отображаем статус
         setIsLost(res.data.is_lost)
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -47,13 +47,15 @@ const IsLostPetPage = () => {
   if (error) return <div className="text-red-500">{error}</div>
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      {isLost ? (
-        <h1 className="text-2xl font-bold text-red-600">Этот питомец отмечен как потерян 🐾</h1>
-      ) : (
-        <h1 className="text-2xl font-bold text-green-600">Этот питомец в безопасности ✅</h1>
-      )}
-    </div>
+    <Suspense fallback={<Loader />}>
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        {isLost ? (
+          <h1 className="text-2xl font-bold text-red-600">Этот питомец отмечен как потерян 🐾</h1>
+        ) : (
+          <h1 className="text-2xl font-bold text-green-600">Этот питомец в безопасности ✅</h1>
+        )}
+      </div>
+    </Suspense>
   )
 }
 

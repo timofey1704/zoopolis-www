@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import ContactForm from './forms/ContactForm'
 import CreatePetForm from './forms/CreatePetForm'
 import ExistedPets from './forms/ExistedPets'
 import { useTabs } from '@/app/hooks/useTabs'
 import { TabsContainer, TabConfig } from '@/components/ui/TabsContainer'
 import { useSearchParams } from 'next/navigation'
+import Loader from '@/components/ui/Loader'
 
 type TabType = 'contacts' | 'pets'
 
@@ -40,33 +41,35 @@ const ProfilePage = () => {
   }, [tabFromUrl, selectedTab, handleTabChange])
 
   return (
-    <div>
-      <h1 className="mb-2">ПРОФИЛЬ</h1>
-      <TabsContainer
-        tabs={TABS}
-        selectedTab={selectedTab}
-        indicatorStyle={indicatorStyle}
-        refs={refs}
-        onTabChange={handleTabChange}
-        rightContent={
-          selectedTab === 'pets' && (
-            <span
-              onClick={() => setShowCreateForm(!showCreateForm)}
-              className="text-orange hover:text-orange/80 mr-4 cursor-pointer"
-            >
-              {showCreateForm ? 'Список питомцев' : 'Добавить питомца'}
-            </span>
-          )
-        }
-      />
-      {selectedTab === 'contacts' ? (
-        <ContactForm />
-      ) : showCreateForm ? (
-        <CreatePetForm onClose={() => setShowCreateForm(false)} />
-      ) : (
-        <ExistedPets />
-      )}
-    </div>
+    <Suspense fallback={<Loader />}>
+      <div>
+        <h1 className="mb-2">ПРОФИЛЬ</h1>
+        <TabsContainer
+          tabs={TABS}
+          selectedTab={selectedTab}
+          indicatorStyle={indicatorStyle}
+          refs={refs}
+          onTabChange={handleTabChange}
+          rightContent={
+            selectedTab === 'pets' && (
+              <span
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="text-orange hover:text-orange/80 mr-4 cursor-pointer"
+              >
+                {showCreateForm ? 'Список питомцев' : 'Добавить питомца'}
+              </span>
+            )
+          }
+        />
+        {selectedTab === 'contacts' ? (
+          <ContactForm />
+        ) : showCreateForm ? (
+          <CreatePetForm onClose={() => setShowCreateForm(false)} />
+        ) : (
+          <ExistedPets />
+        )}
+      </div>
+    </Suspense>
   )
 }
 

@@ -8,7 +8,11 @@ interface QRCodeData {
   imageURL: string
 }
 
-const CreatePetForm = () => {
+interface CreatePetFormProps {
+  onClose: () => void
+}
+
+const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
   const [step, setStep] = useState<'validate' | 'create'>('validate')
   const [qrData, setQRData] = useState<QRCodeData | null>(null)
 
@@ -37,7 +41,7 @@ const CreatePetForm = () => {
       </div>
       <div className="space-y-3">
         {step === 'validate' && <ValidateCode onValidated={handleValidated} />}
-        {step === 'create' && <CreatePet onClose={() => {}} initialQRData={qrData} />}
+        {step === 'create' && <CreatePet onClose={onClose} initialQRData={qrData} />}
       </div>
     </div>
   )
