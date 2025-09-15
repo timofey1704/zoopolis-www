@@ -14,13 +14,13 @@ servers:
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP+igmEmZ9KzELTgYKLrW/LcFIclzj0m2enPp5Bm4QSz promo@vhome6
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFIOJE+HAkS+l7kDMNsQAMsVxdBoKn6UKg1NwO/KJ5I+ timofey.syr17@gmail.com
 
-    db_user: zoopolis
+    db_user: admin
     db_password: eequeiTh0Yeiwoo4Ahra
-    db_name: zoopolis
+    db_name: zoopolisdb
 
     registry_user: v.pikulik
     registry_token: glpat-pgmIdGicFfqT65Za-TrMf286MQp1OjFkeTQ4Cw.01.120jn4dao
 
-    domain: zoopolis.com
-    domain_dashboard: board.zoopolis.com
+    domain: zoopolis.org
+    domain_dashboard: dashboard.zoopolis.org
     enable_https: false

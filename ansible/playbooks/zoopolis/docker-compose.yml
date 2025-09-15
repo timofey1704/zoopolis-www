@@ -9,7 +9,7 @@ services:
     environment:
       # django settings
       ALLOWED_HOSTS: "{{domain}},backend"
-      SECRET_KEY: "bgl@ztmh!q70hk9#t&!u52x(o$$6y$yvnsx9#3=o*-^g1mo!-$"
+      SECRET_KEY: "django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5"
       DEBUG_MODE: True
       BASE_URL: "https://{{ domain }}"
       MEDIA_ROOT: /media
@@ -25,9 +25,8 @@ services:
       DB_HOST: 172.56.0.1
       DB_PORT: 5432
 
-      #telegram credentials
-      BOT_TOKEN: abc
-      CHAT_ID: -1002557491000
+      SMS_USER: info@zoopolis.org
+      SMS_API_KEY: SPsIpFIV9UGwaPXuZuT7
 
     networks:
       zoopolis:
@@ -52,7 +51,8 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
       BACKEND_URL: http://backend:8000/api/v1
-      NEXTAUTH_URL: https://{{ domain }}
+      NEXTAUTH_URL: https://{{ domain_dashboard }}
+      NEXTAUTH_SECRET: sdjfhshd126kbnaoTj12
     networks:
       zoopolis:
         ipv4_address: 172.56.0.4
