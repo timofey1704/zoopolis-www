@@ -18,8 +18,10 @@ logger = logging.getLogger(__name__)
 
 class CheckCodeView(ViewSet):
     """Проверяем код с QR пользователя"""
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['post'])
+    @handle_exceptions
     def validate_code(self, request):
         """Проверка кода из запроса пользователя"""
         code = request.data.get("code")
