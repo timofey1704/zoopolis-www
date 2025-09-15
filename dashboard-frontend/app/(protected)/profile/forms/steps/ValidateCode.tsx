@@ -33,7 +33,7 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
 
         if (!response.ok) {
           const error = await response.json()
-          throw new Error(error.error || 'Ошибка при обновлении данных')
+          throw new Error(error.error || 'Код не активен или уже использован')
         }
 
         const result = await response.json()

@@ -32,7 +32,7 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        qr_code = RegisterQRCode.objects.filter(code=code).first()
+        qr_code = RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
 
         if qr_code:
             # код существует = пропускаем

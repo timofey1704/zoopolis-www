@@ -208,7 +208,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
                   className="rounded-2xl object-contain"
                 />
                 {values.QRCode && (
-                  <div className="flex items-center justify-center rounded-lg bg-white px-8 py-2">
+                  <div className="flex items-center justify-center rounded-lg bg-white px-12 py-2">
                     <span className="font-mono text-lg font-semibold text-gray-700">
                       {values.QRCode}
                     </span>
