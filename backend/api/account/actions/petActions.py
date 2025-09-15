@@ -11,8 +11,46 @@ from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
 from api.utils.QRGenerator import save_pet_qr
+from api.models import RegisterQRCode
 
 logger = logging.getLogger(__name__)
+
+class CheckCodeView(ViewSet):
+    """Проверяем код с QR пользователя"""
+    permission_classes = [IsAuthenticated]
+
+    def validate_code(self, request):
+        """Проверка кода из запроса пользователя"""
+        code = request.data.get("code")
+
+        if not code:
+            return Response(
+                {"error": "Не указан код"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        qr_code = RegisterQRCode.objects.filter(code=code).first()
+
+        if qr_code:
+            # код существует = пропускаем
+            return Response(
+                {
+                    "action": "pass",
+                    "message": "Код найден",
+                    "code": qr_code.code, 
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            # кода нет = разворачиваем
+            return Response(
+                {
+                    "action": "unavailable",
+                    "message": "Такого кода не существует",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 class PetView(ViewSet):
     """Эндпоинт для работы с питомцами"""
     permission_classes = [IsAuthenticated]
