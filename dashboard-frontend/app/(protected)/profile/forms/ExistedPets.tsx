@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Image from 'next/image'
 import Loader from '@/components/ui/Loader'
@@ -39,7 +39,7 @@ const ExistedPets = () => {
     if (initialPets.length > 0) {
       setPets(initialPets)
     }
-  }, [initialPets.length]) // используем только длину массива как зависимость
+  }, [initialPets])
 
   if (isLoading) return <Loader />
   if (error) return <div>Ошибка: {error.message}</div>

@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import Loader from '@/components/ui/Loader'
 
-const IsLostPetPage = () => {
+const IsLostContent = () => {
   const params = useSearchParams()
   const code = params.get('ref')
 
@@ -47,14 +47,20 @@ const IsLostPetPage = () => {
   if (error) return <div className="text-red-500">{error}</div>
 
   return (
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      {isLost ? (
+        <h1 className="text-2xl font-bold text-red-600">Этот питомец отмечен как потерян </h1>
+      ) : (
+        <h1 className="text-2xl font-bold text-green-600">Этот питомец в безопасности </h1>
+      )}
+    </div>
+  )
+}
+
+const IsLostPetPage = () => {
+  return (
     <Suspense fallback={<Loader />}>
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        {isLost ? (
-          <h1 className="text-2xl font-bold text-red-600">Этот питомец отмечен как потерян 🐾</h1>
-        ) : (
-          <h1 className="text-2xl font-bold text-green-600">Этот питомец в безопасности ✅</h1>
-        )}
-      </div>
+      <IsLostContent />
     </Suspense>
   )
 }
