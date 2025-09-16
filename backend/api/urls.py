@@ -9,7 +9,7 @@ from api.auth.views import (
 )
 
 from api.account.actions.userActions import UserDataView
-from api.account.actions.petActions import PetView
+from api.account.actions.petActions import PetView, CheckCodeView
 from api.account.actions.accountActions import AccountActionsView, MapPointsView, ServicesView, BonusesView
 from api.account.actions.dictionariesActions import DictionariesView, CityView
 
@@ -31,6 +31,7 @@ urlpatterns = [
     
     path('v1/user/', UserDataView.as_view({'get': 'user_data'}), name="user"),
     
+    path('v1/check-code/', CheckCodeView.as_view({'post': 'validate_code'}), name="validate-code"),
     path('v1/pets/get-pets/', PetView.as_view({'get': 'get_pets'}), name="get-pets"),
     path('v1/pets/create-pet/', PetView.as_view({'post': 'create_pet'}), name="create-pet"),
     path('v1/pets/update-pet/', PetView.as_view({'patch': 'update_pet'}), name="update-pet"),

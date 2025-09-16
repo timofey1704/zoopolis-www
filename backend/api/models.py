@@ -41,8 +41,8 @@ class RegisterQRCode(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="Питомец", null=True, blank=True)
         
     class Meta:
-        verbose_name = "QR код регистрации"
-        verbose_name_plural = "QR коды регистрации"
+        verbose_name = "QR код"
+        verbose_name_plural = "QR коды"
 
     def __str__(self):
         return self.code

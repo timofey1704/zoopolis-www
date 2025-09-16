@@ -1,4 +1,5 @@
 import logging
+from django.conf import settings
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -11,8 +12,51 @@ from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
 from api.utils.QRGenerator import save_pet_qr
+from api.models import RegisterQRCode
 
 logger = logging.getLogger(__name__)
+
+class CheckCodeView(ViewSet):
+    """Проверяем код с QR пользователя"""
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    @handle_exceptions
+    def validate_code(self, request):
+        """Проверка кода из запроса пользователя"""
+        code = request.data.get("code")
+
+        if not code:
+            return Response(
+                {"error": "Не указан код"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        qr_code = RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
+
+        if qr_code:
+            # код существует = пропускаем
+            
+            imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
+            return Response(
+                {
+                    "action": "pass",
+                    "message": "Код найден",
+                    "code": qr_code.code,
+                    "imageURL": imageURL
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            # кода нет = разворачиваем
+            return Response(
+                {
+                    "action": "unavailable",
+                    "message": "Такого кода не существует",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 class PetView(ViewSet):
     """Эндпоинт для работы с питомцами"""
     permission_classes = [IsAuthenticated]
@@ -57,12 +101,31 @@ class PetView(ViewSet):
             logger.error(f"Serializer errors: {serializer.errors}")
         
         if serializer.is_valid():
-            # cохраняем питомца
-            pet = cast(Pet, serializer.save(owner=request.user))
-            
+            # получаем код QR из запроса
+            qr_code_value = request.data.get('qr_code')
+
+            if not qr_code_value:
+                return Response(
+                    {"error": "QR код не указан"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # ищем существующий QR код
+            qr_code = RegisterQRCode.objects.filter(code=qr_code_value, is_used=False).first()
+            if not qr_code:
+                return Response(
+                    {"error": "QR код не найден или уже использован"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
             try:
-                # генерируем и сохраняем QR код
-                qr_code = save_pet_qr(pet)
+                # сохраняем питомца
+                pet = cast(Pet, serializer.save(owner=request.user))
+                
+                # связываем QR код с питомцем и помечаем как использованный
+                qr_code.pet = pet
+                qr_code.is_used = True
+                qr_code.save()
                 
                 response_serializer = PetSerializer(pet)
                 response_data = dict(response_serializer.data)
@@ -75,11 +138,12 @@ class PetView(ViewSet):
                 
                 return Response(response_data, status=status.HTTP_201_CREATED)
             except Exception as e:
-                # если что-то пошло не так с QR кодом, удаляем питомца
-                logger.error(f"Ошибка при создании QR кода: {str(e)}")
-                pet.delete()
+                # если что-то пошло не так, удаляем питомца
+                logger.error(f"Ошибка при создании питомца: {str(e)}")
+                if 'pet' in locals():
+                    pet.delete()
                 return Response(
-                    {"error": "Ошибка при создании QR кода"},
+                    {"error": "Ошибка при создании питомца"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         

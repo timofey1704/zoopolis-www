@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       'color',
       'comment',
       'allergies',
+      'qr_code',
     ]
     textFields.forEach(field => {
       const value = formData.get(field)

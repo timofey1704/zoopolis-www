@@ -2,7 +2,7 @@ import logging
 from rest_framework import serializers
 from django.utils import timezone
 from django.conf import settings
-
+from api.models import RegisterQRCode
 from sitemanagement.models import Pet, MapPoints, Services, Bonuses
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
@@ -43,14 +43,15 @@ class PetSerializer(BasePetSerializer):
     
     def get_QRImage(self, obj):
         """Возвращает URL QR изображения питомца"""
-        qr = obj.qr_code.filter(is_active=True).last()
+
+        qr = RegisterQRCode.objects.filter(pet=obj, is_active=True).first()
         if not qr:
             return None
         return f"{settings.BASE_URL}{qr.image.url}" if qr.image else None
     
     def get_QRCode(self, obj):
         """Возвращает код QR питомца"""
-        qr = obj.qr_code.filter(is_active=True).last()
+        qr = RegisterQRCode.objects.filter(pet=obj, is_active=True).first()
         if not qr:
             return None
         return qr.code
