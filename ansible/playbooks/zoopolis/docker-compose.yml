@@ -11,7 +11,7 @@ services:
       ALLOWED_HOSTS: "{{domain}},backend"
       SECRET_KEY: "django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5"
       DEBUG_MODE: True
-      BASE_URL: "http://{{ domain }}"
+      BASE_URL: "https://{{ domain }}"
       MEDIA_ROOT: /media
       STATIC_ROOT: /static
       CORS_ALLOW_ALL_ORIGINS: False

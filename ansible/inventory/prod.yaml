@@ -1,7 +1,7 @@
 servers:
   hosts:
     zoopolis:
-      ansible_host: zoopolis
+      ansible_host: zoopolis.org
 
   vars:
     ansible_user: root
@@ -23,4 +23,4 @@ servers:
 
     domain: zoopolis.org
     domain_dashboard: account.zoopolis.org
-    enable_https: false
+    enable_https: true
