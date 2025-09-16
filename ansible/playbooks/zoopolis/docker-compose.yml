@@ -11,7 +11,7 @@ services:
       ALLOWED_HOSTS: "{{domain}},backend"
       SECRET_KEY: "django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5"
       DEBUG_MODE: True
-      BASE_URL: "https://{{ domain }}"
+      BASE_URL: "http://{{ domain }}"
       MEDIA_ROOT: /media
       STATIC_ROOT: /static
       CORS_ALLOW_ALL_ORIGINS: False
@@ -37,7 +37,7 @@ services:
     ports:
       - "127.0.0.1:3001:3000"
     environment:
-      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+      NEXT_PUBLIC_API_URL: http://backend:8000/api/v1
     networks:
       zoopolis:
         ipv4_address: 172.56.0.3
@@ -49,7 +49,7 @@ services:
     ports:
       - "127.0.0.1:3002:3000"
     environment:
-      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+      NEXT_PUBLIC_API_URL: http://backend:8000/api/v1
       BACKEND_URL: http://backend:8000/api/v1
       NEXTAUTH_URL: https://{{ domain_dashboard }}
       NEXTAUTH_SECRET: sdjfhshd126kbnaoTj12
