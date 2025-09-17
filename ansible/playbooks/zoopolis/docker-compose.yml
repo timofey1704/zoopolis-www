@@ -1,0 +1,81 @@
+services:
+  backend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/backend:prod
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - "static:/static"
+      - "media:/media"
+    environment:
+      # django settings
+      ALLOWED_HOSTS: "{{domain}},backend"
+      SECRET_KEY: "django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5"
+      DEBUG_MODE: True
+      BASE_URL: "https://{{ domain }}"
+      MEDIA_ROOT: /media
+      STATIC_ROOT: /static
+      CORS_ALLOW_ALL_ORIGINS: False
+      CORS_ALLOWED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
+      CSRF_TRUSTED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
+
+      #database
+      DB_NAME: "{{ db_name }}"
+      DB_USER: "{{ db_user }}"
+      DB_PASSWORD: "{{ db_password }}"
+      DB_HOST: 172.56.0.1
+      DB_PORT: 5432
+
+      SMS_USER: info@zoopolis.org
+      SMS_API_KEY: SPsIpFIV9UGwaPXuZuT7
+
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.2
+
+  frontend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/frontend:prod
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.3
+    depends_on:
+      - backend
+
+  dashboard-frontend:
+    image: registry.gitlab.com/wedeving/zoopolis-www/dashboard-frontend:prod
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+      BACKEND_URL: http://backend:8000/api/v1
+      NEXTAUTH_URL: https://{{ domain_dashboard }}
+      NEXTAUTH_SECRET: sdjfhshd126kbnaoTj12
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.4
+    depends_on:
+      - backend
+
+networks:
+  zoopolis:
+    name: zoopolis_network
+    ipam:
+      config:
+        - subnet: 172.56.0.0/24
+
+volumes:
+  media:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/var/{{ app }}/media"
+  static:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/var/{{ app }}/static"

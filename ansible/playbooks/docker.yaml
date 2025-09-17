@@ -1,0 +1,59 @@
+- name: Docker
+  hosts: servers
+  tasks:
+    - name: Key dir
+      ansible.builtin.file:
+        path: "/etc/apt/keyrings"
+        state: directory
+
+    - name: Add apt key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+
+    - name: Add docker repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable
+        state: present
+
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+          - python3-requests
+
+    - name: Docker config
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "log-driver": "journald"
+          }
+      notify:
+        - Restart docker service
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: docker
+        append: true
+
+    - name: Docker compose dir
+      ansible.builtin.file:
+        path: "/etc/docker/compose"
+        state: directory
+
+    - name: Docker compose systemd service
+      ansible.builtin.template:
+        src: docker/compose.service
+        dest: "/etc/systemd/system/compose@.service"
+
+  handlers:
+    - name: Restart docker service
+      ansible.builtin.service:
+        name: "docker"
+        state: restarted

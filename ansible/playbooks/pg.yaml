@@ -1,0 +1,65 @@
+- name: Postgresql
+  hosts: servers
+  tasks:
+    - name: Key dir
+      ansible.builtin.file:
+        path: "/usr/share/postgresql-common/pgdg"
+        state: directory
+
+    - name: Add apt key
+      ansible.builtin.get_url:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        dest: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+
+    - name: Add postgresql repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt {{ ansible_facts['lsb']['codename'] }}-pgdg main
+        state: present
+
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - postgresql-17
+          - libpq-dev
+          - python3-psycopg2
+
+    - name: Set cluster listen addresses
+      become: true
+      become_user: postgres
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/17/main/postgresql.conf
+        regexp: "^#?listen_addresses"
+        line: "listen_addresses = '127.0.0.1, 172.56.0.1'"
+      notify: Restart postgres
+
+    - name: Create user
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+
+    - name: Create database
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: "{{ db_name }}"
+        owner: "{{ db_user }}"
+
+    - name: Grant users access to databases
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_pg_hba:
+        dest: /etc/postgresql/17/main/pg_hba.conf
+        contype: host
+        users: "{{ db_user }}"
+        source: 172.56.0.0/24
+        method: scram-sha-256
+        create: true
+      notify: Restart postgres
+
+  handlers:
+    - name: Restart postgres
+      ansible.builtin.service:
+        name: postgresql
+        state: restarted
