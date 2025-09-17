@@ -22,7 +22,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
     search_fields = ("code", "user__username")
 
     # чтобы в форме не отображались автоматически заполняемые поля
-    readonly_fields = ("code", "image", "created_at", "user", 'is_printed')
+    readonly_fields = ("code", "image", "created_at", "user", "is_used", "is_active", "pet")
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

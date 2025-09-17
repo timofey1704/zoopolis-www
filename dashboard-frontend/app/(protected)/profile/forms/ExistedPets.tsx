@@ -31,7 +31,7 @@ const ExistedPets = () => {
   const { data: initialPets = [], isLoading, error } = useClientFetch<Pet[]>('/pets/get-pets/')
   const [pets, setPets] = useState<Pet[]>(initialPets)
   const [loadingPetId, setLoadingPetId] = useState<number | null>(null)
-  const [editingPet, setEditingPet] = useState<Pet | null>(null)
+  const [editingPet, setEditingPet] = useState<number | null>(null)
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false)
 
   // обновляем локальное состояние когда приходят новые данные
@@ -70,7 +70,7 @@ const ExistedPets = () => {
   }
 
   const handleEdit = (id: number) => {
-    setEditingPet(pets.find(pet => pet.id === id) || null)
+    setEditingPet(id)
     setIsEditPopupOpen(true)
   }
 
@@ -222,7 +222,7 @@ const ExistedPets = () => {
           </div>
         ))
       )}
-      <EditPopup isOpen={isEditPopupOpen} onClose={handleCloseEditPopup} petData={editingPet} />
+      <EditPopup isOpen={isEditPopupOpen} onClose={handleCloseEditPopup} id={editingPet} />
     </div>
   )
 }

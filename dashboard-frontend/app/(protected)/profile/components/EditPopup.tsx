@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
-import { Pet } from '../forms/ExistedPets'
+import React from 'react'
 import { Dialog } from '@/components/ui/Dialog'
+import { useClientFetch } from '@/app/hooks/useClientFetch'
 import { useForm } from '@/app/hooks/useForm'
 import TextInput from '@/components/ui/TextInput'
 import TextAreaInput from '@/components/ui/TextAreaInput'
@@ -15,8 +15,20 @@ import ColorSelector, { PetColor } from '@/components/selectors/ColorSelector'
 interface EditPopupProps {
   isOpen: boolean
   onClose: () => void
-  petData: Pet | null
+  id: number | null
   onSuccess?: () => void
+}
+
+interface EditPet {
+  imageURL: string
+  name: string
+  type: PetType | null
+  birthday: string
+  gender: string
+  breed: Breed | null
+  color: PetColor | null
+  comment: string
+  allergies: string
 }
 
 const validationRules = {
@@ -31,79 +43,37 @@ const validationRules = {
   allergies: { required: false },
 }
 
-const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, petData, onSuccess }) => {
-  // вычисляем начальные значения формы в зависимости от наличия данных о питомце
-  const initialValues = useMemo(() => {
-    if (!petData) {
-      // безопасные значения-заглушки, если данные ещё не получены
-      return {
-        id: '',
-        imageURL: '',
-        name: '',
-        type: '',
-        birthday: '',
-        gender: '',
-        breed: '',
-        color: '',
-        comment: '',
-        allergies: '',
+const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess }) => {
+  const { data, isLoading, error } = useClientFetch<EditPet>(`/pets/get-pet/`, {
+    config: { params: { id } },
+    queryOptions: { enabled: !!id },
+  })
+
+  // Не показываем попап, если нет id или он не открыт
+  if (!id || !isOpen) return null
+
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Изменить данные питомца"
+      description={
+        <div>
+          {isLoading ? (
+            <div>Загрузка...</div>
+          ) : error ? (
+            <div>Ошибка: {error.message}</div>
+          ) : (
+            <div>
+              <h2>EditPopup Content</h2>
+              <pre>{JSON.stringify(data, null, 2)}</pre>
+            </div>
+          )}
+        </div>
       }
-    }
-
-    return {
-      id: petData.id,
-      imageURL: petData.imageURL,
-      name: petData.name,
-      type: petData.type,
-      birthday: petData.birthday,
-      gender: petData.gender,
-      breed: petData.breed,
-      color: petData.color,
-      comment: petData.comment,
-      allergies: petData.allergies,
-    }
-  }, [petData])
-
-  const { values, handleChange, handleSubmit, setValues } = useForm(
-    initialValues,
-    validationRules,
-    async values => {
-      try {
-        const requestData = {
-          id: Number(values.id),
-          imageURL: values.imageURL,
-          name: values.name,
-          type: values.type,
-          birthday: values.birthday,
-          gender: values.gender,
-          breed: values.breed,
-          color: values.color,
-          comment: values.comment,
-          allergies: values.allergies,
-        }
-
-        await fetch('/api/profile/pets/update-pet', {
-          method: 'PATCH',
-          body: JSON.stringify(requestData),
-        })
-
-        showToast({
-          type: 'success',
-          message: 'Маршрут успешно обновлен!',
-        })
-        onSuccess?.()
-        onClose()
-      } catch (error) {
-        console.error('Error updating route:', error)
-        showToast({
-          type: 'error',
-          message: error instanceof Error ? error.message : 'Ой, что то пошло не так..',
-        })
-      }
-    }
+      showSubmit={false}
+    />
   )
-
-  return <div>EditPopup</div>
 }
 
 export default EditPopup
