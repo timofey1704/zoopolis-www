@@ -8,7 +8,6 @@ django = "*"
 djangorestframework = "*"
 pycodestyle = "*"
 dotenv = "*"
-pillow = "*"
 pytest = "*"
 pytest-django = "*"
 requests = "*"
@@ -20,6 +19,7 @@ requests-oauthlib = "*"
 djangorestframework-simplejwt = "*"
 qrcode = "*"
 python-magic = "*"
+pillow = "*"
 
 [dev-packages]
 
