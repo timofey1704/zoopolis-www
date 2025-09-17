@@ -18,8 +18,8 @@ servers:
     db_password: eequeiTh0Yeiwoo4Ahra
     db_name: zoopolisdb
 
-    registry_user: v.pikulik
-    registry_token: glpat-pgmIdGicFfqT65Za-TrMf286MQp1OjFkeTQ4Cw.01.120jn4dao
+    registry_user: gitlab+deploy-token-9189607
+    registry_token: gldt-15QsUAVXE8SR-W3rAziA
 
     domain: zoopolis.org
     domain_dashboard: account.zoopolis.org
