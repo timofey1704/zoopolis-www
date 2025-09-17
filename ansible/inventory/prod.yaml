@@ -21,10 +21,10 @@ servers:
     registry_user: gitlab+deploy-token-9189607
     registry_token: gldt-15QsUAVXE8SR-W3rAziA
 
-    domain: zoopolis.org
-    domain_dashboard: account.zoopolis.org
+    domain: stage.zoopolis.org
+    domain_dashboard: stage.account.zoopolis.org
     enable_https: true
 
     http_user: zoopolis
     http_pass: welcome
-    http_auth: true
+    http_auth: false
