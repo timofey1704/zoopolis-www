@@ -16,7 +16,9 @@
 
     - name: Install Angie
       ansible.builtin.package:
-        name: angie
+        name:
+          - angie
+          - python3-passlib
 
     - name: Configure defaults
       ansible.builtin.template:
@@ -24,6 +26,15 @@
         dest: "/etc/angie/http.d/default.conf"
         mode: "0644"
       notify: Restart angie
+
+    - name: Create password file
+      community.general.htpasswd:
+        path: /etc/angie/passwdfile
+        name: "{{ http_user }}"
+        password: "{{ http_pass }}"
+        owner: angie
+        group: angie
+        mode: "0640"
 
   handlers:
     - name: Restart angie

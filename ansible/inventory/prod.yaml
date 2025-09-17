@@ -24,3 +24,7 @@ servers:
     domain: zoopolis.org
     domain_dashboard: account.zoopolis.org
     enable_https: true
+
+    http_user: zoopolis
+    http_pass: welcome
+    http_auth: true
