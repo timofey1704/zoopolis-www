@@ -62,8 +62,6 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
         // создаем FormData для отправки файла и данных формы
         const formData = new FormData()
 
-        console.log('initialQRData:', initialQRData)
-
         // добавляем код QR для связывания с существующей записью
         if (initialQRData?.code) {
           formData.append('qr_code', initialQRData.code)

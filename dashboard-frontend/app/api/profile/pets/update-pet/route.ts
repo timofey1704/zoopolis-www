@@ -16,17 +16,17 @@ export async function PATCH(req: NextRequest) {
     const formData = await req.formData()
     const sendFormData = new FormData()
 
+    // добавляем id питомца
+    const id = formData.get('id')
+    if (!id) {
+      return new Response(JSON.stringify({ error: 'ID питомца не указан' }), {
+        status: 400,
+      })
+    }
+    sendFormData.append('id', id.toString())
+
     // добавляем все текстовые поля
-    const textFields = [
-      'name',
-      'type',
-      'birthday',
-      'gender',
-      'breed',
-      'color',
-      'comment',
-      'allergies',
-    ]
+    const textFields = ['name', 'type', 'gender', 'breed', 'color', 'comment', 'allergies']
     textFields.forEach(field => {
       const value = formData.get(field)
       if (value) {

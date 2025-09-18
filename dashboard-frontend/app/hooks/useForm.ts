@@ -4,8 +4,20 @@ import { useState, ChangeEvent, FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import { ValidationRules, ValidationErrors, CityData } from '../types'
 import { PetType } from '@/components/selectors/PetTypeSelector'
+import { Breed } from '@/components/selectors/BreedSelector'
+import { PetColor } from '@/components/selectors/ColorSelector'
 
-type FormValue = string | number | boolean | string[] | number[] | CityData | PetType | null
+type FormValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | number[]
+  | CityData
+  | PetType
+  | Breed
+  | PetColor
+  | null
 
 type CustomChangeEvent = {
   target: {
