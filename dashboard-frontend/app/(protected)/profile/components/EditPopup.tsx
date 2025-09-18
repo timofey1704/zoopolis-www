@@ -103,7 +103,7 @@ const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess })
           console.log('No file found in selectedFile state')
         }
 
-        const response = await fetch('/api/profile/update-pet', {
+        const response = await fetch('/api/profile/pets/update-pet', {
           method: 'PATCH',
           body: formData, // FormData автоматически установит правильный Content-Type
         })

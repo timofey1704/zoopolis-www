@@ -28,7 +28,12 @@ export interface Pet {
 }
 
 const ExistedPets = () => {
-  const { data: initialPets = [], isLoading, error } = useClientFetch<Pet[]>('/pets/get-pets/')
+  const {
+    data: initialPets = [],
+    isLoading,
+    error,
+    refetch,
+  } = useClientFetch<Pet[]>('/pets/get-pets/')
   const [pets, setPets] = useState<Pet[]>(initialPets)
   const [loadingPetId, setLoadingPetId] = useState<number | null>(null)
   const [editingPet, setEditingPet] = useState<number | null>(null)
@@ -222,7 +227,12 @@ const ExistedPets = () => {
           </div>
         ))
       )}
-      <EditPopup isOpen={isEditPopupOpen} onClose={handleCloseEditPopup} id={editingPet} />
+      <EditPopup
+        isOpen={isEditPopupOpen}
+        onClose={handleCloseEditPopup}
+        id={editingPet}
+        onSuccess={refetch}
+      />
     </div>
   )
 }
