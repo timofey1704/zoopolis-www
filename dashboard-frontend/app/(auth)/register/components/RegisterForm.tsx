@@ -234,7 +234,7 @@ const RegisterForm = () => {
               handleChange={handleChange}
               placeholder="QWEZXC12"
               style="register"
-              label="Код"
+              label="Код с кулона (если есть)"
             />
           </div>
 

@@ -25,7 +25,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
             </div>
 
             <div className="mb-6 flex items-baseline space-x-2">
-              <span className="text-5xl font-bold">BYN {membership.price}</span>
+              <span className="text-5xl font-bold">{membership.price} BYN</span>
               <span className="text-base">/месяц</span>
             </div>
 
