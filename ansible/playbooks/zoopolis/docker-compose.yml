@@ -25,6 +25,9 @@ services:
       DB_HOST: 172.56.0.1
       DB_PORT: 5432
 
+      # redis
+      REDIS_HOST: 172.56.0.1
+
       SMS_USER: info@zoopolis.org
       SMS_API_KEY: SPsIpFIV9UGwaPXuZuT7
 
