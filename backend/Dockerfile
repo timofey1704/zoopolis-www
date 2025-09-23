@@ -1,6 +1,7 @@
 FROM python:3.13-alpine
 WORKDIR /app
 COPY requirements.txt .
+RUN apk add iproute2-ss
 COPY --chmod=755 <<EOT ./entrypoint.sh
 #!/usr/bin/env sh
 set -e
