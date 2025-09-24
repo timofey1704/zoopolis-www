@@ -18,6 +18,10 @@ services:
       CORS_ALLOWED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
       CSRF_TRUSTED_ORIGINS: "http://{{ domain }},https://{{ domain }}"
 
+      #is lost logic
+      IS_LOST_URL: "https://{{ domain }}"
+      REDIRECT_LOGIN_URL: https://{{ domain_dashboard }}
+
       #database
       DB_NAME: "{{ db_name }}"
       DB_USER: "{{ db_user }}"
