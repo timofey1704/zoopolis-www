@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect
+from django.conf import settings
 from api.utils.exceptionsHandler import handle_exceptions
 
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
@@ -87,10 +88,15 @@ class IsLostPetView(APIView):
                 {"error": f"Ошибка при получении QR кода: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-        # если QR есть, но не привязан к питомцу == редирект 
+            
+        redirect_url = settings.REDIRECT_LOGIN_URL
+        
+        # если QR есть, но не привязан к питомцу == возвращаем URL для редиректа
         if not qr.pet:
-            return HttpResponseRedirect('http://localhost:3000/login')
+            return Response(
+                {"redirect_url": redirect_url},
+                status=status.HTTP_307_TEMPORARY_REDIRECT
+            )
         # если всё ок возвращаем статус is_lost
         return Response(
             {"is_lost": qr.pet.is_lost},

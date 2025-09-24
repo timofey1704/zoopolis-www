@@ -22,6 +22,10 @@ CORS_ALLOW_CREDENTIALS = True  # для разрешения cookie
 CORS_ALLOW_ALL_ORIGINS = False # запрет всех доменов, кроме whitelist
 CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
 
+#is lost урлы для разных окружений
+IS_LOST_URL = os.environ.get("IS_LOST_URL")
+REDIRECT_LOGIN_URL = os.environ.get("REDIRECT_LOGIN_URL")
+
 CORS_ALLOW_METHODS = [
     "GET",
     "POST",
