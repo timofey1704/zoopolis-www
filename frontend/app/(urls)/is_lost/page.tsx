@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import axios from 'axios'
 import Loader from '@/components/ui/Loader'
 import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
+import showToast from '@/components/ui/showToast'
 
 const IsLostContent = () => {
   const params = useSearchParams()
@@ -15,6 +15,7 @@ const IsLostContent = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isLost, setIsLost] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isSendingCoordinates, setIsSendingCoordinates] = useState(false)
 
   useEffect(() => {
     if (!code) {
@@ -33,7 +34,7 @@ const IsLostContent = () => {
           body: JSON.stringify({ code }),
         })
 
-        // Если получили редирект
+        // если получили редирект
         if (res.status === 307) {
           const data = await res.json()
           if (data.redirect_url) {
@@ -42,13 +43,12 @@ const IsLostContent = () => {
           }
         }
 
-        // Если статус не 200, значит ошибка
         if (!res.ok) {
           const errorData = await res.json()
           throw new Error(errorData.error || 'Произошла ошибка при запросе')
         }
 
-        // если получили данные, отображаем статус
+        // если получили данные отображаем статус
         const data = await res.json()
         setIsLost(data.is_lost)
       } catch (err) {
@@ -65,6 +65,92 @@ const IsLostContent = () => {
   if (isLoading) return <Loader />
 
   if (error) return <div className="text-red-500">{error}</div>
+
+  const handleSendCoordinates = async () => {
+    if (isSendingCoordinates) return
+
+    setIsSendingCoordinates(true)
+    try {
+      // проверяем поддержку геолокации
+      if (!navigator.geolocation) {
+        showToast({
+          type: 'error',
+          message: 'Геолокация не поддерживается вашим браузером',
+        })
+        return
+      }
+
+      // получаем координаты
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        })
+      })
+
+      const coordinates = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/send-coordinates/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code,
+          coordinates: coordinates,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Ошибка при передаче координат')
+      }
+
+      showToast({
+        type: 'success',
+        message: 'Координаты питомца успешно отправлены!',
+      })
+    } catch (error) {
+      console.error('Error sending coordinates:', error)
+
+      // https://developer.mozilla.org/ru/docs/Web/API/Geolocation_API/Using_the_Geolocation_API
+
+      if (error instanceof GeolocationPositionError) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            showToast({
+              type: 'error',
+              message: 'Пожалуйста, разрешите доступ к геолокации',
+            })
+            break
+          case error.POSITION_UNAVAILABLE:
+            showToast({
+              type: 'error',
+              message: 'Информация о местоположении недоступна',
+            })
+            break
+          case error.TIMEOUT:
+            showToast({
+              type: 'error',
+              message: 'Превышено время ожидания геолокации',
+            })
+            break
+        }
+      } else {
+        showToast({
+          type: 'error',
+          message: error instanceof Error ? error.message : 'Ошибка при передаче координат',
+        })
+      }
+    } finally {
+      setIsSendingCoordinates(false)
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-6">
@@ -88,9 +174,11 @@ const IsLostContent = () => {
 
               <div className="flex w-full items-center justify-center">
                 <Button
-                  text="Передать координаты"
+                  text={isSendingCoordinates ? 'Отправка...' : 'Передать координаты'}
                   className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
-                  type="submit"
+                  type="button"
+                  onClick={handleSendCoordinates}
+                  disabled={isSendingCoordinates}
                 />
               </div>
             </div>

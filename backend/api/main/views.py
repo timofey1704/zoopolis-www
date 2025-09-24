@@ -1,13 +1,12 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import HttpResponseRedirect
 from django.conf import settings
 from api.utils.exceptionsHandler import handle_exceptions
 
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
 from api.models import RegisterQRCode
-from sitemanagement.models import FAQ, MainPageMedia, Pricing
+from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 from api.utils.smsProvider import sendsms
 
@@ -103,3 +102,72 @@ class IsLostPetView(APIView):
             status=status.HTTP_200_OK
         )
         
+class SendCoordinatesView(APIView):
+    @handle_exceptions
+    def post(self, request):
+        code = request.data.get("code")
+        coordinates = request.data.get("coordinates")
+        
+        if not code:
+            return Response(
+                {"error": "Код не предоставлен"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        if not coordinates:
+            return Response(
+                {"error": "Координаты не предоставлены"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # валидация формата координат
+        try:
+            if not all(key in coordinates for key in ['latitude', 'longitude', 'accuracy']):
+                return Response(
+                    {"error": "Неверный формат координат"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            latitude = float(coordinates['latitude'])
+            longitude = float(coordinates['longitude'])
+            accuracy = float(coordinates['accuracy'])
+            
+            # базовая валидация координат
+            if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
+                return Response(
+                    {"error": "Некорректные координаты"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "Некорректный формат данных координат"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        try:
+            qr = RegisterQRCode.objects.select_related("pet").get(code=code)
+        except RegisterQRCode.DoesNotExist:
+            return Response(
+                {"error": "Такого кода не существует"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+        if not qr.pet:
+            return Response(
+                {"error": "Питомец не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+        # сохраняем координаты в формате "latitude,longitude,accuracy"
+        coordinates_str = f"{latitude},{longitude},{accuracy}"
+        
+        PetCoordinates.objects.create(
+            pet=qr.pet,
+            coordinates=coordinates_str
+        )
+        
+        return Response(
+            {"message": "Координаты успешно сохранены"},
+            status=status.HTTP_200_OK
+        )
