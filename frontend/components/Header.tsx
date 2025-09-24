@@ -14,7 +14,7 @@ const Header = () => {
           href="/"
           className="transition-opacity duration-300 hover:cursor-pointer hover:opacity-80"
         >
-          <Image src="/logo.png" alt="logo" width={62} height={62} />
+          <Image src="/logo.png" alt="logo" width={62} height={62} priority />
         </Link>
       </div>
       <div className="ml-10 hidden items-center justify-center space-x-10 text-xl font-medium lg:flex">

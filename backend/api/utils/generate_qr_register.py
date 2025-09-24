@@ -1,18 +1,20 @@
 import qrcode
 from qrcode import constants
+from django.conf import settings
 import io
 import base64
 from typing import Tuple
 from PIL import Image as PILImage
 from api.utils.QRGenerator import generate_unique_qr_code
 
+redirect_url = settings.IS_LOST_URL
 
-def generate_registration_qr(base_url: str = "http://192.168.0.7:3000/is_lost/") -> Tuple[PILImage.Image, str, str]:
+def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Image, str, str]:
     """
     Генерация QR кода для страницы регистрации с уникальным параметром.
 
     Args:
-        base_url: Базовый URL для регистрации (по умолчанию http://192.168.0.7:3000/is_lost/)
+        base_url: Базовый URL для регистрации (по умолчанию IS_LOST_URL)
 
     Returns:
         - PIL Image объект QR кода

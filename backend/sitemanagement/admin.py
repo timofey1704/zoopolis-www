@@ -71,6 +71,13 @@ class QRCodeInline(admin.TabularInline):
     verbose_name = 'QR код'
     verbose_name_plural = 'QR коды'
 
+class PetCoordinatesInline(admin.TabularInline):
+    model = PetCoordinates
+    extra = 0
+    readonly_fields = ('created_at',)
+    verbose_name = 'Координаты питомца'
+    verbose_name_plural = 'Координаты питомцев'
+
 @admin.register(Bonuses)
 class BonusesAdmin(admin.ModelAdmin):
     list_display = ['name', 'description', 'is_available', 'start_date', 'end_date', 'get_applications_count']
@@ -96,7 +103,7 @@ class PetAdmin(admin.ModelAdmin):
     list_filter = ['type']
     search_fields = ['owner__username', 'name']
     readonly_fields = ('created_at',)
-    inlines = [QRCodeInline]
+    inlines = [QRCodeInline, PetCoordinatesInline]
     
     def get_readonly_fields(self, request, obj=None):
         # created_at всегда readonly

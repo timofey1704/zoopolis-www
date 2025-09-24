@@ -87,7 +87,18 @@ class Pet(models.Model):
         
     def __str__(self):
         return f'{self.type} {self.name} - Владелец: {self.owner.username}'
+    
+class PetCoordinates(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name='Питомец')
+    coordinates = models.CharField(max_length=255, verbose_name='Координаты')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'Координаты питомца'
+        verbose_name_plural = 'Координаты питомцев'
         
+    def __str__(self):
+        return f'{self.pet.name} - {self.coordinates}'
 class QRCode(models.Model):
     pet = models.ForeignKey(
         'Pet',
