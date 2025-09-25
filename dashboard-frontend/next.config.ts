@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'i.ibb.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'stage.zoopolis.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'zoopolis.org',
+      },
     ],
   },
 }
