@@ -19,10 +19,12 @@ export default async function Home() {
     <div className="mx-auto flex flex-col items-center justify-center space-y-24 overflow-x-hidden">
       <div
         id="main"
-        className="bg-gray relative flex h-[80vh] w-full flex-col items-center overflow-hidden rounded-b-[100px]"
+        className="bg-gray relative flex w-full flex-col items-center overflow-hidden rounded-b-[100px] md:h-[80vh]"
       >
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
-        <div className="relative w-full pt-10">
+
+        {/* десктоп и таблет версия */}
+        <div className="relative hidden w-full pt-10 sm:block">
           <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
           <div className="mt-12 flex justify-center px-6 md:px-10 lg:px-30">
             <div className="flex -translate-y-1/2 flex-row items-center justify-between gap-10 md:gap-20">
@@ -70,6 +72,45 @@ export default async function Home() {
             </div>
           </div>
         </div>
+
+        {/* mobile */}
+        <div className="relative flex w-full flex-col sm:hidden">
+          <div className="space-y-2 p-4">
+            <p className="text-4xl font-semibold text-gray-900">QR-КУЛОН</p>
+            <p className="text-3xl font-semibold text-gray-900">ДЛЯ ПИТОМЦА</p>
+
+            <p className="text-base text-gray-600">
+              Просто прикрепите QR-кулон к ошейнику — и любой, кто найдёт вашего питомца, сможет
+              связаться с нашей службой поддержки, которая решит все нюансы по возвращению питомца
+              хозяину.
+            </p>
+            <a
+              href="https://account.zoopolis.org/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 block"
+            >
+              <Button
+                text="Заказать"
+                className="bg-orange hover:bg-orange/90 w-full px-6 py-3 text-base font-medium text-white transition-all"
+              />
+            </a>
+          </div>
+          <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
+          <div className="flex flex-col items-center px-6">
+            <div className="relative mt-8 w-full max-w-[280px]">
+              <Image
+                src="/dog1.svg"
+                alt="Счастливая собака"
+                width={280}
+                height={342}
+                className="relative z-10 w-full"
+              />
+              <div className="bg-orange/10 absolute top-1/2 left-1/2 z-0 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" />
+            </div>
+          </div>
+        </div>
+
         {/* блюр снизу */}
         <div className="absolute inset-x-0 -bottom-5 h-40 bg-gradient-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
       </div>

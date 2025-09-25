@@ -15,12 +15,12 @@ const TABS: TabConfig<TabType>[] = [
   {
     id: 'contacts',
     label: 'Контактные данные',
-    mobileLabel: 'Данные о питомце',
+    mobileLabel: 'Контакты',
   },
   {
     id: 'pets',
     label: 'Данные о питомце',
-    mobileLabel: 'Контактные данные',
+    mobileLabel: 'Питомцы',
   },
 ]
 

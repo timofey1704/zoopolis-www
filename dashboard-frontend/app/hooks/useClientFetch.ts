@@ -25,6 +25,9 @@ interface MutationResult<TData, TVariables, TError> {
   data: TData | undefined
 }
 
+// флаг для отслеживания первой 401 ошибки
+let hasRefreshed = false
+
 export function useClientFetch<TData = unknown, TVariables = undefined, TError = AxiosError>(
   url: string,
   options: FetchOptions<TData, TVariables, TError> = {}
@@ -37,6 +40,16 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`
 
+  // обработчик 401 ошибки
+  const handle401Error = (error: AxiosError) => {
+    if (error.response?.status === 401 && !hasRefreshed) {
+      hasRefreshed = true
+      window.location.reload()
+      return
+    }
+    throw error
+  }
+
   // добавляем токен в заголовки -- нужно чтобы хук получал данные закрытые под авторизацию
   const headers = {
     ...config.headers,
@@ -47,8 +60,15 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
   const query = useQuery<TData, TError>({
     queryKey: [url, config.params],
     queryFn: async () => {
-      const response = await axios.get(fullUrl, { ...config, headers })
-      return response.data
+      try {
+        const response = await axios.get(fullUrl, { ...config, headers })
+        return response.data
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          handle401Error(error) // если 401 ошибка первый раз, то перезагружаем страницу
+        }
+        throw error
+      }
     },
     ...queryOptions,
     // отключаем автоматическое выполнение для мутаций
@@ -57,14 +77,21 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
 
   const mutation = useMutation<TData, TError, TVariables>({
     mutationFn: async (variables: TVariables) => {
-      const response = await axios({
-        method: method.toLowerCase(),
-        url: fullUrl,
-        data: variables,
-        ...config,
-        headers,
-      })
-      return response.data
+      try {
+        const response = await axios({
+          method: method.toLowerCase(),
+          url: fullUrl,
+          data: variables,
+          ...config,
+          headers,
+        })
+        return response.data
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          handle401Error(error)
+        }
+        throw error
+      }
     },
     ...mutationOptions,
   })
