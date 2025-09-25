@@ -19,8 +19,8 @@ services:
       CSRF_TRUSTED_ORIGINS: "http://{{ domain }},https://{{ domain }},https://{{ domain_dashboard }}"
 
       #is lost logic
-      IS_LOST_URL: "https://{{ domain }}"
-      REDIRECT_LOGIN_URL: https://{{ domain_dashboard }}
+      IS_LOST_URL: https://{{ domain }}/is_lost/
+      REDIRECT_LOGIN_URL: https://{{ domain_dashboard }}/login
 
       #database
       DB_NAME: "{{ db_name }}"
