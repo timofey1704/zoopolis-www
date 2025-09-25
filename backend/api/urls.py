@@ -12,6 +12,7 @@ from api.account.actions.userActions import UserDataView
 from api.account.actions.petActions import PetView, CheckCodeView
 from api.account.actions.accountActions import AccountActionsView, MapPointsView, ServicesView, BonusesView
 from api.account.actions.dictionariesActions import DictionariesView, CityView
+from api.account.actions.membershipActions import VerificationView, NotificationView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -21,6 +22,8 @@ urlpatterns = [
     path("v1/is-lost/", IsLostPetView.as_view(), name='check-lost-pet'),
     path("v1/send-coordinates/", SendCoordinatesView.as_view(), name='send-coordinates'),
     
+    path("v1/membership/verification/", VerificationView.as_view(), name='verification'),
+    path("v1/membership/notification/", NotificationView.as_view(), name='notification'),
     
     path('oauth/', include('api.oauth.urls')),
     
