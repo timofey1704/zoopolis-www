@@ -13,6 +13,13 @@
         line: "bind 127.0.0.1 172.56.0.1"
       notify: Restart redis
 
+    - name: Disable redis protected mode
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: "^protected-mode"
+        line: "protected-mode no"
+      notify: Restart redis
+
   handlers:
     - name: Restart redis
       ansible.builtin.service:
