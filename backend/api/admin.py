@@ -83,17 +83,22 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                 @media print {{
                     body {{ margin: 0; padding: 20px; }}
                     .no-print {{ display: none; }}
-                    .qr-container {{ page-break-inside: avoid; margin-bottom: 20px; }}
+                    .qr-container {{ 
+                        page-break-inside: avoid; 
+                        margin-bottom: 20px;
+                    }}
                 }}
                 .qr-container {{ 
-                    border: 1px solid #ddd; 
-                    padding: 15px; 
-                    margin: 10px; 
+                    margin: 30px; 
                     text-align: center;
                     display: inline-block;
                     width: 200px;
                 }}
-                img {{ max-width: 100%; height: auto; max-height: 150px; }}
+                svg {{
+                    display: block;
+                    margin: 0 auto;
+                    background: white;
+                }}
                 .print-header {{ text-align: center; margin-bottom: 30px; }}
             </style>
         </head>
@@ -108,8 +113,23 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
         for qr_code in qr_codes_with_images:
             html_content += """
                 <div class="qr-container">
-                    <img src="{image_url}" alt="QR Code">
-                    <h3>{code}</h3>
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <defs>
+                            <clipPath id="circle-clip-{code}">
+                                <circle cx="100" cy="100" r="98" />
+                            </clipPath>
+                        </defs>
+                        <circle cx="100" cy="100" r="98" fill="white" stroke="black" stroke-width="4"/>
+                        <!-- QR код сверху -->
+                        <image x="25" y="15" width="150" height="150" href="{image_url}" 
+                               clip-path="url(#circle-clip-{code})" />
+                        <!-- Белый фон для текста -->
+                        <rect x="30" y="140" width="140" height="30" fill="white"/>
+                        <!-- Текст кода -->
+                        <text x="100" y="160" text-anchor="middle" font-size="16" font-weight="bold" fill="black">
+                            {code}
+                        </text>
+                    </svg>
                 </div>
             """.format(
                 code=qr_code.code,
