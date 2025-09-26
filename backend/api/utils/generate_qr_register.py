@@ -6,10 +6,12 @@ import base64
 import random
 import string
 from typing import Tuple
+from pathlib import Path
 from PIL import Image as PILImage
 from django.apps import apps
 
 redirect_url = settings.IS_LOST_URL
+LOGO_PATH = Path(__file__).parent / 'img' / 'logo_zoo_wt_edit.png'
 
 def get_register_qr_model():
     """
@@ -39,6 +41,44 @@ def generate_unique_qr_code() -> str:
         if not get_register_qr_model().objects.filter(code=code).exists():
             return code
 
+
+def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 60) -> PILImage.Image:
+    """
+    Добавляет логотип в центр QR кода.
+    
+    Args:
+        qr_image: PIL Image объект QR кода
+        logo_path: Путь к файлу логотипа
+        logo_size: Размер логотипа в пикселях (по умолчанию 60)
+    
+    Returns:
+        PIL Image объект с QR кодом и логотипом
+    """
+    # открываем и ресайзим логотип
+    logo = PILImage.open(logo_path)
+    
+    # конвертируем в RGBA если нужно
+    if logo.mode != 'RGBA':
+        logo = logo.convert('RGBA')
+    
+    # изменяем размер логотипа
+    logo = logo.resize((logo_size, logo_size))
+    
+    # вычисляем позицию для размещения логотипа в центре
+    qr_width, qr_height = qr_image.size
+    logo_pos_x = (qr_width - logo_size) // 2
+    logo_pos_y = (qr_height - logo_size) // 2
+    
+    # создаем новое изображение с белым фоном
+    result = PILImage.new('RGB', qr_image.size, 'white')
+    
+    # копируем QR код
+    result.paste(qr_image, (0, 0))
+    
+    # накладываем логотип
+    result.paste(logo, (logo_pos_x, logo_pos_y), logo)
+    
+    return result
 
 def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Image, str, str]:
     """
@@ -72,6 +112,9 @@ def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Ima
     # конвертируем в RGB для сохранения
     if qr_image.mode != 'RGB':
         qr_image = qr_image.convert('RGB')
+
+    # добавляем логотип
+    qr_image = add_logo_to_qr(qr_image, str(LOGO_PATH))
 
     # преобразовываем в base64
     buffered = io.BytesIO()

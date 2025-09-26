@@ -119,16 +119,21 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                                 <circle cx="100" cy="100" r="98" />
                             </clipPath>
                         </defs>
-                        <circle cx="100" cy="100" r="98" fill="white" stroke="black" stroke-width="4"/>
-                        <!-- QR код сверху -->
-                        <image x="25" y="15" width="150" height="150" href="{image_url}" 
-                               clip-path="url(#circle-clip-{code})" />
-                        <!-- Белый фон для текста -->
-                        <rect x="30" y="140" width="140" height="30" fill="white"/>
-                        <!-- Текст кода -->
-                        <text x="100" y="160" text-anchor="middle" font-size="16" font-weight="bold" fill="black">
-                            {code}
-                        </text>
+                        <!-- Основная группа с clip-path -->
+                        <g clip-path="url(#circle-clip-{code})">
+                            <!-- Белый фон -->
+                            <circle cx="100" cy="100" r="98" fill="white"/>
+                            <!-- QR код сверху -->
+                            <image x="25" y="15" width="150" height="150" href="{image_url}" />
+                            <!-- Белый фон для текста -->
+                            <rect x="30" y="140" width="140" height="30" fill="white"/>
+                            <!-- Текст кода -->
+                            <text x="100" y="160" text-anchor="middle" font-size="16" font-weight="bold" fill="black">
+                                {code}
+                            </text>
+                        </g>
+                        <!-- Обводка круга поверх всего -->
+                        <circle cx="100" cy="100" r="98" fill="none" stroke="black" stroke-width="4"/>
                     </svg>
                 </div>
             """.format(
