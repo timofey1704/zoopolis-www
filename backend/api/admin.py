@@ -26,11 +26,40 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
 
     def print_image_button(self, obj):
         if obj.image:
+            html_content = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>QR-код</title>
+                    <style>
+                        @media print {{
+                            body {{ margin: 0; padding: 20px; }}
+                        }}
+                        .qr-container {{ 
+                            border: 1px solid #ddd; 
+                            padding: 15px; 
+                            margin: 10px; 
+                            text-align: center;
+                            display: inline-block;
+                            width: 200px;
+                        }}
+                        img {{ max-width: 100%; height: auto; max-height: 150px; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="qr-container">
+                        <img src="{0}" alt="QR Code">
+                        <h3>{1}</h3>
+                    </div>
+                </body>
+                </html>
+            """.format(obj.image.url, obj.code)
+            
             return format_html(
-                '<button onclick="window.open(\'{0}\', \'_blank\').print()" '
+                '<button onclick="var w = window.open(); w.document.write(\'{0}\'); w.document.close(); var img = w.document.querySelector(\'img\'); if(img) {{ img.onload = function() {{ w.print(); }}; }}" '
                 'class="button" style="padding: 5px 10px; background: #417690; color: white; border: none; border-radius: 3px; cursor: pointer;">'
                 'Печать</button>',
-                obj.image.url
+                html_content.replace("'", "\\'").replace("\n", "")
             )
         return "Нет изображения"
     
@@ -96,8 +125,8 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                 <button onclick="window.print()" style="padding: 15px 25px; background: #417690; color: white; border: none; cursor: pointer; font-size: 16px;">
                     🖨️ Печать всех QR-кодов
                 </button>
-                <button onclick="window.close()" style="padding: 15px 25px; background: #999; color: white; border: none; cursor: pointer; margin-left: 10px; font-size: 16px;">
-                    Закрыть
+                <button onclick="window.location.href='/admin/api/registerqrcode/'" style="padding: 15px 25px; background: #999; color: white; border: none; cursor: pointer; margin-left: 10px; font-size: 16px;">
+                     Вернуться в админку
                 </button>
             </div>
         </body>
