@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import Scroll from './ui/Scroll'
 import { FaTelegramPlane, FaInstagram } from 'react-icons/fa'
 
 const Footer = () => {
@@ -20,20 +21,39 @@ const Footer = () => {
         </div>
 
         <nav className="flex flex-wrap items-center justify-center gap-4 text-base font-medium text-white sm:gap-6 sm:text-lg lg:gap-10 lg:text-xl">
-          <Link href="/" className="hover:text-orange transition-colors duration-300">
-            Как это работает?
-          </Link>
-          <Link href="/about" className="hover:text-orange transition-colors duration-300">
-            Тарифы
-          </Link>
-          <Link href="/about" className="hover:text-orange transition-colors duration-300">
-            Отзывы
-          </Link>
-          <Link href="/about" className="hover:text-orange transition-colors duration-300">
-            FAQ
-          </Link>
-          <Link href="/about" className="hover:text-orange transition-colors duration-300">
-            О компании
+          <Scroll moveTo="main">
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Как это работает?
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="pricing">
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Тарифы
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="reviews">
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              Отзывы
+            </div>
+          </Scroll>
+          <Scroll moveTo="faq">
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              FAQ
+            </div>
+          </Scroll>
+
+          <Scroll moveTo="about-us">
+            <div className="hover:text-orange transition-colors duration-300 hover:cursor-pointer">
+              О компании
+            </div>
+          </Scroll>
+          <Link
+            href="/privacy-policy"
+            className="hover:text-orange text-lg transition-colors duration-300"
+          >
+            Политика конфиденциальности
           </Link>
         </nav>
 
