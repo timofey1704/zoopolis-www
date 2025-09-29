@@ -34,26 +34,71 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                     <style>
                         @media print {{
                             body {{ margin: 0; padding: 20px; }}
+                            .no-print {{ display: none; }}
                         }}
                         .qr-container {{ 
-                            border: 1px solid #ddd; 
-                            padding: 15px; 
-                            margin: 10px; 
+                            margin: 30px; 
                             text-align: center;
                             display: inline-block;
                             width: 200px;
                         }}
-                        img {{ max-width: 100%; height: auto; max-height: 150px; }}
+                        svg {{
+                            display: block;
+                            margin: 0 auto;
+                            background: white;
+                        }}
                     </style>
                 </head>
                 <body>
                     <div class="qr-container">
-                        <img src="{0}" alt="QR Code">
-                        <h3>{1}</h3>
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <defs>
+                                <clipPath id="circle-clip-{1}">
+                                    <circle cx="100" cy="100" r="98" />
+                                </clipPath>
+                                <!-- Определяем круговой путь для текста -->
+                                <path
+                                    id="circle-path-{1}"
+                                    d="M 100,20 A 80,80 0 1,1 99.99,20"
+                                    fill="none"
+                                />
+                            </defs>
+                            <!-- Основная группа с clip-path -->
+                            <g clip-path="url(#circle-clip-{1})">
+                                <!-- Белый фон -->
+                                <circle cx="100" cy="100" r="98" fill="white"/>
+                                <!-- QR код сверху -->
+                                <image x="35" y="32" width="135" height="135" href="{0}" />
+                                <!-- Круговой текст -->
+                                <text font-size="12" fill="black" letter-spacing="2">
+                                    <textPath href="#circle-path-{1}" startOffset="0">
+                                        {2}
+                                    </textPath>
+                                </text>
+                                <!-- Текст кода внизу -->
+                                <text x="100" y="165" text-anchor="middle" font-size="14" font-weight="bold" fill="black">
+                                    {1}
+                                </text>
+                            </g>
+                            <!-- Обводка круга поверх всего -->
+                            <circle cx="100" cy="100" r="98" fill="none" stroke="black" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="no-print" style="text-align: center; margin: 20px;">
+                        <button onclick="window.print()" style="padding: 10px 20px; background: #417690; color: white; border: none; cursor: pointer;">
+                            🖨️ Печать
+                        </button>
+                        <button onclick="window.location.href='/admin/api/registerqrcode/'" style="padding: 10px 20px; background: #999; color: white; border: none; cursor: pointer; margin-left: 10px;">
+                            Вернуться в админку
+                        </button>
                     </div>
                 </body>
                 </html>
-            """.format(obj.image.url, obj.code)
+            """.format(
+                obj.image.url,
+                obj.code,
+                "БЕСПЛАТНО В РБ  •  SCAN ME!  •  8-801-100-80-80  •  (24 / 7)  •  "
+            )
             
             return format_html(
                 '<button onclick="var w = window.open(); w.document.write(\'{0}\'); w.document.close(); var img = w.document.querySelector(\'img\'); if(img) {{ img.onload = function() {{ w.print(); }}; }}" '
@@ -132,7 +177,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                             <!-- QR код сверху -->
                             <image x="35" y="32" width="135" height="135" href="{image_url}" />
                             <!-- Круговой текст -->
-                            <text font-size="12" fill="black">
+                            <text font-size="12" fill="black" letter-spacing="2">
                                 <textPath href="#circle-path-{code}" startOffset="0">
                                     {circular_text}
                                 </textPath>
@@ -152,7 +197,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                 username=qr_code.user.username if qr_code.user else 'Не указан',
                 created_at=qr_code.created_at,
                 status='Активен' if qr_code.is_active else 'Неактивен',
-                circular_text="БЕСПЛАТНО В РБ • SCAN ME! • 8-801-100-80-80 • (24 / 7) •"  # Временный текст, замените на нужный
+                circular_text="БЕСПЛАТНО В РБ  •  SCAN ME!  •  8-801-100-80-80  •  (24 / 7)  •  "  # текст
             )
         
         html_content += """
