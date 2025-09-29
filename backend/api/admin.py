@@ -124,11 +124,11 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                             <!-- Белый фон -->
                             <circle cx="100" cy="100" r="98" fill="white"/>
                             <!-- QR код сверху -->
-                            <image x="25" y="15" width="150" height="150" href="{image_url}" />
+                            <image x="35" y="30" width="135" height="135" href="{image_url}" />
                             <!-- Белый фон для текста -->
-                            <rect x="30" y="140" width="140" height="30" fill="white"/>
+                            <rect x="30" y="150" width="140" height="30" fill="white"/>
                             <!-- Текст кода -->
-                            <text x="100" y="160" text-anchor="middle" font-size="16" font-weight="bold" fill="black">
+                            <text x="100" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="black">
                                 {code}
                             </text>
                         </g>
