@@ -118,22 +118,32 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                             <clipPath id="circle-clip-{code}">
                                 <circle cx="100" cy="100" r="98" />
                             </clipPath>
+                            <!-- Определяем круговой путь для текста -->
+                            <path
+                                id="circle-path-{code}"
+                                d="M 100,20 A 80,80 0 1,1 99.99,20"
+                                fill="none"
+                            />
                         </defs>
                         <!-- Основная группа с clip-path -->
                         <g clip-path="url(#circle-clip-{code})">
                             <!-- Белый фон -->
                             <circle cx="100" cy="100" r="98" fill="white"/>
                             <!-- QR код сверху -->
-                            <image x="35" y="30" width="135" height="135" href="{image_url}" />
-                            <!-- Белый фон для текста -->
-                            <rect x="30" y="150" width="140" height="30" fill="white"/>
-                            <!-- Текст кода -->
-                            <text x="100" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="black">
+                            <image x="35" y="32" width="135" height="135" href="{image_url}" />
+                            <!-- Круговой текст -->
+                            <text font-size="12" fill="black">
+                                <textPath href="#circle-path-{code}" startOffset="0">
+                                    {circular_text}
+                                </textPath>
+                            </text>
+                            <!-- Текст кода внизу -->
+                            <text x="100" y="165" text-anchor="middle" font-size="14" font-weight="bold" fill="black">
                                 {code}
                             </text>
                         </g>
                         <!-- Обводка круга поверх всего -->
-                        <circle cx="100" cy="100" r="98" fill="none" stroke="black" stroke-width="4"/>
+                        <circle cx="100" cy="100" r="98" fill="none" stroke="black" stroke-width="2"/>
                     </svg>
                 </div>
             """.format(
@@ -141,7 +151,8 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                 image_url=request.build_absolute_uri(qr_code.image.url),
                 username=qr_code.user.username if qr_code.user else 'Не указан',
                 created_at=qr_code.created_at,
-                status='Активен' if qr_code.is_active else 'Неактивен'
+                status='Активен' if qr_code.is_active else 'Неактивен',
+                circular_text="БЕСПЛАТНО В РБ • SCAN ME! • 8-801-100-80-80 • (24 / 7) •"  # Временный текст, замените на нужный
             )
         
         html_content += """
