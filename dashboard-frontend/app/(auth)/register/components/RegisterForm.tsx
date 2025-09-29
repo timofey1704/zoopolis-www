@@ -252,9 +252,14 @@ const RegisterForm = () => {
               className="cursor-pointer px-2 text-gray-700 select-none"
             >
               Даю согласие на обработку моих{' '}
-              <Link href="/privacy-policy" className="text-orange/60 hover:underline">
+              <a
+                href="https://zoopolis.org/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-orange/60 hover:underline"
+              >
                 персональных данных.
-              </Link>
+              </a>
             </label>
           </div>
           <div className="my-2 flex w-full items-center justify-center">

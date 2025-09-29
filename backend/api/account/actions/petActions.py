@@ -11,7 +11,6 @@ from api.account.serializers import PetSerializer, PetCreateSerializer
 from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
-from api.utils.QRGenerator import save_pet_qr
 from api.models import RegisterQRCode
 
 logger = logging.getLogger(__name__)
