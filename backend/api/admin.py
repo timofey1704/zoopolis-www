@@ -70,7 +70,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                                 <!-- QR код сверху -->
                                 <image x="35" y="32" width="135" height="135" href="{0}" />
                                 <!-- Круговой текст -->
-                                <text font-size="12" fill="black" letter-spacing="2">
+                                <text font-size="12" fill="black" letter-spacing="3">
                                     <textPath href="#circle-path-{1}" startOffset="0">
                                         {2}
                                     </textPath>
@@ -177,7 +177,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                             <!-- QR код сверху -->
                             <image x="35" y="32" width="135" height="135" href="{image_url}" />
                             <!-- Круговой текст -->
-                            <text font-size="12" fill="black" letter-spacing="2">
+                            <text font-size="12" fill="black" letter-spacing="3">
                                 <textPath href="#circle-path-{code}" startOffset="0">
                                     {circular_text}
                                 </textPath>
