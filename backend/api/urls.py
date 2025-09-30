@@ -12,7 +12,7 @@ from api.account.actions.userActions import UserDataView
 from api.account.actions.petActions import PetView, CheckCodeView
 from api.account.actions.accountActions import AccountActionsView, MapPointsView, ServicesView, BonusesView
 from api.account.actions.dictionariesActions import DictionariesView, CityView
-from api.account.actions.membershipActions import VerificationView, NotificationView
+from api.account.actions.membershipActions import VerificationView, NotificationView, MembershipView
 
 urlpatterns = [
     path("v1/faq/", FAQView.as_view(), name='faqMain'),
@@ -52,6 +52,8 @@ urlpatterns = [
     path('v1/account/services/<int:pk>/request_service/', ServicesView.as_view({'post': 'request_service'}), name='request_service'),
     path('v1/account/bonuses/', BonusesView.as_view({'get': 'get_bonuses'}), name='get_bonuses'),
     path('v1/account/bonuses/<int:pk>/apply/', BonusesView.as_view({'post': 'apply_bonus'}), name='apply_bonus'),
+    
+    path('v1/account/payments/', MembershipView.as_view({'patch': 'change_membership'}), name='change_membership'),
     
     path('v1/dictionaries/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
     path('v1/dictionaries/pet-types/', DictionariesView.as_view({'get': 'pet_types'}), name='pet_types'),

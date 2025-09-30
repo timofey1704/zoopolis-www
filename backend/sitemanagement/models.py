@@ -20,6 +20,7 @@ class FAQ (models.Model):
         return self.title
     
 class Pricing(models.Model):
+    id = models.AutoField(primary_key=True)  # Явно объявляем поле id для Pylance
     plan = models.CharField(max_length=10, choices=account_types, verbose_name='Название тарифного плана')
     description = models.TextField(max_length=255, verbose_name='Описание тарифного плана')
     price = models.IntegerField(verbose_name='Стоимость тарифного плана / месяц')
@@ -216,6 +217,8 @@ class Tranasctions(models.Model):
     status = models.CharField(max_length=10, verbose_name='Статус', choices=[('pending', 'Ожидание'), ('completed', 'Выполнено'), ('failed', 'Не выполнено')])
     transaction_id = models.CharField(max_length=255, verbose_name='ID транзакции')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    subscription_start = models.DateTimeField(verbose_name='Начало подписки', null=True, blank=True)
+    subscription_end = models.DateTimeField(verbose_name='Окончание подписки', null=True, blank=True)
     
     class Meta:
         verbose_name = 'Транзакция'

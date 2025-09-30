@@ -129,3 +129,10 @@ class PetAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         # удалять могут только суперюзеры
         return request.user.is_superuser
+
+@admin.register(Tranasctions)
+class TranasctionsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'membership', 'amount', 'status', 'transaction_id', 'created_at', 'subscription_start', 'subscription_end']
+    list_filter = ['status', 'created_at', 'subscription_start', 'subscription_end']
+    search_fields = ['user__username', 'membership__plan', 'transaction_id']
+    readonly_fields = ('created_at',)

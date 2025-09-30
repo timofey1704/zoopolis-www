@@ -3,15 +3,55 @@ import { PricingCardProps } from '@/app/types'
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
 import useUserStore from '@/app/store/userStore'
+import showToast from '@/components/ui/showToast'
 
 const accountTypeToDisplayName = {
   zooID: 'Зоо ID',
-  zooConcierge: 'Зооконсьерж',
+  concierge: 'Зооконсьерж',
   zoopolis: 'Зоополис',
+} as const
+
+// для бекенда
+const displayNameToAccountType: Record<string, keyof typeof accountTypeToDisplayName> = {
+  'Зоо ID': 'zooID',
+  Зооконсьерж: 'concierge',
+  Зоополис: 'zoopolis',
 }
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   const { user } = useUserStore()
+
+  const changeAccountType = async (displayPlan: string) => {
+    const internalPlan = displayNameToAccountType[displayPlan]
+    if (!internalPlan) {
+      showToast({
+        type: 'error',
+        message: 'Неверный план подписки',
+      })
+      return
+    }
+
+    const response = await fetch('api/profile/payments', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ plan: internalPlan }),
+    })
+
+    if (!response.ok) {
+      showToast({
+        type: 'error',
+        message: 'Не смогли изменить план',
+      })
+      return
+    }
+
+    showToast({
+      type: 'success',
+      message: 'План успешно изменен',
+    })
+  }
 
   return (
     <div className="my-5 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -66,6 +106,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
                   ? 'bg-orange hover:bg-orange/80 text-white hover:scale-105 hover:shadow-none'
                   : 'bg-orange text-white opacity-55 hover:cursor-not-allowed hover:shadow-none'
               }`}
+              onClick={() => changeAccountType(membership.plan)}
             />
           )}
         </div>

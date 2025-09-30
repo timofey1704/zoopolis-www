@@ -2,12 +2,13 @@ import logging
 from rest_framework import serializers
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from api.models import RegisterQRCode
-from sitemanagement.models import Pet, MapPoints, Services, Bonuses
+from sitemanagement.models import Pet, MapPoints, Services, Bonuses, Pricing, Tranasctions
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 logger = logging.getLogger(__name__)
-
+User = get_user_model()
 class BasePetSerializer(serializers.ModelSerializer):
     """Базовый сериализатор с общей валидацией"""
     class Meta:
@@ -131,3 +132,43 @@ class BonusesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bonuses
         fields = ('id', 'name', 'description', 'imageURL', 'category', 'start_date', 'end_date', 'code', 'is_available')
+        
+class MembershipSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдачи тарифных планов"""
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    membership = serializers.PrimaryKeyRelatedField(queryset=Pricing.objects.all())
+
+    class Meta:
+        model = Tranasctions
+        fields = ('id', 'user', 'membership', 'amount', 'auto_renewal', 'status', 'transaction_id', 'created_at', 'subscription_start', 'subscription_end')
+        
+    def validate(self, data):
+            """Валидация дат подписки"""
+            subscription_start = data.get('subscription_start')
+            subscription_end = data.get('subscription_end')
+            
+            if subscription_start and subscription_end:
+                # проверяем что дата окончания позже даты начала
+                if subscription_end <= subscription_start:
+                    raise serializers.ValidationError({
+                        "subscription_end": "Дата окончания подписки должна быть позже даты начала"
+                    })
+                
+                # для новых подписок (status=pending/completed) проверяем будущее
+                if data.get('status') in ['pending', 'completed']:
+                    now = timezone.now()
+                    
+                    # дата начала не должна быть в прошлом более чем на 30 минут (небольшой запас для обработки запроса)
+                    if subscription_start < now - timezone.timedelta(minutes=30):
+                        raise serializers.ValidationError({
+                            "subscription_start": "Дата начала подписки не может быть в прошлом"
+                        })
+                    
+                    # дата окончания должна быть минимум на день позже начала
+                    min_duration = timezone.timedelta(days=1)
+                    if subscription_end - subscription_start < min_duration:
+                        raise serializers.ValidationError({
+                            "subscription_end": "Минимальный срок подписки - 1 день"
+                        })
+            
+            return data
