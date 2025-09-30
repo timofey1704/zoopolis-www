@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { AccountSidebarProps } from '@/app/types'
 import Logout from './Logout'
+import { accountTypeToDisplayName, getAccountTypeStyles } from '@/app/constants/accountTypes'
 import noPhoto from '../public/images/noPhoto.svg'
 import { TbPhotoUp } from 'react-icons/tb'
 import showToast from './ui/showToast'
@@ -80,19 +81,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
 
   const navigationItems = navigation
 
-  const getAccountTypeStyles = (accountType: string) => {
-    switch (accountType.toLowerCase()) {
-      case 'zooID':
-        return 'bg-gray-400 text-white'
-      case 'concierge':
-        return 'bg-orange/70 text-white'
-      case 'zoopolis':
-        return 'bg-blue-500 text-white'
-      default:
-        return 'bg-gray-200'
-    }
-  }
-
   return (
     <div className="space-y-3">
       <div className="flex w-full items-center space-x-4 rounded-2xl bg-white p-4 shadow">
@@ -129,7 +117,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
                 user.account_type
               )} flex items-center justify-center rounded-lg px-3 py-1 text-sm`}
             >
-              {user.account_type.charAt(0).toUpperCase() + user.account_type.slice(1)}
+              {accountTypeToDisplayName[user.account_type as keyof typeof accountTypeToDisplayName]}
             </Link>
           )}
         </div>

@@ -26,16 +26,6 @@ class NotificationView(APIView):
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get_active_subscription(self, user):
-        """Получить активную подписку пользователя"""
-        now = timezone.now()
-        return Tranasctions.objects.filter(
-            user=user,
-            status='completed',
-            subscription_start__lte=now,
-            subscription_end__gte=now
-        ).first()
-
     @action(detail=False, methods=['patch'])
     @handle_exceptions
     def change_membership(self, request):
@@ -56,20 +46,16 @@ class MembershipView(ViewSet):
                 'message': 'Тарифный план не найден'
             }, status=status.HTTP_404_NOT_FOUND)
             
-        # проверяем текущую активную подписку
-        active_subscription = self.get_active_subscription(user)
-        if active_subscription:
-            if active_subscription.membership.plan == plan:
-                return Response({
-                    'success': False,
-                    'message': 'У вас уже активирован этот тарифный план',
-                    'current_plan': {
-                        'name': active_subscription.membership.plan,
-                        'expires_at': active_subscription.subscription_end
-                    }
-                }, status=status.HTTP_400_BAD_REQUEST)
+        # проверяем текущий тип аккаунта
+        if user.userprofile.account_type == plan:
+            return Response({
+                'success': False,
+                'message': 'У вас уже активирован этот тарифный план'
+            }, status=status.HTTP_400_BAD_REQUEST)
             
             # апгрейды/даунгрейды?
+            
+        #!сюда логика по бипейду когда будет готова
 
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
@@ -77,7 +63,7 @@ class MembershipView(ViewSet):
         # генерируем уникальный transaction_id
         transaction_id = f"{int(now.timestamp())}{user.id}{random.randint(1000, 9999)}"
         
-        # подготавливаем данные для сериализатора
+        # подготавливаем данные для сериалайзера
         transaction_data = {
             'user': user.id,
             'membership': membership.id, 

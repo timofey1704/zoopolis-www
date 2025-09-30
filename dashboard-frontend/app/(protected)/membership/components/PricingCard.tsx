@@ -4,25 +4,10 @@ import Button from '@/components/ui/Button'
 import Image from 'next/image'
 import useUserStore from '@/app/store/userStore'
 import showToast from '@/components/ui/showToast'
-import { useSession } from 'next-auth/react'
-
-const accountTypeToDisplayName = {
-  zooID: 'Зоо ID',
-  concierge: 'Зооконсьерж',
-  zoopolis: 'Зоополис',
-} as const
-
-// для бекенда
-const displayNameToAccountType: Record<string, keyof typeof accountTypeToDisplayName> = {
-  'Зоо ID': 'zooID',
-  Зооконсьерж: 'concierge',
-  Зоополис: 'zoopolis',
-}
+import { accountTypeToDisplayName, displayNameToAccountType } from '@/app/constants/accountTypes'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   const { user, setUser } = useUserStore()
-  const { data: session } = useSession()
-  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const changeAccountType = async (displayPlan: string) => {
     const internalPlan = displayNameToAccountType[displayPlan]
@@ -72,17 +57,17 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
           style={{ backgroundColor: membership.bg_color }}
         >
           <div className="flex-1">
-            <div className="mb-3 flex items-center justify-between">
-              <h3>{membership.plan}</h3>
+            <div className="mb-3 flex flex-col items-center justify-between">
               {accountTypeToDisplayName[
                 user?.account_type as keyof typeof accountTypeToDisplayName
               ] === membership.plan ? (
-                <div className="bg-orange rounded-2xl px-3 py-1 text-sm text-white">Ваш тариф</div>
+                <div className="bg-orange rounded-2xl px-2 py-1 text-xs text-white">Ваш тариф</div>
               ) : membership.is_popular ? (
                 <div className="text-orange text-sm">Популярный!</div>
-              ) : (
+              ) : !membership.is_available ? (
                 <div className="text-orange text-sm">Скоро!</div>
-              )}
+              ) : null}
+              <h3>{membership.plan}</h3>
             </div>
 
             <div className="mb-6 flex items-baseline space-x-2">
