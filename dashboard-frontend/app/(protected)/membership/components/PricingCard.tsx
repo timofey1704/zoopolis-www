@@ -4,6 +4,7 @@ import Button from '@/components/ui/Button'
 import Image from 'next/image'
 import useUserStore from '@/app/store/userStore'
 import showToast from '@/components/ui/showToast'
+import { useSession } from 'next-auth/react'
 
 const accountTypeToDisplayName = {
   zooID: 'Зоо ID',
@@ -19,7 +20,9 @@ const displayNameToAccountType: Record<string, keyof typeof accountTypeToDisplay
 }
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
-  const { user } = useUserStore()
+  const { user, setUser } = useUserStore()
+  const { data: session } = useSession()
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const changeAccountType = async (displayPlan: string) => {
     const internalPlan = displayNameToAccountType[displayPlan]
@@ -47,9 +50,14 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
+    const responseData = await response.json()
+    if (responseData.user) {
+      setUser(responseData.user) // обновляем данные в сторе (данные в сайдбаре обновятся автоматически)
+    }
+
     showToast({
       type: 'success',
-      message: 'План успешно изменен',
+      message: responseData.message || 'План успешно изменен',
     })
   }
 

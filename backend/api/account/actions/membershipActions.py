@@ -99,8 +99,22 @@ class MembershipView(ViewSet):
         user_profile.account_type = plan  # plan уже содержит правильное значение (zooID/concierge/zoopolis)
         user_profile.save()
         
+        # возвращаем обновленные данные пользователя для стора
+        user_data = {
+            'id': user.id,
+            'name': user.first_name,
+            'uuid': str(user.userprofile.uuid)[:6] if user.userprofile.uuid else None,
+            'email': user.email,
+            'account_type': user.userprofile.account_type,
+            'phone_number': user.userprofile.phone_number,
+            'city': user.userprofile.city.id if user.userprofile.city else None,
+            'address': user.userprofile.address,
+            'imageURL': user.userprofile.imageURL,
+        }
+
         return Response({
             'success': True,
             'message': 'План успешно изменен',
-            'transaction': serializer.data
+            'transaction': serializer.data,
+            'user': user_data
         }, status=status.HTTP_200_OK)
