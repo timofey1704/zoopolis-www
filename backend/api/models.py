@@ -10,6 +10,7 @@ from sitemanagement.models import Pet
 from dictionaries.models import Cities
 
 from api.utils.generate_qr_register import generate_registration_qr
+from sitemanagement.constants.user_image_path import user_image_upload_path
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -19,7 +20,12 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, verbose_name="Адрес", null=True, blank=True)
     account_type = models.CharField(max_length=20, verbose_name="Тип аккаунта", choices=account_types, default="zooID")
     privacy_accepted = models.BooleanField(default=False)
-    imageURL = models.CharField(max_length=255, null=True, blank=True)
+    image = models.ImageField(
+        upload_to=user_image_upload_path,
+        verbose_name="Фото пользователя",
+        null=True,
+        blank=True
+    )
    
     def __str__(self):
         return str(self.phone_number)

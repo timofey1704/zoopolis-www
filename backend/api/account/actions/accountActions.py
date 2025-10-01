@@ -69,7 +69,7 @@ class AccountActionsView(ViewSet):
                 
         # обновляем фотографию профиля
         if 'image' in request.FILES:
-            user_profile.imageURL = request.FILES['image']
+            user_profile.image = request.FILES['image']
             user_profile.save()
 
         # сохраняем изменения
