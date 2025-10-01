@@ -136,3 +136,10 @@ class TranasctionsAdmin(admin.ModelAdmin):
     list_filter = ['status', 'created_at', 'subscription_start', 'subscription_end']
     search_fields = ['user__username', 'membership__plan', 'transaction_id']
     readonly_fields = ('created_at',)
+    
+@admin.register(Devices)
+class DevicesAdmin(admin.ModelAdmin):
+    list_display = ['title', 'price', 'image', 'category']
+    list_filter = ['title','price', 'category']
+    search_fields = ['title', 'description', 'price']
+    readonly_fields = ('created_at',)
