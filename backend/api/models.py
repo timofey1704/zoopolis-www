@@ -17,7 +17,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=18, unique=True, verbose_name="Номер телефона")
     city = models.ForeignKey(Cities, on_delete=models.CASCADE, verbose_name="Город", null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name="Адрес", null=True, blank=True)
-    account_type = models.CharField(max_length=20, verbose_name="Тип аккаунта", choices=account_types)
+    account_type = models.CharField(max_length=20, verbose_name="Тип аккаунта", choices=account_types, default="zooID")
     privacy_accepted = models.BooleanField(default=False)
     imageURL = models.CharField(max_length=255, null=True, blank=True)
    
