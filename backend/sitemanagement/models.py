@@ -238,6 +238,7 @@ class Devices(models.Model):
         verbose_name="Изображение продукта",
     )
     wb_link = models.CharField(max_length=255, verbose_name="Ссылка на WB")
+    category = models.CharField(max_length=15, verbose_name='Категория', choices=[('collars', 'Ошейники'), ('keychains', 'Брелоки')], default='collars')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:

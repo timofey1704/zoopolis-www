@@ -139,7 +139,7 @@ class TranasctionsAdmin(admin.ModelAdmin):
     
 @admin.register(Devices)
 class DevicesAdmin(admin.ModelAdmin):
-    list_display = ['title', 'description', 'price', 'image', 'wb_link']
-    list_filter = ['title','price']
+    list_display = ['title', 'price', 'image', 'category']
+    list_filter = ['title','price', 'category']
     search_fields = ['title', 'description', 'price']
     readonly_fields = ('created_at',)

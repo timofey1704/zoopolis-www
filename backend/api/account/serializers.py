@@ -174,6 +174,12 @@ class MembershipSerializer(serializers.ModelSerializer):
             return data
         
 class DeviceSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    
     class Meta:
         model = Devices
-        fields = "__all__"
+        fields = ('id', 'title', 'description', 'price', 'category', 'wb_link', 'image')
+        
+    def get_image(self, obj):
+        """Возвращает URL изображения продукта"""
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
