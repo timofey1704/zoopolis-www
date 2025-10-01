@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,8 +16,8 @@ from api.account.serializers import MapPointsSerializer, ServicesSerializer, Bon
 from api.utils.decorators import handle_exceptions
 
 from dictionaries.models import Cities
-from sitemanagement.models import MapPoints, Services, Appointment, Bonuses
-from api.account.serializers import MapPointsSerializer
+from sitemanagement.models import MapPoints, Services, Appointment, Bonuses, Devices
+from api.account.serializers import MapPointsSerializer, DeviceSerializer
 
 class AccountActionsView(ViewSet):
     """Действия в аккаунте пользователя:
@@ -181,3 +182,16 @@ class BonusesView(ViewSet):
             'success': True,
             'message': 'Бонус успешно применен'
         }, status=status.HTTP_200_OK)
+        
+class DevicesView(APIView):
+    permission_classes = [IsAuthenticated]
+    @handle_exceptions
+    
+    def get(self, request):
+        devices = Devices.objects.all()
+        
+        data = {
+            'devices':DeviceSerializer(devices, many=True).data
+        }
+        
+        return Response(data, status=status.HTTP_200_OK)

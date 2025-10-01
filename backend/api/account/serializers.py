@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from api.models import RegisterQRCode
-from sitemanagement.models import Pet, MapPoints, Services, Bonuses, Pricing, Tranasctions
+from sitemanagement.models import Pet, MapPoints, Services, Bonuses, Pricing, Tranasctions, Devices
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 logger = logging.getLogger(__name__)
@@ -172,3 +172,8 @@ class MembershipSerializer(serializers.ModelSerializer):
                         })
             
             return data
+        
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Devices
+        fields = "__all__"
