@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import { AccountSidebarProps } from '@/app/types'
 import Logout from './Logout'
 import { accountTypeToDisplayName, getAccountTypeStyles } from '@/app/constants/accountTypes'
-import noPhoto from '../public/images/noPhoto.svg'
+import noPhoto from '../public/images/no-photo.png'
 import { TbPhotoUp } from 'react-icons/tb'
 import showToast from './ui/showToast'
 import { uploadImage } from '@/lib/imageUpload'
@@ -100,7 +100,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
               height={84}
               width={84}
               priority
-              className="aspect-square rounded-2xl object-cover md:w-[84px]"
+              className="aspect-square rounded-3xl object-cover md:w-[84px]"
             />
             <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
               <TbPhotoUp className="text-3xl text-white" />
@@ -151,8 +151,8 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
         </nav>
       </div>
       <div className="w-full rounded-2xl bg-white p-2 shadow md:w-64">
-        <Link
-          href={'/support'}
+        <a
+          href="https://t.me/+9mMS663WT6Y5YWYy"
           className={`${
             pathname === '/support'
               ? 'border-orange translate-x-2 rounded-l-lg border-r-4 bg-gray-100 text-black'
@@ -167,7 +167,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
             className="mr-2"
           />
           Поддержка
-        </Link>
+        </a>
         <Logout />
       </div>
     </div>
