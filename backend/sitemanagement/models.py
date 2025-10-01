@@ -5,6 +5,7 @@ from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
 from sitemanagement.constants.qr_code_path import pet_qr_upload_path
 from sitemanagement.constants.pet_image_path import pet_image_upload_path
+from sitemanagement.constants.image_save_path import devices_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -227,3 +228,22 @@ class Tranasctions(models.Model):
         
     def __str__(self):
         return f'{self.user.username} - {self.membership.plan}'
+    
+class Devices(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Название продукта')
+    description = models.CharField(max_length=255, verbose_name='Описание продукта')
+    price = models.IntegerField(verbose_name='Цена продукта')
+    image = models.ImageField(
+        upload_to=devices_upload_path,
+        verbose_name="Изображение продукта",
+    )
+    wb_link = models.CharField(max_length=255, verbose_name="Ссылка на WB")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    
+    class Meta:
+        verbose_name = 'Устройство'
+        verbose_name_plural = 'Устройства'
+        ordering = ['id']
+    
+    def __str__(self) -> str:
+        return f'{self.title} - {self.price}'
