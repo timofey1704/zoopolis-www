@@ -66,7 +66,11 @@ const RegisterForm = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ phone_number: values.phone_number, promocode: values.promocode }),
+          body: JSON.stringify({
+            phone_number: values.phone_number,
+            promocode: values.promocode,
+            email: values.email,
+          }),
         })
 
         const verificationData = await verificationResponse.json()

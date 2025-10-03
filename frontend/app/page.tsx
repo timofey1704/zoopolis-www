@@ -73,7 +73,7 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* mobile */}
+        {/* мобилка */}
         <div className="relative flex w-full flex-col sm:hidden">
           <div className="space-y-2 p-4">
             <p className="text-4xl font-semibold text-gray-900">QR-КУЛОН</p>

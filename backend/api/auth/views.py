@@ -73,9 +73,10 @@ class RegisterViewSet(AuthBaseViewSet):
     
     @action(detail=False, methods=['post'], url_path="send-verification")
     def send_verification_code(self, request):
-        """Отправка кода верификации на email"""
+        """Отправка кода верификации на номер телефона"""
         phone_number = request.data.get('phone_number')
         promocode = request.data.get('promocode')
+        email = request.data.get('email')
         
         if not phone_number:
             return Response(
@@ -89,7 +90,12 @@ class RegisterViewSet(AuthBaseViewSet):
                 {"error": "Пользователь с таким номером телефона уже существует"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-            
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Пользователь с таким email уже существует"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         # проверяем промокод (если предоставлен)
         if promocode:
             try:
