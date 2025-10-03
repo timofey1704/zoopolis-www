@@ -2,6 +2,7 @@ import React from 'react'
 import { PricingCardProps } from '@/app/types'
 import Button from './ui/Button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   return (
@@ -17,11 +18,8 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
           <div className="flex-1">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-2xl font-bold">{membership.plan}</h3>
-              {membership.is_popular ? (
-                <div className="text-orange text-sm">Популярный!</div>
-              ) : (
-                <div className="text-orange text-sm">Скоро!</div>
-              )}
+              {membership.is_popular && <div className="text-orange text-sm">Популярный!</div>}
+              {!membership.is_available && <div className="text-orange text-sm">Скоро!</div>}
             </div>
 
             <div className="mb-6 flex items-baseline space-x-2">
@@ -43,15 +41,17 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
             </ul>
           </div>
 
-          <Button
-            text={membership.is_available ? 'Оформить подписку' : 'Совсем скоро!'}
-            disabled={!membership.is_available}
-            className={`w-full ${
-              membership.is_available
-                ? 'bg-orange hover:bg-orange/80 text-white hover:scale-105 hover:shadow-none'
-                : 'bg-orange text-white opacity-55 hover:cursor-not-allowed hover:shadow-none'
-            }`}
-          />
+          <Link href="https://account.zoopolis.org/membership" target="_blank" className="w-full">
+            <Button
+              text={membership.is_available ? 'Оформить подписку' : 'Совсем скоро!'}
+              disabled={!membership.is_available}
+              className={`w-full ${
+                membership.is_available
+                  ? 'bg-orange hover:bg-orange/80 text-white hover:scale-105 hover:shadow-none'
+                  : 'bg-orange text-white opacity-55 hover:cursor-not-allowed hover:shadow-none'
+              }`}
+            />
+          </Link>
         </div>
       ))}
     </div>

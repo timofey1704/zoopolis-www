@@ -22,7 +22,7 @@ class ServicesForm(forms.ModelForm):
 @admin.register(Services)
 class ServicesAdmin(admin.ModelAdmin):
     form = ServicesForm
-    list_display = ['title', 'actual_before', 'get_available_for_display']
+    list_display = ['title', 'actual_before', 'get_available_for_display', 'is_available']
     list_filter = ['available_for', 'actual_before']
     search_fields = ['title', 'description']
     ordering = ['id']
