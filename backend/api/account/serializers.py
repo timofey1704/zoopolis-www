@@ -129,9 +129,13 @@ class ServicesSerializer(serializers.ModelSerializer):
         
 class BonusesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи бонусов"""
+    imageURL = serializers.SerializerMethodField()
     class Meta:
         model = Bonuses
         fields = ('id', 'name', 'description', 'imageURL', 'category', 'start_date', 'end_date', 'code', 'is_available')
+    def get_imageURL(self, obj):
+        """Возвращает URL изображения бонуса"""
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
         
 class MembershipSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи тарифных планов"""

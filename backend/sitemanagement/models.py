@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
-from sitemanagement.constants.image_save_path import devices_upload_path, pet_image_upload_path, pet_qr_upload_path
+from sitemanagement.constants.image_save_path import devices_upload_path, pet_image_upload_path, pet_qr_upload_path, bonuses_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -187,7 +187,12 @@ class BonusApplication(models.Model):
 class Bonuses(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название бонуса')
     description = models.TextField(max_length=255, verbose_name='Описание бонуса')
-    imageURL = models.CharField(max_length=255, verbose_name='Ссылка на картинку', null=True, blank=True)
+    image = models.ImageField(
+        upload_to=bonuses_upload_path,
+        verbose_name="Картинка для бонуса",
+        null=True,
+        blank=True
+    )
     category = models.CharField(max_length=255, verbose_name='Категория', choices=[('discount', 'Скидки'), ('promo', 'Промокоды'), ('promotion', 'Акции')])
     start_date = models.DateField(verbose_name='Дата начала')
     end_date = models.DateField(verbose_name='Дата окончания')
