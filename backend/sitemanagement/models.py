@@ -3,9 +3,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
-from sitemanagement.constants.qr_code_path import pet_qr_upload_path
-from sitemanagement.constants.pet_image_path import pet_image_upload_path
-from sitemanagement.constants.image_save_path import devices_upload_path
+from sitemanagement.constants.image_save_path import devices_upload_path, pet_image_upload_path, pet_qr_upload_path
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):

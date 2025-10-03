@@ -1,3 +1,19 @@
 def devices_upload_path(instance, filename):
     """Генерирует путь: devices/{filename}"""
     return f"devices/{filename}"
+
+def pet_image_upload_path(instance, filename):
+    """Генерирует путь: media/{username}/pets/{filename}"""
+    return f"{instance.owner.username}/pets/{filename}"
+
+def pet_qr_upload_path(instance, filename):
+    """Генерирует путь: media/{username}/qrcodes/{filename}"""
+    return f"{instance.pet.owner.username}/qrcodes/{filename}"
+
+def register_qr_upload_path(instance, filename):
+    """Генерирует путь: media/register_qrcodes/{filename}"""
+    return f"register_qrcodes/{filename}"
+
+def user_image_upload_path(instance, filename):
+    """Генерирует путь: media/{username}/{filename}"""
+    return f"{instance.user.username}/{filename}"

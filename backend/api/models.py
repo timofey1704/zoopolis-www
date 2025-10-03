@@ -5,12 +5,11 @@ from django.db import models
 from django.core.files.base import ContentFile
 
 from sitemanagement.constants.account_types import account_types
-from sitemanagement.constants.qr_code_path import register_qr_upload_path
+from sitemanagement.constants.image_save_path import register_qr_upload_path, user_image_upload_path
 from sitemanagement.models import Pet
 from dictionaries.models import Cities
 
 from api.utils.generate_qr_register import generate_registration_qr
-from sitemanagement.constants.user_image_path import user_image_upload_path
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
