@@ -55,9 +55,9 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
     <>
       <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
         <div className="flex flex-grow flex-col space-y-4">
-          <div>
+          {service.imageURL && (
             <Image src={service.imageURL} alt={service.title} width={56} height={56} />
-          </div>
+          )}
 
           <p className="text-sm text-gray-500">до {formatDate(service.actual_before)}</p>
           <h3>{service.title}</h3>

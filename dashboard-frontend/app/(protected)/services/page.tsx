@@ -12,7 +12,7 @@ export interface ServiceData {
   id: number
   title: string
   description: string
-  imageURL: string
+  imageURL?: string
   actual_before: Date
   available_for: string[]
   is_available: boolean
@@ -60,11 +60,18 @@ const ServicesPage = () => {
         refs={refs}
         onTabChange={handleTabChange}
       />
-      <div className="my-5 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {ServiceData.map(service => (
-          <ServiceCard key={service.id} service={service} />
-        ))}
-      </div>
+
+      {ServiceData.length === 0 ? (
+        <div className="my-8 text-center text-gray-500">
+          Пока что тут ничего нет. Следите за обновлениями!
+        </div>
+      ) : (
+        <div className="my-5 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {ServiceData.map(service => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
+      )}
     </>
   )
 }

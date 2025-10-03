@@ -3,7 +3,11 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
-from sitemanagement.constants.image_save_path import devices_upload_path, pet_image_upload_path, pet_qr_upload_path, bonuses_upload_path
+from sitemanagement.constants.image_save_path import (devices_upload_path, 
+pet_image_upload_path, 
+pet_qr_upload_path, 
+bonuses_upload_path, 
+services_upload_path)
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -136,7 +140,12 @@ class MapPoints(models.Model):
 class Services (models.Model):
     title = models.CharField(max_length=50, verbose_name='Название услуги')
     description = models.CharField(max_length=100, verbose_name='Описание услуги')
-    imageURL = models.CharField(max_length=255, verbose_name='Ссылка на картинку')
+    image = models.ImageField(
+        upload_to=services_upload_path,
+        verbose_name="Изображение продукта",
+        null=True,
+        blank=True
+    )
     actual_before = models.DateField(verbose_name='Действует до')
     available_for = ArrayField(
         models.CharField(max_length=20, choices=account_types),

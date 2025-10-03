@@ -123,9 +123,13 @@ class MapPointsSerializer(serializers.ModelSerializer):
         
 class ServicesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи услуг"""
+    imageURL = serializers.SerializerMethodField()
     class Meta:
         model = Services
         fields = ('id', 'title', 'description', 'imageURL', 'actual_before', 'is_available')
+    def get_imageURL(self, obj):
+        """Возвращает URL изображения сервиса"""
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
         
 class BonusesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи бонусов"""
