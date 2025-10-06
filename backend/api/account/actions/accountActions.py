@@ -68,6 +68,15 @@ class AccountActionsView(ViewSet):
                 
                 user_profile.phone_number = phone
                 
+        if 'telegram_id' in request.data:
+            telegram_id = request.data['telegram_id']
+            
+            #проверка на уникальность
+            if UserProfile.objects.filter(telegram_id=telegram_id).exclude(user=user).exists():
+                raise ValidationError("Этот ID в Telegram уже используется")
+                
+            user_profile.telegram_id = telegram_id
+        
         # обновляем фотографию профиля
         if 'image' in request.FILES:
             user_profile.image = request.FILES['image']

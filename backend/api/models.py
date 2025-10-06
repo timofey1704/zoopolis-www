@@ -18,7 +18,8 @@ class UserProfile(models.Model):
     city = models.ForeignKey(Cities, on_delete=models.CASCADE, verbose_name="Город", null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name="Адрес", null=True, blank=True)
     account_type = models.CharField(max_length=20, verbose_name="Тип аккаунта", choices=account_types, default="zooID")
-    privacy_accepted = models.BooleanField(default=False)
+    privacy_accepted = models.BooleanField(default=False, verbose_name="Принятие политики конфиденциальности")
+    telegram_id = models.CharField(max_length=255, verbose_name="ID в Telegram", null=True, blank=True)
     image = models.ImageField(
         upload_to=user_image_upload_path,
         verbose_name="Фото пользователя",

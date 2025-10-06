@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const data = await req.json()
-    const { firstName, lastName, email, phone_number, city, address } = data
+    const { firstName, lastName, email, phone_number, city, address, telegram_id } = data
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/profile/contacts/`, {
       method: 'PATCH',
@@ -28,6 +28,7 @@ export async function PATCH(req: NextRequest) {
         email,
         city,
         address,
+        telegram_id,
       }),
     })
 

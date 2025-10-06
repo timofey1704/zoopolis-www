@@ -16,6 +16,7 @@ export interface User {
   account_type?: string
   city?: CityData | null
   address?: string
+  telegram_id?: string
 }
 
 export interface UserState {

@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           account_type: userData.account_type,
           city: userData.city,
           address: userData.address,
+          telegram_id: userData.telegram_id,
         })
         setAuthenticated(true)
       } catch (error) {

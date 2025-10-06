@@ -14,6 +14,7 @@ const validationRules = {
   email: { required: true },
   city: { required: true },
   address: { required: false },
+  telegram_id: { required: false },
 }
 
 const ContactForm = () => {
@@ -27,6 +28,7 @@ const ContactForm = () => {
       email: user?.email || '',
       city: typeof user?.city === 'object' ? user?.city : null,
       address: user?.address || '',
+      telegram_id: user?.telegram_id || '',
     },
     validationRules,
     async values => {
@@ -82,6 +84,14 @@ const ContactForm = () => {
                 style="register"
               />
               <TextInput
+                name="telegram_id"
+                value={values.telegram_id}
+                handleChange={handleChange}
+                label="ID в Telegram"
+                placeholder="Ваш ID в Telegram"
+                style="register"
+              />
+              <TextInput
                 name="email"
                 value={values.email}
                 handleChange={handleChange}
@@ -89,11 +99,14 @@ const ContactForm = () => {
                 placeholder="Ваш email"
                 style="register"
               />
+
               <PhoneInput
                 value={values.phone_number}
                 handleChange={handleChange}
                 operatorsInfo={false}
               />
+            </div>
+            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
               <LocationSelect
                 name="city"
                 value={values.city}

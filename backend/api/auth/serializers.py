@@ -70,7 +70,11 @@ class UserResponseSerializer(serializers.Serializer):
     uuid = serializers.SerializerMethodField()
     city = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
-
+    telegram_id = serializers.SerializerMethodField()
+    
+    def get_telegram_id(self, obj):
+        return obj.userprofile.telegram_id if obj.userprofile.telegram_id else None
+    
     def get_uuid(self, obj):
         try:
             return str(obj.userprofile.uuid)[:6]
