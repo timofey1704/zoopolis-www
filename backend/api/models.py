@@ -40,6 +40,7 @@ class RegisterQRCode(models.Model):
     code = models.CharField(max_length=255, verbose_name="Код")
     image = models.ImageField(upload_to=register_qr_upload_path, verbose_name="Фото QR кода")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    activation_date = models.DateTimeField(verbose_name="Дата активации", null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name="Активность")
     is_used = models.BooleanField(default=False, verbose_name="Использован")
     is_printed = models.BooleanField(default=False, verbose_name='Распечатан')

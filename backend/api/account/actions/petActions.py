@@ -12,6 +12,7 @@ from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
 from api.models import RegisterQRCode
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +35,8 @@ class CheckCodeView(ViewSet):
         qr_code = RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
 
         if qr_code:
-            # код существует = пропускаем
             
+            # код существует = пропускаем
             imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
             return Response(
                 {
@@ -124,6 +125,8 @@ class PetView(ViewSet):
                 # связываем QR код с питомцем и помечаем как использованный
                 qr_code.pet = pet
                 qr_code.is_used = True
+                qr_code.user = request.user
+                qr_code.activation_date = timezone.now()
                 qr_code.save()
                 
                 response_serializer = PetSerializer(pet)
