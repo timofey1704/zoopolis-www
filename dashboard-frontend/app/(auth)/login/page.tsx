@@ -26,7 +26,7 @@ const LoginPage = () => {
     // проверяем логин
     if (isAuthenticated) {
       // распределяем
-      router.replace('/profile')
+      router.replace('/main')
       return
     }
 
