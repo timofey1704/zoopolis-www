@@ -73,7 +73,7 @@ class AccountActionsView(ViewSet):
             
             #проверка на уникальность
             if UserProfile.objects.filter(telegram_id=telegram_id).exclude(user=user).exists():
-                raise ValidationError("Этот ID в Telegram уже используется")
+                raise ValidationError("Этот Telegram ID уже указал кто-то другой")
                 
             user_profile.telegram_id = telegram_id
         
