@@ -9,6 +9,7 @@ from api.models import RegisterQRCode
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 from api.utils.smsProvider import sendsms
+from api.utils.emails.email_templates.pet_found_email import pet_found_email
 
 class FAQView(APIView):
     @handle_exceptions
@@ -167,6 +168,9 @@ class SendCoordinatesView(APIView):
             coordinates=coordinates_str
         )
         
+        pet = qr.pet
+        
+        pet_found_email(pet)
         return Response(
             {"message": "Координаты успешно сохранены"},
             status=status.HTTP_200_OK

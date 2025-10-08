@@ -54,6 +54,17 @@ REDIS_PORT = 6379
 
 LOGIN_URL = '/admin/login/'
 
+#емаилы
+CORP_EMAIL = os.environ.get("CORP_EMAIL")
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL")
+DOMAIN = os.environ.get("DOMAIN")
+PROJECT_NAME = os.environ.get("PROJECT_NAME")
+SENDER_MAIL_LOGIN = os.environ.get("SENDER_MAIL_LOGIN")
+SENDER_MAIL_PASSWORD = os.environ.get("SENDER_MAIL_PASSWORD")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
+MAIL_SERVER_SMTP_PORT = os.environ.get("MAIL_SERVER_SMTP_PORT")
+MAIL_SERVER_URL = os.environ.get("MAIL_SERVER_URL")
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
