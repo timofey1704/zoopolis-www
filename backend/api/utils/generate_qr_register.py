@@ -42,7 +42,7 @@ def generate_unique_qr_code() -> str:
             return code
 
 
-def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 100) -> PILImage.Image:
+def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 85) -> PILImage.Image:
     """
     Добавляет логотип в центр QR кода.
     
@@ -54,6 +54,7 @@ def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 10
     Returns:
         PIL Image объект с QR кодом и логотипом
     """
+    
     # открываем и ресайзим логотип
     logo = PILImage.open(logo_path)
     
@@ -92,6 +93,7 @@ def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Ima
         - Base64 строка изображения QR
         - Уникальный код, который нужно связать с пользователем
     """
+    
     # генерируем уникальный код
     unique_code = generate_unique_qr_code()
 
@@ -101,12 +103,14 @@ def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Ima
     # создаем QR
     qr = qrcode.QRCode(
         version=None,
-        error_correction=constants.ERROR_CORRECT_L,
+        error_correction=constants.ERROR_CORRECT_H,  # fix - zoo172 qr code can not be scanned
         box_size=10,
         border=4,
     )
+    
     qr.add_data(url)
     qr.make(fit=True)
+    
     qr_image = qr.make_image(fill_color="black", back_color="white").get_image()
     
     # конвертируем в RGB для сохранения
