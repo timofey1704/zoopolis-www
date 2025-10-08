@@ -32,6 +32,17 @@ services:
       # redis
       REDIS_HOST: 172.56.0.1
 
+      #email server
+      CORP_EMAIL: admin@tripwb.com
+      SUPPORT_EMAIL: admin@tripwb.com
+      DOMAIN: tripwb.com
+      PROJECT_NAME: TWB
+      SENDER_MAIL_LOGIN: admin@tripwb.com
+      SENDER_MAIL_PASSWORD: t5Fdcah^gdajY
+      SENDER_EMAIL: admin@tripwb.com
+      MAIL_SERVER_SMTP_PORT: 587
+      MAIL_SERVER_URL: 213.142.147.40
+
       SMS_USER: info@zoopolis.org
       SMS_API_KEY: SPsIpFIV9UGwaPXuZuT7
 

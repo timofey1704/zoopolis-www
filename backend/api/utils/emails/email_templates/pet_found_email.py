@@ -26,12 +26,6 @@ def pet_found_email(pet: Pet):
                 </div>
             </div>
 
-            <div style="background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                <h3 style="color: #1a1a1a; margin-top: 0; font-size: 18px; font-weight: 600;">Информация о клиенте</h3>
-                <p style="color: #4a5568; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #2d3748;">Имя пользователя:</strong> {pet.owner.first_name}</p>
-                <p style="color: #4a5568; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #2d3748;">Комментарий:</strong> {pet.comment}</p>
-            </div>
-
             <p style="font-size: 14px; color: #718096; margin-top: 32px; text-align: center; font-style: italic;">
                 Это автоматическое уведомление. Пожалуйста, не отвечайте на это письмо.
             </p>
