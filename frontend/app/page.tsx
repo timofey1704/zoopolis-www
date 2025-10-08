@@ -19,7 +19,7 @@ export default async function Home() {
     <div className="mx-auto flex flex-col items-center justify-center space-y-24 overflow-x-hidden">
       <div
         id="main"
-        className="bg-gray relative flex w-full flex-col items-center overflow-hidden rounded-b-[100px] md:h-[80vh]"
+        className="bg-gray relative flex w-full flex-col items-center overflow-hidden rounded-b-[100px] md:h-[94vh]"
       >
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
 
