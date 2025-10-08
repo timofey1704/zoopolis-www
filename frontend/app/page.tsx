@@ -19,21 +19,25 @@ export default async function Home() {
     <div className="mx-auto flex flex-col items-center justify-center space-y-24 overflow-x-hidden">
       <div
         id="main"
-        className="bg-gray relative flex w-full flex-col items-center overflow-hidden rounded-b-[100px] md:h-[91vh]"
+        className="bg-gray relative flex w-full flex-col items-center overflow-hidden rounded-b-[100px] md:h-[82vh] lg:h-[92vh] xl:h-[92vh] 2xl:h-[74vh]"
       >
         <h1 className="sr-only hidden">ZOOPOLIS</h1>
 
         {/* десктоп и таблет версия */}
         <div className="relative hidden w-full pt-10 sm:block">
           <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
-          <div className="mt-12 flex justify-center px-6 md:px-10 lg:px-30">
-            <div className="flex -translate-y-1/2 flex-row items-center justify-between gap-10 md:gap-20">
-              <div className="flex max-w-xl flex-col gap-4">
+          <div className="mt-12 flex justify-center px-6 md:px-12 lg:px-30">
+            <div className="flex -translate-y-1/2 flex-row items-center justify-between gap-6 md:gap-12 lg:gap-20">
+              <div className="flex max-w-sm flex-col gap-4 md:max-w-md lg:max-w-xl">
                 <div className="space-y-1">
-                  <h2 className="text-4xl font-semibold text-gray-900">QR-кулон</h2>
-                  <h2 className="text-4xl font-semibold text-gray-900">для питомца</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl lg:text-4xl">
+                    QR-кулон
+                  </h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl lg:text-4xl">
+                    для питомца
+                  </h2>
                 </div>
-                <p className="text-lg text-gray-600">
+                <p className="text-base text-gray-600 md:text-lg">
                   Просто прикрепите QR-кулон к ошейнику — и любой, кто найдёт вашего питомца, сможет
                   связаться с нашей службой поддержки, которая решит все нюансы по возвращению
                   питомца хозяину.
@@ -49,22 +53,24 @@ export default async function Home() {
                   />
                 </a>
               </div>
-              <div className="relative mx-10 flex-shrink-0">
+              <div className="relative mx-4 flex-shrink-0 md:mx-6 lg:mx-10">
                 <Image
                   src="/dog1.svg"
                   alt="Счастливая собака"
                   width={580}
                   height={710}
-                  className="relative z-10"
+                  className="relative z-10 h-auto w-[320px] md:w-[420px] lg:w-[580px]"
                 />
                 <div className="bg-orange/10 absolute top-1/2 -right-10 z-0 -translate-y-1/2 rounded-full blur-3xl" />
               </div>
-              <div className="flex max-w-md flex-col gap-6">
+              <div className="flex max-w-sm flex-col gap-4 md:max-w-md md:gap-6">
                 <div className="space-y-1">
-                  <h2 className="text-4xl font-semibold text-gray-900">QR-кулон Zoopolis</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl lg:text-4xl">
+                    QR-кулон Zoopolis
+                  </h2>
                 </div>
-                <div className="space-y-4">
-                  <p className="text-lg leading-relaxed text-gray-600">
+                <div className="space-y-2 md:space-y-4">
+                  <p className="text-base leading-relaxed text-gray-600 md:text-lg">
                     Защита питомца 24/7. Прочный водонепроницаемый кулон с круглосуточной поддержкой
                   </p>
                 </div>
