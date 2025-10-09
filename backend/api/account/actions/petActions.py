@@ -13,6 +13,7 @@ from api.utils.decorators import handle_exceptions
 from typing import cast
 from api.models import RegisterQRCode
 from django.utils import timezone
+from api.utils.emails.email_templates.internal_qr_activated import qr_activated_email
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +129,7 @@ class PetView(ViewSet):
                 qr_code.user = request.user
                 qr_code.activation_date = timezone.now()
                 qr_code.save()
+                qr_activated_email(qr_code)
                 
                 response_serializer = PetSerializer(pet)
                 response_data = dict(response_serializer.data)
