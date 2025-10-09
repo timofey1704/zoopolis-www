@@ -95,7 +95,9 @@ class Pet(models.Model):
     
 class PetCoordinates(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name='Питомец')
-    coordinates = models.CharField(max_length=255, verbose_name='Координаты')
+    latitude = models.FloatField(verbose_name='Широта')
+    longitude = models.FloatField(verbose_name='Долгота')
+    accuracy = models.FloatField(verbose_name='Точность')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:
@@ -103,7 +105,7 @@ class PetCoordinates(models.Model):
         verbose_name_plural = 'Координаты питомцев'
         
     def __str__(self):
-        return f'{self.pet.name} - {self.coordinates}'
+        return f'{self.pet.name} - {self.created_at}'
 class QRCode(models.Model):
     pet = models.ForeignKey(
         'Pet',

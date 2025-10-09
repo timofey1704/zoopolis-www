@@ -159,13 +159,12 @@ class SendCoordinatesView(APIView):
                 {"error": "Питомец не найден"},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
-        # сохраняем координаты в формате "latitude,longitude,accuracy"
-        coordinates_str = f"{latitude},{longitude},{accuracy}"
-        
+                    
         PetCoordinates.objects.create(
             pet=qr.pet,
-            coordinates=coordinates_str
+            latitude=latitude,
+            longitude=longitude,
+            accuracy=accuracy
         )
         
         pet = qr.pet

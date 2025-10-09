@@ -49,7 +49,7 @@ def pet_found_email(pet: Pet):
             <div style="background-color: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
                 <h2 style="color: #1a1a1a; margin-top: 0; font-size: 20px; font-weight: 600;">Координаты питомца:</h2>
                 <div style="margin: 20px 0;">
-                    <p style="color: #4a5568; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #2d3748;">Координаты:</strong> {coordinates.coordinates}</p>
+                    <p style="color: #4a5568; margin: 12px 0; font-size: 16px; line-height: 1.5;"><strong style="color: #2d3748;">Координаты:</strong> {coordinates.latitude}, {coordinates.longitude}</p>
                 </div>
             </div>
             ''' if coordinates else ''}
