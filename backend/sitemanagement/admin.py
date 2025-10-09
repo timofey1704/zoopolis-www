@@ -74,7 +74,7 @@ class QRCodeInline(admin.TabularInline):
 class PetCoordinatesInline(admin.TabularInline):
     model = PetCoordinates
     extra = 0
-    readonly_fields = ('created_at', 'latitude', 'longitude', 'accuracy')
+    readonly_fields = ('created_at', 'latitude', 'longitude', 'accuracy', 'address')
     verbose_name = 'Координаты питомца'
     verbose_name_plural = 'Координаты питомцев'
 

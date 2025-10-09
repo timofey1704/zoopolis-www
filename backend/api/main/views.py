@@ -10,6 +10,7 @@ from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 from api.utils.smsProvider import sendsms
 from api.utils.emails.email_templates.internal_pet_found_email import pet_found_email
+import requests
 
 class FAQView(APIView):
     @handle_exceptions
@@ -159,16 +160,72 @@ class SendCoordinatesView(APIView):
                 {"error": "Питомец не найден"},
                 status=status.HTTP_404_NOT_FOUND
             )
-                    
-        PetCoordinates.objects.create(
-            pet=qr.pet,
-            latitude=latitude,
-            longitude=longitude,
-            accuracy=accuracy
-        )
+
+        try:
+            headers = {
+                'User-Agent': 'Zoopolis/1.0 (info@zoopolis.org)'
+            }
+    
+            params = {
+                'lat': latitude,
+                'lon': longitude,
+                'format': 'json',
+                'zoom': 18,  # максимальный уровень детализации
+                'addressdetails': 1,
+                'namedetails': 1,
+                'accept-language': 'ru',  # русский язык
+            }
+            response = requests.get(
+                "https://nominatim.openstreetmap.org/reverse",
+                params=params,
+                headers=headers,
+                timeout=5
+            )
+            response.raise_for_status()  # проверяем статус ответа
+            address_data = response.json()
+            
+            address = {}
+            if 'address' in address_data:
+                addr = address_data['address']
+                components = []
+                
+                if addr.get('house_number'):
+                    components.append(addr['house_number'])
+                if addr.get('road'):
+                    components.append(addr['road'])
+                if addr.get('suburb'):
+                    components.append(addr['suburb'])
+                if addr.get('city_district'):
+                    components.append(addr['city_district'])
+                if addr.get('city'):
+                    components.append(addr['city'])
+                
+                address['formatted'] = ', '.join(filter(None, components))
+                address['raw'] = addr  # исходные данные
+            else:
+                address = None
+                
+        except requests.RequestException as e:
+            # если произошла ошибка при запросе адреса, логируем её, но продолжаем выполнение
+            print(f"Warning: Failed to get address from Nominatim: {str(e)}")
+            address = None
+                 
+        # создаем объект с координатами, адрес добавляем если он есть
+        coordinates_data = {
+            'pet': qr.pet,
+            'latitude': latitude,
+            'longitude': longitude,
+            'accuracy': accuracy,
+        }
         
+        # добавляем адрес только если он существует
+        if address and 'formatted' in address:
+            coordinates_data['address'] = address['formatted']
+            
+        PetCoordinates.objects.create(**coordinates_data)
+        
+        print(address)
         pet = qr.pet
-        
         pet_found_email(pet)
         return Response(
             {"message": "Координаты успешно сохранены"},

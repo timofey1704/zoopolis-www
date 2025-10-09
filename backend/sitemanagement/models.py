@@ -98,6 +98,7 @@ class PetCoordinates(models.Model):
     latitude = models.FloatField(verbose_name='Широта')
     longitude = models.FloatField(verbose_name='Долгота')
     accuracy = models.FloatField(verbose_name='Точность')
+    address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:
