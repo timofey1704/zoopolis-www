@@ -66,6 +66,7 @@ class MainPageMedia(models.Model):
         return self.url
     
 class Pet(models.Model):
+    id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец')
     image = models.ImageField(
         upload_to=pet_image_upload_path,

@@ -9,7 +9,7 @@ from api.models import RegisterQRCode
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 from api.utils.smsProvider import sendsms
-from api.utils.emails.email_templates.pet_found_email import pet_found_email
+from api.utils.emails.email_templates.internal_pet_found_email import pet_found_email
 
 class FAQView(APIView):
     @handle_exceptions
