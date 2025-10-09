@@ -41,7 +41,7 @@ def qr_activated_email(qr: RegisterQRCode):
         formatted_date = 'Ошибка форматирования'
     
     try:
-        send_to = "info@zoopolis.com"
+        send_to = "info@zoopolis.org"
         email_subject = f"Активирован QR код"
         email_content = f"""
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 20px; background-color: #ffffff;">
