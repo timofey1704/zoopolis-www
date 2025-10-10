@@ -23,7 +23,7 @@ class FAQ (models.Model):
         return self.title
     
 class Pricing(models.Model):
-    id = models.AutoField(primary_key=True)  # Явно объявляем поле id для Pylance
+    id = models.AutoField(primary_key=True)
     plan = models.CharField(max_length=10, choices=account_types, verbose_name='Название тарифного плана')
     description = models.TextField(max_length=255, verbose_name='Описание тарифного плана')
     price = models.IntegerField(verbose_name='Стоимость тарифного плана / месяц')
@@ -99,6 +99,8 @@ class PetCoordinates(models.Model):
     longitude = models.FloatField(verbose_name='Долгота')
     accuracy = models.FloatField(verbose_name='Точность')
     address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
+    founder_name = models.CharField(max_length=30, verbose_name='Имя владельца', null=True, blank=True)
+    founder_phone = models.CharField(max_length=14, verbose_name='Телефон владельца', null=True, blank=True) #+375123456789
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:

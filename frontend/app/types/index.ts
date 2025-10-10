@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export interface ButtonProps {
   onClick?: () => void
   className?: string
@@ -76,4 +78,54 @@ export type ToastProps = {
     onClick: () => void
   }
   duration?: number
+}
+
+export interface DialogProps {
+  isOpen: boolean
+  onClose: () => void
+  title?: string
+  description: ReactNode
+  submitText?: string
+  onSubmit?: () => void
+  showCancel?: boolean
+  showSubmit?: boolean
+  cancelText?: string
+}
+
+export interface TextInputProps {
+  value: string
+  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  label?: string
+  placeholder?: string
+  name: string
+  type?: 'text' | 'email' | 'password' | 'datetime-local' | 'date'
+  className?: string
+  maxLength?: number
+  tooltip?: string | React.ReactNode
+  style: string
+  isPassword?: boolean
+  isVisible?: boolean
+  togglePasswordVisibility?: () => void
+  error?: string
+  min?: string
+  max?: string
+}
+
+export interface ValidationRules {
+  required?: boolean
+  minLength?: number
+  pattern?: RegExp
+}
+
+export interface ValidationErrors {
+  [key: string]: string
+}
+
+export interface PhoneInputProps {
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  label?: string
+  className?: string
+  operatorsInfo?: boolean
+  name?: string
 }
