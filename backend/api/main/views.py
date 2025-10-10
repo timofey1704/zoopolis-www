@@ -5,7 +5,7 @@ from django.conf import settings
 from api.utils.exceptionsHandler import handle_exceptions
 
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
-from api.models import RegisterQRCode
+from api.models import RegisterQRCode, UserProfile
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 from api.utils.smsProvider import sendsms
@@ -99,8 +99,17 @@ class IsLostPetView(APIView):
                 status=status.HTTP_307_TEMPORARY_REDIRECT
             )
         # если всё ок возвращаем статус is_lost
+        #!ZOO-173 -- дополнительно возвращаем тарифный план пользователя, имя и телефон владельца
+        plan = UserProfile.objects.select_related('user').get(user=qr.user).account_type
+        owner_name = qr.pet.owner.first_name
+        owner_phone = qr.pet.owner.userprofile.phone_number
         return Response(
-            {"is_lost": qr.pet.is_lost},
+            {"is_lost": qr.pet.is_lost,
+             "plan": plan,
+             "owner_info": {
+                 "name": owner_name,
+                 "phone": owner_phone
+             }},
             status=status.HTTP_200_OK
         )
         
@@ -109,6 +118,8 @@ class SendCoordinatesView(APIView):
     def post(self, request):
         code = request.data.get("code")
         coordinates = request.data.get("coordinates")
+        founder_name = request.data.get("founder_name")
+        founder_phone = request.data.get("founder_phone")
         
         if not code:
             return Response(
@@ -218,15 +229,19 @@ class SendCoordinatesView(APIView):
             'accuracy': accuracy,
         }
         
-        # добавляем адрес только если он существует
+        # добавляем необязательные поля
         if address and 'formatted' in address:
             coordinates_data['address'] = address['formatted']
-            
+        if founder_name:
+            coordinates_data['founder_name'] = founder_name
+        if founder_phone:
+            coordinates_data['founder_phone'] = founder_phone
+        
         PetCoordinates.objects.create(**coordinates_data)
         
-        print(address)
         pet = qr.pet
         pet_found_email(pet)
+        
         return Response(
             {"message": "Координаты успешно сохранены"},
             status=status.HTTP_200_OK
