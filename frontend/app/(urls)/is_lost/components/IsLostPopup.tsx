@@ -70,8 +70,8 @@ const IsLostPopup = ({ isOpen, onClose, plan, ownerInfo, code }: IsLostPopupProp
         body: JSON.stringify({
           code,
           coordinates: coordinates,
-          name: values.founder_name,
-          phone_number: values.founder_phone,
+          founder_name: values.founder_name,
+          founder_phone: values.founder_phone,
         }),
       })
 
@@ -79,6 +79,11 @@ const IsLostPopup = ({ isOpen, onClose, plan, ownerInfo, code }: IsLostPopupProp
         const errorData = await response.json()
         throw new Error(errorData.error || 'Ошибка при передаче координат')
       }
+
+      showToast({
+        type: 'success',
+        message: 'Координаты успешно отправлены!',
+      })
     } catch (error) {
       console.error('Error sending coordinates:', error)
 
@@ -116,7 +121,7 @@ const IsLostPopup = ({ isOpen, onClose, plan, ownerInfo, code }: IsLostPopupProp
     }
   }
 
-  const { values, handleChange, handleSubmit } = useForm(
+  const { values, handleChange, handleSubmit, setValues } = useForm(
     {
       founder_name: '',
       founder_phone: '',
@@ -124,11 +129,14 @@ const IsLostPopup = ({ isOpen, onClose, plan, ownerInfo, code }: IsLostPopupProp
     validationRules,
     async values => {
       try {
-        handleSendCoordinates(values)
-        showToast({ type: 'success', message: 'Данные успешно отправлены!' })
+        await handleSendCoordinates(values)
         onClose()
-      } catch {
-        showToast({ type: 'error', message: 'Ошибка при отправке данных' })
+        setValues({ founder_name: '', founder_phone: '' })
+      } catch (error) {
+        showToast({
+          type: 'error',
+          message: error instanceof Error ? error.message : 'Ошибка при отправке данных',
+        })
       }
     }
   )

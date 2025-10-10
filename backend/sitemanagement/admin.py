@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import *
 from django import forms
+from api.models import RegisterQRCode
 
 admin.site.register(FAQ)
 admin.site.register(MainPageMedia)
@@ -65,19 +66,20 @@ class BonusApplicationInline(admin.TabularInline):
     verbose_name_plural = 'Применения бонуса'
 
 class QRCodeInline(admin.TabularInline):
-    model = QRCode
+    model = RegisterQRCode
     extra = 0
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'code', 'image', 'activation_date', 'user', 'is_active', 'is_used')
     verbose_name = 'QR код'
     verbose_name_plural = 'QR коды'
+    can_delete = False
 
 class PetCoordinatesInline(admin.TabularInline):
     model = PetCoordinates
     extra = 0
-    readonly_fields = ('created_at', 'latitude', 'longitude', 'accuracy', 'address')
+    readonly_fields = ('created_at', 'latitude', 'longitude', 'accuracy', 'address', 'founder_name', 'founder_phone')
     verbose_name = 'Координаты питомца'
     verbose_name_plural = 'Координаты питомцев'
-
+    can_delete = False
 @admin.register(Bonuses)
 class BonusesAdmin(admin.ModelAdmin):
     list_display = ['name', 'description', 'is_available', 'start_date', 'end_date', 'get_applications_count']
@@ -142,11 +144,4 @@ class DevicesAdmin(admin.ModelAdmin):
     list_display = ['title', 'price', 'image', 'category']
     list_filter = ['title','price', 'category']
     search_fields = ['title', 'description', 'price']
-    readonly_fields = ('created_at',)
-    
-@admin.register(PetCoordinates)
-class PetCoordinatesAdmin(admin.ModelAdmin):
-    list_display = ['pet', 'latitude', 'longitude', 'accuracy', 'address', 'founder_name', 'founder_phone']
-    list_filter = ['pet', 'created_at']
-    search_fields = ['pet__name', 'founder_name', 'founder_phone']
     readonly_fields = ('created_at',)

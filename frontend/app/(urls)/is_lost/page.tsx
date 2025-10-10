@@ -63,7 +63,7 @@ const IsLostContent = () => {
 
         // если получили данные отображаем статус
         const data = await res.json()
-        console.log(data)
+
         setIsLost(data.is_lost)
 
         if (data.plan && ['zooID', 'concierge', 'zoopolis'].includes(data.plan)) {
