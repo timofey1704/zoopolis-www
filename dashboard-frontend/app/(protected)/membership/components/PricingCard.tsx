@@ -51,17 +51,19 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       {memberships.map(membership => (
         <div
           key={membership.id}
-          className={`relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] p-8 transition-all duration-300 hover:my-7 hover:scale-105 hover:shadow-xl ${
+          className={`relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] px-8 py-6 transition-all duration-300 hover:my-4 hover:scale-105 hover:shadow-xl ${
             membership.bg_color === '#1c1c29' ? 'text-white' : ''
           } ${accountTypeToDisplayName[user?.account_type as keyof typeof accountTypeToDisplayName] === membership.plan ? 'ring-orange ring-4' : ''}`}
           style={{ backgroundColor: membership.bg_color }}
         >
           <div className="flex-1">
-            <div className="mb-3 flex flex-col items-center justify-between">
+            <div className="mb-2 flex flex-col items-center justify-between">
               {accountTypeToDisplayName[
                 user?.account_type as keyof typeof accountTypeToDisplayName
               ] === membership.plan ? (
-                <div className="bg-orange rounded-2xl px-2 py-1 text-xs text-white">Ваш тариф</div>
+                <div className="bg-orange mb-2 rounded-2xl px-2 py-1 text-xs text-white">
+                  Ваш тариф
+                </div>
               ) : membership.is_popular ? (
                 <div className="text-orange text-sm">Популярный!</div>
               ) : !membership.is_available ? (
@@ -72,7 +74,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
 
             <div className="mb-6 flex items-baseline space-x-2">
               <span className="text-5xl font-bold">{membership.price} BYN</span>
-              <span className="text-base">/месяц</span>
+              <span className="text-base">/ месяц</span>
             </div>
 
             <p className="mb-6">{membership.description}</p>

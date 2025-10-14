@@ -234,7 +234,7 @@ class Tranasctions(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма')
     auto_renewal = models.BooleanField(default=False, verbose_name='Автоматическое продление')
     status = models.CharField(max_length=10, verbose_name='Статус', choices=[('pending', 'Ожидание'), ('completed', 'Выполнено'), ('failed', 'Не выполнено')])
-    transaction_id = models.CharField(max_length=255, verbose_name='ID транзакции')
+    request_id = models.CharField(max_length=255, verbose_name='ID транзакции в bePaid')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     subscription_start = models.DateTimeField(verbose_name='Начало подписки', null=True, blank=True)
     subscription_end = models.DateTimeField(verbose_name='Окончание подписки', null=True, blank=True)

@@ -134,9 +134,9 @@ class PetAdmin(admin.ModelAdmin):
 
 @admin.register(Tranasctions)
 class TranasctionsAdmin(admin.ModelAdmin):
-    list_display = ['user', 'membership', 'amount', 'status', 'transaction_id', 'created_at', 'subscription_start', 'subscription_end']
+    list_display = ['user', 'membership', 'amount', 'status', 'request_id', 'created_at', 'subscription_start', 'subscription_end']
     list_filter = ['status', 'created_at', 'subscription_start', 'subscription_end']
-    search_fields = ['user__username', 'membership__plan', 'transaction_id']
+    search_fields = ['user__username', 'membership__plan']
     readonly_fields = ('created_at',)
     
 @admin.register(Devices)
