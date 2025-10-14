@@ -148,7 +148,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tranasctions
-        fields = ('id', 'user', 'membership', 'amount', 'auto_renewal', 'status', 'transaction_id', 'created_at', 'subscription_start', 'subscription_end')
+        fields = ('id', 'user', 'membership', 'amount', 'auto_renewal', 'status', 'request_id', 'created_at', 'subscription_start', 'subscription_end')
         
     def validate(self, data):
             """Валидация дат подписки"""

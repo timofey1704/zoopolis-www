@@ -1,6 +1,13 @@
 from django.urls import path, include
 
-from api.main.views import FAQView, MediaMainView, MembershipPlansView, SmsSendView, IsLostPetView, SendCoordinatesView
+from api.main.views import (
+FAQView, 
+MediaMainView, 
+MembershipPlansView, 
+SmsSendView, 
+IsLostPetView, 
+SendCoordinatesView)
+
 from api.auth.views import (
     LoginViewSet,
     RefreshTokenView,

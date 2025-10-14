@@ -1,27 +1,16 @@
-import random
-from rest_framework.views import APIView
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
-from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
+import random
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
-from api.utils.exceptionsHandler import handle_exceptions
-from sitemanagement.models import Tranasctions, Pricing
+from api.utils.decorators import handle_exceptions
+from sitemanagement.models import Pricing
 from api.account.serializers import MembershipSerializer
-from datetime import timedelta
-
-class VerificationView(APIView):
-    @handle_exceptions
-    def post(self, request):
-        pass
-    
-class NotificationView(APIView):
-    @handle_exceptions
-    def post(self, request):
-        pass
 
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
@@ -60,8 +49,8 @@ class MembershipView(ViewSet):
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
         
-        # генерируем уникальный transaction_id
-        transaction_id = f"{int(now.timestamp())}{user.id}{random.randint(1000, 9999)}"
+        # генерируем уникальный request_id
+        request_id = f"{int(now.timestamp())}{user.id}{random.randint(1000, 9999)}"
         
         # подготавливаем данные для сериалайзера
         transaction_data = {
@@ -71,7 +60,7 @@ class MembershipView(ViewSet):
             'subscription_start': now,
             'subscription_end': subscription_end,
             'status': 'completed',
-            'transaction_id': transaction_id,
+            'request_id': request_id,
             'auto_renewal': request.data.get('auto_renewal', False)
         }
         
@@ -95,7 +84,7 @@ class MembershipView(ViewSet):
             'phone_number': user.userprofile.phone_number,
             'city': user.userprofile.city.id if user.userprofile.city else None,
             'address': user.userprofile.address,
-            'imageURL': user.userprofile.imageURL,
+            'imageURL': user.userprofile.image.url if user.userprofile.image else None,
         }
 
         return Response({
@@ -104,3 +93,14 @@ class MembershipView(ViewSet):
             'transaction': serializer.data,
             'user': user_data
         }, status=status.HTTP_200_OK)
+        
+        
+class VerificationView(APIView):
+    @handle_exceptions
+    def post(self, request):
+        pass
+    
+class NotificationView(APIView):
+    @handle_exceptions
+    def post(self, request):
+        pass
