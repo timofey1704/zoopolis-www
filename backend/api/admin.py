@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
+from django.http import HttpResponseRedirect
+from django.template.response import TemplateResponse
+from django.urls import path
+from django import forms
 from .models import UserProfile, RegisterQRCode
 
 
@@ -16,6 +20,9 @@ class UserProfileInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline,)
 
+class BatchQRCodeForm(forms.Form):
+    amount = forms.IntegerField(min_value=1, max_value=100, label='Количество QR-кодов')
+
 @admin.register(RegisterQRCode)
 class RegisterQRCodeAdmin(admin.ModelAdmin):
     list_display = ("code", "user", "is_active", "is_used", "is_printed", "created_at", "print_image_button")
@@ -23,6 +30,43 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
     search_fields = ("code", "user__username")
     readonly_fields = ("code", "image", "created_at", "user", "is_used", "is_active", "pet", "activation_date")
     actions = ['print_selected_qr_codes']
+    change_list_template = 'admin/api/registerqrcode_changelist.html'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('batch-create/', self.admin_site.admin_view(self.batch_create_view), name='api_registerqrcode_batch-create'),
+        ]
+        return custom_urls + urls
+
+    def batch_create_view(self, request):
+        if request.method == 'POST':
+            form = BatchQRCodeForm(request.POST)
+            if form.is_valid():
+                amount = form.cleaned_data['amount']
+                created_count = 0
+                
+                for _ in range(amount):
+                    try:
+                        RegisterQRCode.objects.create()
+                        created_count += 1
+                    except Exception as e:
+                        self.message_user(request, f'Ошибка при создании QR-кодов: {str(e)}', level='error')
+                        break
+                
+                if created_count > 0:
+                    self.message_user(request, f'Успешно создано {created_count} QR-кодов')
+                return HttpResponseRedirect('../')
+        else:
+            form = BatchQRCodeForm()
+
+        context = {
+            'title': 'Создать QR-коды',
+            'form': form,
+            'opts': self.model._meta,
+            **self.admin_site.each_context(request),
+        }
+        return TemplateResponse(request, 'admin/api/batch_create_form.html', context)
 
     def print_image_button(self, obj):
         if obj.image:
