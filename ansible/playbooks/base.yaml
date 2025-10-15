@@ -33,13 +33,6 @@
         mode: "0644"
         content: |
           %sudo ALL=(ALL:ALL) NOPASSWD:ALL
-    - name: Ssh dir
-      ansible.builtin.file:
-        path: "/home/{{ user }}/.ssh"
-        state: directory
-        mode: "0755"
-        owner: "{{ user }}"
-        group: "{{ user }}"
     - name: Ssh keys
       ansible.builtin.copy:
         dest: "/home/{{ user }}/.ssh/authorized_keys"
@@ -48,3 +41,4 @@
         group: "{{ user }}"
         mode: "0600"
         force: true
+        recurse: true
