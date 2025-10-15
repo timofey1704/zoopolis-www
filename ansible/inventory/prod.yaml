@@ -1,7 +1,7 @@
 servers:
   hosts:
     zoopolis:
-      ansible_host: zoopolis.org
+      ansible_host: stage.zoopolis.org
 
   vars:
     ansible_user: root
