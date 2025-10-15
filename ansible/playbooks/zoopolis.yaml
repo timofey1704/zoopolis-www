@@ -63,6 +63,15 @@
         mode: "0644"
       notify: Restart angie
 
+    - name: Cron membership actualizer
+      become: true
+      become_user: "{{ user }}"
+      ansible.builtin.cron:
+        name: membership actualizer
+        minute: "0"
+        hour: "0"
+        job: "/usr/bin/docker exec zoopolis-backend-1 ./manage.py membership_actualizer"
+
   handlers:
     - name: Restart compose service
       ansible.builtin.service:
