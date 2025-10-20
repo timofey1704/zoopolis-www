@@ -8,7 +8,7 @@ import { accountTypeToDisplayName, displayNameToAccountType } from '@/app/consta
 import { generateTrackingId } from '../utils/generate-tracking-id'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
-  const { user, setUser } = useUserStore()
+  const { user } = useUserStore()
 
   const changeAccountType = async (displayPlan: string) => {
     const internalPlan = displayNameToAccountType[displayPlan]
@@ -30,6 +30,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
         amount: memberships.find(membership => membership.plan === internalPlan)?.price,
         description: `Оплата подписки на Zoopolis - ${internalPlan}`,
         tracking_id: generateTrackingId(),
+        email: user?.email,
       }),
     })
 

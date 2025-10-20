@@ -34,6 +34,9 @@ export async function POST(req: NextRequest) {
           description: data.description,
           tracking_id: data.tracking_id,
         },
+        customer: {
+          email: data.email,
+        },
       },
     }
 
