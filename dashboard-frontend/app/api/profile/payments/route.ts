@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
 
     const { plan } = data
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
+    // 1. cоздаем транзакцию в статусе pending на бекенде
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,17 +50,50 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         plan,
+        tracking_id: data.tracking_id,
       }),
     })
 
-    const responseText = await response.text()
+    const backendResponseText = await backendResponse.text()
 
-    if (!response.ok) {
-      return new Response(JSON.stringify({ error: responseText }), { status: response.status })
+    if (!backendResponse.ok) {
+      return new Response(JSON.stringify({ error: backendResponseText }), {
+        status: backendResponse.status,
+      })
     }
 
-    const result = JSON.parse(responseText)
-    return new Response(JSON.stringify(result), { status: 200 })
+    // 2. отправляем запрос в bepaid
+    const bepaidResponse = await fetch(`${CHECKOUT_URL}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${authString}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-API-Version': '2',
+      },
+      body: JSON.stringify(bepaid_json),
+    })
+
+    const bepaidResult = await bepaidResponse.json()
+
+    if (!bepaidResponse.ok) {
+      return new Response(JSON.stringify({ error: bepaidResult }), {
+        status: bepaidResponse.status,
+      })
+    }
+
+    // получаем token и redirect_url из ответа на /checkout
+    const { token, redirect_url } = bepaidResult.checkout
+
+    return new Response(
+      JSON.stringify({
+        transaction: JSON.parse(backendResponseText),
+        payment: bepaidResult,
+        checkoutUrl: redirect_url,
+        token,
+      }),
+      { status: 200 }
+    )
   } catch (error) {
     console.error('POST /api/payments error:', error)
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {

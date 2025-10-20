@@ -42,14 +42,17 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
     }
 
     const responseData = await response.json()
-    if (responseData.user) {
-      setUser(responseData.user) // обновляем данные в сторе (данные в сайдбаре обновятся автоматически)
-    }
 
-    showToast({
-      type: 'success',
-      message: responseData.message || 'План успешно изменен',
-    })
+    // проверяем наличие URL для редиректа
+    if (responseData.checkoutUrl) {
+      // перенаправляем пользователя на страницу оплаты
+      window.location.href = responseData.checkoutUrl
+    } else {
+      showToast({
+        type: 'error',
+        message: 'Не удалось получить ссылку на оплату',
+      })
+    }
   }
 
   return (
