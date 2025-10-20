@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await req.json()
-    console.log('Request data:', data)
 
     const { plan, amount, description, tracking_id, email } = data
 
@@ -19,14 +18,6 @@ export async function POST(req: NextRequest) {
       console.error('Amount is missing in request data')
       return Response.json({ error: 'Amount is required' }, { status: 400 })
     }
-
-    console.log('Environment variables:', {
-      CHECKOUT_URL: process.env.CHECKOUT_URL,
-      TEST_MODE: process.env.PAYMENTS_TEST_MODE,
-      BEPAID_ID: process.env.BEPAID_ID ? 'set' : 'not set',
-      SECRET_KEY: process.env.BEPAID_SECRET_KEY ? 'set' : 'not set',
-      API_URL: process.env.NEXT_PUBLIC_API_URL,
-    })
 
     const CHECKOUT_URL = process.env.CHECKOUT_URL
     const TEST_MODE = process.env.PAYMENTS_TEST_MODE
@@ -40,7 +31,10 @@ export async function POST(req: NextRequest) {
     const bepaid_json = {
       checkout: {
         transaction_type: 'payment',
-        test: TEST_MODE === 'true',
+        settings: {
+          language: 'ru',
+        },
+        test: TEST_MODE,
         order: {
           amount: amount,
           currency: 'BYN',
@@ -56,7 +50,6 @@ export async function POST(req: NextRequest) {
     const authString = Buffer.from(`${BEPAID_ID}:${SECRET_KEY}`).toString('base64')
 
     // 1. создаем транзакцию в бекенде
-    console.log('Sending request to backend with:', { plan, tracking_id })
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
       method: 'POST',
       headers: {
@@ -74,7 +67,6 @@ export async function POST(req: NextRequest) {
     const transaction = await backendResponse.json()
 
     // 2. запрос в bepaid
-    console.log('Sending request to bepaid with:', bepaid_json)
     const bepaidResponse = await fetch(CHECKOUT_URL, {
       method: 'POST',
       headers: {
@@ -101,17 +93,16 @@ export async function POST(req: NextRequest) {
       checkoutUrl: redirect_url,
       token,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('POST /api/payments error:', {
-      name: error?.name,
-      message: error?.message,
-      stack: error?.stack,
-      error: error, // полный объект ошибки
+      name: error instanceof Error ? error.name : 'Unknown error',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
     })
     return Response.json(
       {
         error: 'Internal Server Error',
-        details: error?.message || 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )

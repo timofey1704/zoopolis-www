@@ -33,7 +33,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       body: JSON.stringify({
         plan: internalPlan,
         amount: amountInCents,
-        description: `Оплата подписки на Zoopolis - ${getDisplayPlanName(internalPlan)}`,
+        description: `Оплата подписки Zoopolis - ${getDisplayPlanName(internalPlan)} на 30 дней`,
         tracking_id: generateTrackingId(),
         email: user?.email,
       }),
