@@ -1,6 +1,5 @@
 from django.utils import timezone
 from datetime import timedelta
-import random
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import action
@@ -9,17 +8,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from api.utils.decorators import handle_exceptions
-from sitemanagement.models import Pricing
+from sitemanagement.models import Pricing, Tranasctions
 from api.account.serializers import MembershipSerializer
 
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['post'])
     @handle_exceptions
     def change_membership(self, request):
         user = request.user
         plan = request.data.get('plan')
+        request_id = request.data.get('tracking_id')
         
         if not plan:
             return Response({
@@ -49,8 +49,11 @@ class MembershipView(ViewSet):
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
         
-        # генерируем уникальный request_id
-        request_id = f"{int(now.timestamp())}{user.id}{random.randint(1000, 9999)}"
+        if Tranasctions.objects.filter(request_id=request_id).exists():
+            return Response(
+                {'error': 'Tracking ID already exists'}, 
+                status=status.HTTP_409_CONFLICT
+            )
         
         # подготавливаем данные для сериалайзера
         transaction_data = {

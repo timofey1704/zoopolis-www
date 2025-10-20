@@ -5,6 +5,7 @@ import Image from 'next/image'
 import useUserStore from '@/app/store/userStore'
 import showToast from '@/components/ui/showToast'
 import { accountTypeToDisplayName, displayNameToAccountType } from '@/app/constants/accountTypes'
+import { generateTrackingId } from '../utils/generate-tracking-id'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   const { user, setUser } = useUserStore()
@@ -20,11 +21,16 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
     }
 
     const response = await fetch('api/profile/payments', {
-      method: 'PATCH',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ plan: internalPlan }),
+      body: JSON.stringify({
+        plan: internalPlan,
+        amount: memberships.find(membership => membership.plan === internalPlan)?.price,
+        description: `Оплата подписки на Zoopolis - ${internalPlan}`,
+        tracking_id: generateTrackingId(),
+      }),
     })
 
     if (!response.ok) {
