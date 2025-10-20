@@ -31,10 +31,12 @@ export async function POST(req: NextRequest) {
     const bepaid_json = {
       checkout: {
         transaction_type: 'payment',
+        test: TEST_MODE === 'true',
         settings: {
           language: 'ru',
+          return_url: 'https://stage.account.zoopolis.org/membership',
+          button_next_text: 'Вернуться в аккаунт',
         },
-        test: TEST_MODE,
         order: {
           amount: amount,
           currency: 'BYN',
