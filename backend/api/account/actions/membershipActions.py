@@ -115,15 +115,14 @@ class NotificationView(APIView):
     def post(self, request):
         logger = logging.getLogger(__name__)
         
-        # Логируем все заголовки запроса
         logger.info('Bepaid notification headers: %s', dict(request.headers))
         
-        # Логируем тело запроса
+        # логируем тело запроса
         try:
             notification_data = request.data
             logger.info('Bepaid notification data: %s', json.dumps(notification_data, indent=2))
             
-            # Логируем важные поля отдельно, если они есть
+            # доп поля
             logger.info('Important fields: %s', {
                 'transaction_type': notification_data.get('transaction', {}).get('type'),
                 'status': notification_data.get('transaction', {}).get('status'),
@@ -137,5 +136,5 @@ class NotificationView(APIView):
             logger.exception('Error parsing notification data')
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Всегда возвращаем 200 OK, чтобы bepaid не пытался отправить повторно
+        # всегда возвращаем 200 OK чтобы bepaid не пытался отправить повторно
         return Response({'status': 'ok'}, status=status.HTTP_200_OK)

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const CHECKOUT_URL = process.env.CHECKOUT_URL
-    const TEST_MODE = process.env.PAYMENTS_TEST_MODE
+    const TEST_MODE = process.env.PAYMENTS_TEST_MODE === 'true'
     const BEPAID_ID = process.env.BEPAID_ID
     const SECRET_KEY = process.env.BEPAID_SECRET_KEY
 
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const bepaid_json = {
       checkout: {
         transaction_type: 'payment',
-        test: TEST_MODE === 'true',
+        test: TEST_MODE,
         settings: {
           language: 'ru',
           return_url: 'https://stage.account.zoopolis.org/membership',
