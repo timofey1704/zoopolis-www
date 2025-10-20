@@ -61,7 +61,7 @@ urlpatterns = [
     path('v1/account/bonuses/<int:pk>/apply/', BonusesView.as_view({'post': 'apply_bonus'}), name='apply_bonus'),
     path('v1/account/devices/', DevicesView.as_view(), name='get-devices'),
     
-    path('v1/account/payments/', MembershipView.as_view({'patch': 'change_membership'}), name='change_membership'),
+    path('v1/account/payments/', MembershipView.as_view({'post': 'change_membership'}), name='change_membership'),
     
     path('v1/dictionaries/cities/', CityView.as_view({'get': 'get_cities'}), name='get_cities'),
     path('v1/dictionaries/pet-types/', DictionariesView.as_view({'get': 'pet_types'}), name='pet_types'),

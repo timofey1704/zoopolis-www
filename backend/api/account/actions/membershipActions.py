@@ -1,6 +1,10 @@
+import logging
+import base64
+import json
+import requests
 from django.utils import timezone
 from datetime import timedelta
-import random
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import action
@@ -9,17 +13,20 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from api.utils.decorators import handle_exceptions
-from sitemanagement.models import Pricing
+from sitemanagement.models import Pricing, Tranasctions
 from api.account.serializers import MembershipSerializer
+
+logger = logging.getLogger(__name__)
 
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['post'])
     @handle_exceptions
     def change_membership(self, request):
         user = request.user
         plan = request.data.get('plan')
+        request_id = request.data.get('tracking_id')
         
         if not plan:
             return Response({
@@ -49,8 +56,11 @@ class MembershipView(ViewSet):
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
         
-        # генерируем уникальный request_id
-        request_id = f"{int(now.timestamp())}{user.id}{random.randint(1000, 9999)}"
+        if Tranasctions.objects.filter(request_id=request_id).exists():
+            return Response(
+                {'error': 'Tracking ID already exists'}, 
+                status=status.HTTP_409_CONFLICT
+            )
         
         # подготавливаем данные для сериалайзера
         transaction_data = {
@@ -103,4 +113,28 @@ class VerificationView(APIView):
 class NotificationView(APIView):
     @handle_exceptions
     def post(self, request):
-        pass
+        logger = logging.getLogger(__name__)
+        
+        logger.info('Bepaid notification headers: %s', dict(request.headers))
+        
+        # логируем тело запроса
+        try:
+            notification_data = request.data
+            logger.info('Bepaid notification data: %s', json.dumps(notification_data, indent=2))
+            
+            # доп поля
+            logger.info('Important fields: %s', {
+                'transaction_type': notification_data.get('transaction', {}).get('type'),
+                'status': notification_data.get('transaction', {}).get('status'),
+                'tracking_id': notification_data.get('transaction', {}).get('tracking_id'),
+                'payment_method_type': notification_data.get('transaction', {}).get('payment_method_type'),
+                'amount': notification_data.get('transaction', {}).get('amount'),
+                'currency': notification_data.get('transaction', {}).get('currency'),
+            })
+            
+        except Exception as e:
+            logger.exception('Error parsing notification data')
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # всегда возвращаем 200 OK чтобы bepaid не пытался отправить повторно
+        return Response({'status': 'ok'}, status=status.HTTP_200_OK)

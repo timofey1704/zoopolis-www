@@ -79,6 +79,13 @@ services:
       BACKEND_URL: http://backend:8000/api/v1
       NEXTAUTH_URL: https://{{ domain_dashboard }}
       NEXTAUTH_SECRET: sdjfhshd126kbnaoTj12
+
+      #bepaid
+      CHECKOUT_URL: https://checkout.bepaid.by/ctp/api/checkouts
+      PAYMENTS_TEST_MODE: true
+      BEPAID_ID: 23643
+      BEPAID_SECRET_KEY: e055773ef7f2c1194fd35f372665711081e48fe68df1993fe3b184182ce870bb
+      BEPAID_PRIVATE_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdu8Uij5KhA0Sn71cUkoStXkBQjsGvh7dCt4N0QcCJqVW4NrM8qnEVUAU8edhTVl17B9kHVKPiqOKSkyUMrbBgaGEggyR+Pe/3ohqcZGyd+BPDsLX2AQjye7L6lv15eqDTDNM7KV81rfN1vIxWuHJt7Zjagn2oOKMQbA9U0QJHn5HgLhORA+eKM49VnIyvLL4edVsNkrYqzHlpFalDCKuBc+CHZrXvJbCBO/idirNOHSFVYgAVfQtLgwwCTV0DBWdY3P/vVPiuICaQ4fxClyJzguy5TnUm1mZqsgBGOCrTEvJzRKHGO+Z/DonDO/qHeeuQ4f1OnWInV7kXDStJ1NUwIDAQAB
     networks:
       zoopolis:
         ipv4_address: 172.56.0.4
