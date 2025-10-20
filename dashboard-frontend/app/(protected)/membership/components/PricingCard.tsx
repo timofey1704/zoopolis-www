@@ -6,6 +6,7 @@ import useUserStore from '@/app/store/userStore'
 import showToast from '@/components/ui/showToast'
 import { accountTypeToDisplayName, displayNameToAccountType } from '@/app/constants/accountTypes'
 import { generateTrackingId } from '../utils/generate-tracking-id'
+import { convertPriceToCents, getDisplayPlanName } from '../utils/converters'
 import { Membership } from '@/app/types'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
@@ -21,6 +22,9 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
+    //препроцессинг для бипейда
+    const amountInCents = convertPriceToCents(membership.price)
+
     const response = await fetch('/api/profile/payments', {
       method: 'POST',
       headers: {
@@ -28,8 +32,8 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       },
       body: JSON.stringify({
         plan: internalPlan,
-        amount: membership.price,
-        description: `Оплата подписки на Zoopolis - ${internalPlan}`,
+        amount: amountInCents,
+        description: `Оплата подписки на Zoopolis - ${getDisplayPlanName(internalPlan)}`,
         tracking_id: generateTrackingId(),
         email: user?.email,
       }),
