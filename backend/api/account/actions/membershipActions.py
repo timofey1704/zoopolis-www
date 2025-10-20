@@ -1,5 +1,10 @@
+import logging
+import base64
+import json
+import requests
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import action
@@ -10,6 +15,8 @@ from rest_framework.viewsets import ViewSet
 from api.utils.decorators import handle_exceptions
 from sitemanagement.models import Pricing, Tranasctions
 from api.account.serializers import MembershipSerializer
+
+logger = logging.getLogger(__name__)
 
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
@@ -106,4 +113,29 @@ class VerificationView(APIView):
 class NotificationView(APIView):
     @handle_exceptions
     def post(self, request):
-        pass
+        logger = logging.getLogger(__name__)
+        
+        # Логируем все заголовки запроса
+        logger.info('Bepaid notification headers: %s', dict(request.headers))
+        
+        # Логируем тело запроса
+        try:
+            notification_data = request.data
+            logger.info('Bepaid notification data: %s', json.dumps(notification_data, indent=2))
+            
+            # Логируем важные поля отдельно, если они есть
+            logger.info('Important fields: %s', {
+                'transaction_type': notification_data.get('transaction', {}).get('type'),
+                'status': notification_data.get('transaction', {}).get('status'),
+                'tracking_id': notification_data.get('transaction', {}).get('tracking_id'),
+                'payment_method_type': notification_data.get('transaction', {}).get('payment_method_type'),
+                'amount': notification_data.get('transaction', {}).get('amount'),
+                'currency': notification_data.get('transaction', {}).get('currency'),
+            })
+            
+        except Exception as e:
+            logger.exception('Error parsing notification data')
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Всегда возвращаем 200 OK, чтобы bepaid не пытался отправить повторно
+        return Response({'status': 'ok'}, status=status.HTTP_200_OK)

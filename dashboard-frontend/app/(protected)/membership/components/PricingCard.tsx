@@ -6,12 +6,13 @@ import useUserStore from '@/app/store/userStore'
 import showToast from '@/components/ui/showToast'
 import { accountTypeToDisplayName, displayNameToAccountType } from '@/app/constants/accountTypes'
 import { generateTrackingId } from '../utils/generate-tracking-id'
+import { Membership } from '@/app/types'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
   const { user } = useUserStore()
 
-  const changeAccountType = async (displayPlan: string) => {
-    const internalPlan = displayNameToAccountType[displayPlan]
+  const changeAccountType = async (membership: Membership) => {
+    const internalPlan = displayNameToAccountType[membership.plan]
     if (!internalPlan) {
       showToast({
         type: 'error',
@@ -20,14 +21,14 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
-    const response = await fetch('api/profile/payments', {
+    const response = await fetch('/api/profile/payments', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         plan: internalPlan,
-        amount: memberships.find(membership => membership.plan === internalPlan)?.price,
+        amount: membership.price,
         description: `Оплата подписки на Zoopolis - ${internalPlan}`,
         tracking_id: generateTrackingId(),
         email: user?.email,
@@ -111,7 +112,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
                   ? 'bg-orange hover:bg-orange/80 text-white hover:scale-105 hover:shadow-none'
                   : 'bg-orange text-white opacity-55 hover:cursor-not-allowed hover:shadow-none'
               }`}
-              onClick={() => changeAccountType(membership.plan)}
+              onClick={() => changeAccountType(membership)}
             />
           )}
         </div>
