@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from api.models import RegisterQRCode
-from sitemanagement.models import Pet, MapPoints, Services, Bonuses, Pricing, Tranasctions, Devices
+from sitemanagement.models import Pet, MapPoints, Services, Bonuses, Pricing, Tranasctions, Devices, PetCoordinates
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 
 logger = logging.getLogger(__name__)
@@ -37,6 +37,8 @@ class PetSerializer(BasePetSerializer):
     clear_breed = serializers.SerializerMethodField()
     clear_color = serializers.SerializerMethodField()
     clear_gender = serializers.SerializerMethodField()
+    last_coordinates = serializers.SerializerMethodField()
+    last_seen_at = serializers.SerializerMethodField()
     
     def get_imageURL(self, obj):
         """Фото питомца с BASE_URL"""
@@ -76,6 +78,52 @@ class PetSerializer(BasePetSerializer):
             'female': 'Женский'
         }
         return gender_map.get(obj.gender)
+
+    def get_last_coordinates(self, obj):
+        """Возвращает последние известные координаты питомца, если он потерян"""
+        if not obj.is_lost:
+            return None
+            
+        last_location = PetCoordinates.objects.filter(pet=obj).order_by('-created_at').first()
+        if not last_location:
+            return None
+            
+        # форматируем адрес в более читаемый вид
+        address_parts = last_location.address.split(', ') if last_location.address else []
+        formatted_address = []
+        
+        for part in address_parts:
+            # добавляем номер дома
+            if part.replace('.', '').isdigit():
+                formatted_address.insert(0, f"д. {part}")
+            # добавляем улицу
+            elif any(street_type in part.lower() for street_type in ['улица', 'проспект', 'переулок']):
+                formatted_address.insert(0, part)
+            # остальные части добавляем как есть
+            else:
+                formatted_address.append(part)
+        
+        formatted_address_str = ', '.join(formatted_address)
+
+        return {
+            'id': last_location.id,
+            'location': f"{last_location.latitude}, {last_location.longitude}",
+            'title': "Вашего питомца видели тут",
+            'address': formatted_address_str,
+            'founder_name': last_location.founder_name,
+            'founder_phone': last_location.founder_phone
+        }
+        
+    def get_last_seen_at(self, obj):
+        """Возвращает время последнего определения местоположения питомца, если он потерян"""
+        if not obj.is_lost:
+            return None
+            
+        last_location = PetCoordinates.objects.filter(pet=obj).order_by('-created_at').first()
+        if not last_location:
+            return None
+            
+        return last_location.created_at.isoformat()
         
 class CitySerializer(serializers.ModelSerializer):
     "Сериалиалайзер для выдачи городов"
@@ -117,6 +165,11 @@ class PetColorSerializer(serializers.ModelSerializer):
         
 class MapPointsSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи маркеров на карте"""
+    id = serializers.IntegerField(read_only=True)
+    location = serializers.CharField()
+    title = serializers.CharField()
+    category = serializers.CharField()
+
     class Meta:
         model = MapPoints
         fields = ('id', 'location', 'title', 'category')

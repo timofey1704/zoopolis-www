@@ -5,27 +5,10 @@ import Loader from '@/components/ui/Loader'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import { MdOutlineEdit, MdOutlineDelete } from 'react-icons/md'
+import { LuMailWarning } from 'react-icons/lu'
 import EditPopup from '../components/EditPopup'
-
-export interface Pet {
-  id: number
-  type: string
-  breed: string
-  color: string
-  gender: string
-  name: string
-  clear_type: string
-  birthday: string
-  clear_gender: string
-  clear_breed: string
-  clear_color: string
-  comment: string
-  allergies: string
-  imageURL: string
-  QRImage: string
-  QRCode: string
-  is_lost: boolean
-}
+import { Pet } from '@/app/types'
+import MapPopup from '../components/MapPopup'
 
 const ExistedPets = () => {
   const {
@@ -38,6 +21,13 @@ const ExistedPets = () => {
   const [loadingPetId, setLoadingPetId] = useState<number | null>(null)
   const [editingPet, setEditingPet] = useState<number | null>(null)
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false)
+  const [isMapPopupOpen, setIsMapPopupOpen] = useState(false)
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
+
+  const handleOpenMap = (pet: Pet) => {
+    setSelectedPet(pet)
+    setIsMapPopupOpen(true)
+  }
 
   // обновляем локальное состояние когда приходят новые данные
   useEffect(() => {
@@ -118,13 +108,19 @@ const ExistedPets = () => {
                 <span className="hidden md:block">{pet.clear_type}</span> <span>{pet.name}</span>
               </h2>
 
-              <div className="hidden items-center gap-3 md:flex">
+              <div className="hidden items-center gap-5 md:flex">
+                {pet.last_coordinates && (
+                  <button onClick={() => handleOpenMap(pet)}>
+                    <LuMailWarning className="text-orange text-2xl hover:cursor-pointer" />
+                  </button>
+                )}
                 <button
                   onClick={() => handleEdit(pet.id)}
                   className="text-gray-500 transition hover:cursor-pointer hover:text-blue-600"
                 >
                   <MdOutlineEdit className="text-2xl" />
                 </button>
+
                 <button
                   onClick={() => handleDelete(pet.id)}
                   className="text-gray-500 transition hover:cursor-pointer hover:text-red-600"
@@ -202,7 +198,12 @@ const ExistedPets = () => {
               )}
             </div>
 
-            <div className="mt-6 flex justify-center gap-6 md:hidden">
+            <div className="mt-6 flex justify-around md:hidden">
+              {pet.last_coordinates && (
+                <button onClick={() => handleOpenMap(pet)}>
+                  <LuMailWarning className="text-orange text-2xl hover:cursor-pointer" />
+                </button>
+              )}
               <button
                 onClick={() => handleEdit(pet.id)}
                 className="text-gray-500 transition hover:text-blue-600"
@@ -232,6 +233,15 @@ const ExistedPets = () => {
         onClose={handleCloseEditPopup}
         id={editingPet}
         onSuccess={refetch}
+      />
+      <MapPopup
+        isOpen={isMapPopupOpen}
+        onClose={() => setIsMapPopupOpen(false)}
+        coordinates={selectedPet?.last_coordinates?.location || ''}
+        address={selectedPet?.last_coordinates?.address || ''}
+        founder_name={selectedPet?.last_coordinates?.founder_name || ''}
+        founder_phone={selectedPet?.last_coordinates?.founder_phone || ''}
+        last_seen_at={selectedPet?.last_seen_at || ''}
       />
     </div>
   )

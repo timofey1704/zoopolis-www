@@ -156,3 +156,32 @@ export interface Membership {
 export interface PricingCardProps {
   memberships: Membership[]
 }
+
+export interface Pet {
+  id: number
+  type: string
+  breed: string
+  color: string
+  gender: string
+  name: string
+  clear_type: string
+  birthday: string
+  clear_gender: string
+  clear_breed: string
+  clear_color: string
+  comment: string
+  allergies: string
+  imageURL: string
+  QRImage: string
+  QRCode: string
+  is_lost: boolean
+  last_coordinates?: LastCoordinates
+  last_seen_at?: string
+}
+
+interface LastCoordinates {
+  location: string
+  address: string
+  founder_name: string
+  founder_phone: string
+}
