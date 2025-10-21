@@ -242,7 +242,7 @@ class Tranasctions(models.Model):
     class Meta:
         verbose_name = 'Транзакция'
         verbose_name_plural = 'Транзакции'
-        ordering = ['id']
+        ordering = ['-id']
         
     def __str__(self):
         return f'{self.user.username} - {self.membership.plan}'
