@@ -1,10 +1,7 @@
 import logging
-import base64
 import json
-import requests
 from django.utils import timezone
 from datetime import timedelta
-from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import action
@@ -15,6 +12,7 @@ from rest_framework.viewsets import ViewSet
 from api.utils.decorators import handle_exceptions
 from sitemanagement.models import Pricing, Tranasctions
 from api.account.serializers import MembershipSerializer
+from api.models import UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +67,7 @@ class MembershipView(ViewSet):
             'amount': membership.price,
             'subscription_start': now,
             'subscription_end': subscription_end,
-            'status': 'completed',
+            'status': 'pending',  # статус pending до подтверждения от bePaid
             'request_id': request_id,
             'auto_renewal': request.data.get('auto_renewal', False)
         }
@@ -79,29 +77,11 @@ class MembershipView(ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-        # обновляем тип аккаунта в профиле пользователя
-        user_profile = user.userprofile
-        user_profile.account_type = plan  # plan уже содержит правильное значение (zooID/concierge/zoopolis)
-        user_profile.save()
-        
-        # возвращаем обновленные данные пользователя для стора
-        user_data = {
-            'id': user.id,
-            'name': user.first_name,
-            'uuid': str(user.userprofile.uuid)[:6] if user.userprofile.uuid else None,
-            'email': user.email,
-            'account_type': user.userprofile.account_type,
-            'phone_number': user.userprofile.phone_number,
-            'city': user.userprofile.city.id if user.userprofile.city else None,
-            'address': user.userprofile.address,
-            'imageURL': user.userprofile.image.url if user.userprofile.image else None,
-        }
-
+        # возвращаем только данные транзакции, тип аккаунта обновится после подтверждения оплаты
         return Response({
             'success': True,
-            'message': 'План успешно изменен',
-            'transaction': serializer.data,
-            'user': user_data
+            'message': 'Транзакция создана, ожидаем подтверждение оплаты',
+            'transaction': serializer.data
         }, status=status.HTTP_200_OK)
         
         
@@ -117,23 +97,58 @@ class NotificationView(APIView):
         
         logger.info('Bepaid notification headers: %s', dict(request.headers))
         
-        # логируем тело запроса
         try:
             notification_data = request.data
             logger.info('Bepaid notification data: %s', json.dumps(notification_data, indent=2))
             
-            # доп поля
+            transaction_data = notification_data.get('transaction', {})
+            tracking_id = transaction_data.get('tracking_id')
+            payment_status = transaction_data.get('status')
+            
+            # логируем важные поля
             logger.info('Important fields: %s', {
-                'transaction_type': notification_data.get('transaction', {}).get('type'),
-                'status': notification_data.get('transaction', {}).get('status'),
-                'tracking_id': notification_data.get('transaction', {}).get('tracking_id'),
-                'payment_method_type': notification_data.get('transaction', {}).get('payment_method_type'),
-                'amount': notification_data.get('transaction', {}).get('amount'),
-                'currency': notification_data.get('transaction', {}).get('currency'),
+                'transaction_type': transaction_data.get('type'),
+                'status': payment_status,
+                'tracking_id': tracking_id,
+                'payment_method_type': transaction_data.get('payment_method_type'),
+                'amount': transaction_data.get('amount'),
+                'currency': transaction_data.get('currency'),
             })
             
+            # проверяем наличие tracking_id
+            if not tracking_id:
+                logger.error('No tracking_id in notification')
+                return Response({'status': 'error', 'message': 'No tracking_id'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # находим транзакцию
+            transaction = Tranasctions.objects.filter(
+                request_id=tracking_id,
+                status='pending'
+            ).first()
+            
+            if not transaction:
+                logger.error(f'Transaction not found or not pending for tracking_id: {tracking_id}')
+                return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+            
+            # обновляем статус транзакции
+            if payment_status == 'successful':
+                transaction.status = 'completed'
+                
+                # обновляем тип аккаунта пользователя
+                user_profile = UserProfile.objects.get(user=transaction.user)
+                user_profile.account_type = transaction.membership.plan
+                user_profile.save()
+                
+                logger.info(f'Updated user {transaction.user.username} account type to {transaction.membership.plan}')
+            else:
+                transaction.status = 'failed'
+                logger.info(f'Payment failed for transaction {tracking_id}')
+            
+            transaction.save()
+            logger.info(f'Updated transaction {tracking_id} status to {transaction.status}')
+            
         except Exception as e:
-            logger.exception('Error parsing notification data')
+            logger.exception('Error processing notification')
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
         # всегда возвращаем 200 OK чтобы bepaid не пытался отправить повторно
