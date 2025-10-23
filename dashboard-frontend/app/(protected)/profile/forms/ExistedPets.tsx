@@ -128,7 +128,7 @@ const ExistedPets = () => {
                   <MdOutlineDelete className="text-2xl" />
                 </button>
                 <Button
-                  text={pet.is_lost ? 'Питомец потерян' : 'Питомец потерялся?'}
+                  text={pet.is_lost ? 'Питомец потерян' : 'Сообщить о потере'}
                   className={`${pet.is_lost ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
                   onClick={() => handleLostPet(pet.id)}
                   disabled={loadingPetId === pet.id}

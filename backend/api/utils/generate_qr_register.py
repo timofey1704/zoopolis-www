@@ -42,7 +42,7 @@ def generate_unique_qr_code() -> str:
             return code
 
 
-def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 85) -> PILImage.Image:
+def add_logo_to_qr(qr_image: PILImage.Image, logo_path: str, logo_size: int = 90) -> PILImage.Image:
     """
     Добавляет логотип в центр QR кода.
     
