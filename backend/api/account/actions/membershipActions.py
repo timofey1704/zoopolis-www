@@ -47,10 +47,8 @@ class MembershipView(ViewSet):
                 'message': 'У вас уже активирован этот тарифный план'
             }, status=status.HTTP_400_BAD_REQUEST)
             
-            # апгрейды/даунгрейды?
+            # !апгрейды/даунгрейды?
             
-        #!сюда логика по бипейду когда будет готова
-
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
         
@@ -60,19 +58,17 @@ class MembershipView(ViewSet):
                 status=status.HTTP_409_CONFLICT
             )
         
-        # подготавливаем данные для сериалайзера
         transaction_data = {
             'user': user.id,
             'membership': membership.id, 
             'amount': membership.price,
             'subscription_start': now,
             'subscription_end': subscription_end,
-            'status': 'pending',  # статус pending до подтверждения от bePaid
+            'status': 'pending',
             'request_id': request_id,
             'auto_renewal': request.data.get('auto_renewal', False)
         }
         
-        # валидируем и сохраняем данные
         serializer = MembershipSerializer(data=transaction_data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -104,8 +100,8 @@ class NotificationView(APIView):
             transaction_data = notification_data.get('transaction', {})
             tracking_id = transaction_data.get('tracking_id')
             payment_status = transaction_data.get('status')
+            bepaid_id = transaction_data.get('uid')
             
-            # логируем важные поля
             logger.info('Important fields: %s', {
                 'transaction_type': transaction_data.get('type'),
                 'status': payment_status,
@@ -113,14 +109,13 @@ class NotificationView(APIView):
                 'payment_method_type': transaction_data.get('payment_method_type'),
                 'amount': transaction_data.get('amount'),
                 'currency': transaction_data.get('currency'),
+                'bepaid_id': bepaid_id,
             })
             
-            # проверяем наличие tracking_id
             if not tracking_id:
                 logger.error('No tracking_id in notification')
                 return Response({'status': 'error', 'message': 'No tracking_id'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # находим транзакцию
             transaction = Tranasctions.objects.filter(
                 request_id=tracking_id,
                 status='pending'
@@ -133,7 +128,7 @@ class NotificationView(APIView):
             # обновляем статус транзакции
             if payment_status == 'successful':
                 transaction.status = 'completed'
-                
+                transaction.bepaid_id = bepaid_id
                 # обновляем тип аккаунта пользователя
                 user_profile = UserProfile.objects.get(user=transaction.user)
                 user_profile.account_type = transaction.membership.plan
