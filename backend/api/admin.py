@@ -120,7 +120,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                                     </textPath>
                                 </text>
                                 <!-- Текст кода внизу -->
-                                <text x="100" y="168" text-anchor="middle" font-size="11" font-weight="bold" fill="black">
+                                <text x="100" y="169" text-anchor="middle" font-size="15" font-weight="bold" fill="black">
                                     {1}
                                 </text>
                             </g>
@@ -227,7 +227,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                                 </textPath>
                             </text>
                             <!-- Текст кода внизу -->
-                            <text x="100" y="168" text-anchor="middle" font-size="11" font-weight="bold" fill="black">
+                            <text x="100" y="169" text-anchor="middle" font-size="15" font-weight="bold" fill="black">
                                 {code}
                             </text>
                         </g>

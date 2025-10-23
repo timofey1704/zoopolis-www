@@ -29,7 +29,7 @@ def generate_unique_qr_code() -> str:
         Уникальная строка длиной 8 символов, содержащая только заглавные буквы и цифры (1-9)
     """
     # определяем допустимые символы: A-Z и 1-9
-    letters = string.ascii_uppercase
+    letters = string.ascii_uppercase.replace('O', '') #fix - remove letter O
     digits = '123456789'
     all_chars = letters + digits
     
@@ -102,10 +102,10 @@ def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Ima
 
     # создаем QR
     qr = qrcode.QRCode(
-        version=None,
-        error_correction=constants.ERROR_CORRECT_H,  # fix - zoo172 qr code can not be scanned
+        version=2,
+        error_correction=constants.ERROR_CORRECT_M,
         box_size=10,
-        border=4,
+        border=3,
     )
     
     qr.add_data(url)
