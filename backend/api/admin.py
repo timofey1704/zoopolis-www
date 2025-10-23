@@ -69,7 +69,7 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
         return TemplateResponse(request, 'admin/api/batch_create_form.html', context)
 
     def print_image_button(self, obj):
-        if obj.image:
+        if obj.image and not obj.is_printed:
             html_content = """
                 <!DOCTYPE html>
                 <html>
@@ -150,16 +150,16 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
                 'Печать</button>',
                 html_content.replace("'", "\\'").replace("\n", "")
             )
-        return "Нет изображения"
+        return None if obj.is_printed else "Нет изображения"
     
     print_image_button.short_description = "Печать"
 
     def print_selected_qr_codes(self, request, queryset):
-        # фильтруем только те объекты, у которых есть изображение
-        qr_codes_with_images = queryset.exclude(image__isnull=True).exclude(image='')
+        # фильтруем только те объекты, у которых есть изображение и которые еще не распечатаны
+        qr_codes_with_images = queryset.exclude(image__isnull=True).exclude(image='').filter(is_printed=False)
         
         if not qr_codes_with_images:
-            self.message_user(request, "Нет QR-кодов с изображениями для печати", level='warning')
+            self.message_user(request, "Нет QR-кодов доступных для печати (QR коды должны иметь изображение и не быть распечатанными)", level='warning')
             return
         
         # создаем HTML страницу для печати
