@@ -25,8 +25,8 @@ class BatchQRCodeForm(forms.Form):
 
 @admin.register(RegisterQRCode)
 class RegisterQRCodeAdmin(admin.ModelAdmin):
-    list_display = ("code", "user", "is_active", "is_used", "is_printed", "created_at", "print_image_button")
-    list_filter = ("is_active", "is_used", "created_at")
+    list_display = ("code", "user", "is_active", "is_printed", "is_used", "created_at", "print_image_button")
+    list_filter = ("is_active", "is_used", "created_at", "is_printed")
     search_fields = ("code", "user__username")
     readonly_fields = ("code", "image", "created_at", "user", "is_used", "is_active", "pet", "activation_date")
     actions = ['print_selected_qr_codes']
