@@ -12,27 +12,12 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json()
 
-    console.log('Payment request data:', {
-      raw: data,
-      plan: data.plan,
-      amount: data.amount,
-      description: data.description,
-      tracking_id: data.tracking_id,
-      email: data.email,
-    })
-
     const { plan, description, tracking_id, email } = data
     let { amount } = data
 
     // для бесплатного плана устанавливаем amount = 0
-    console.log('Checking plan type:', {
-      plan,
-      isZooID: plan === 'zooID',
-      currentAmount: amount,
-    })
 
     if (plan === 'zooID') {
-      console.log('Processing free plan')
       amount = 0
     } else if (!amount) {
       console.error('Amount is missing in request data')
@@ -58,14 +43,11 @@ export async function POST(req: NextRequest) {
 
     // для бесплатного плана не делаем запрос в bepaid
     if (plan === 'zooID') {
-      console.log('Returning free plan response')
       return Response.json({
         transaction,
         isFree: true,
       })
     }
-
-    console.log('Processing paid plan')
 
     // 2. запрос в bepaid для платных планов
     const CHECKOUT_URL = process.env.CHECKOUT_URL
@@ -100,7 +82,6 @@ export async function POST(req: NextRequest) {
 
     const authString = Buffer.from(`${BEPAID_ID}:${SECRET_KEY}`).toString('base64')
 
-    console.log('Making bepaid request')
     const bepaidResponse = await fetch(CHECKOUT_URL, {
       method: 'POST',
       headers: {
