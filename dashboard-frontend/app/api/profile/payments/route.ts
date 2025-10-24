@@ -12,13 +12,62 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json()
 
-    const { plan, amount, description, tracking_id, email } = data
+    console.log('Payment request data:', {
+      raw: data,
+      plan: data.plan,
+      amount: data.amount,
+      description: data.description,
+      tracking_id: data.tracking_id,
+      email: data.email,
+    })
 
-    if (!amount) {
+    const { plan, description, tracking_id, email } = data
+    let { amount } = data
+
+    // для бесплатного плана устанавливаем amount = 0
+    console.log('Checking plan type:', {
+      plan,
+      isZooID: plan === 'zooID',
+      currentAmount: amount,
+    })
+
+    if (plan === 'zooID') {
+      console.log('Processing free plan')
+      amount = 0
+    } else if (!amount) {
       console.error('Amount is missing in request data')
       return Response.json({ error: 'Amount is required' }, { status: 400 })
     }
 
+    // 1. создаем транзакцию в бекенде
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify({ plan, tracking_id }),
+    })
+
+    if (!backendResponse.ok) {
+      const errorText = await backendResponse.text()
+      return Response.json({ error: errorText }, { status: backendResponse.status })
+    }
+
+    const transaction = await backendResponse.json()
+
+    // для бесплатного плана не делаем запрос в bepaid
+    if (plan === 'zooID') {
+      console.log('Returning free plan response')
+      return Response.json({
+        transaction,
+        isFree: true,
+      })
+    }
+
+    console.log('Processing paid plan')
+
+    // 2. запрос в bepaid для платных планов
     const CHECKOUT_URL = process.env.CHECKOUT_URL
     const TEST_MODE = process.env.PAYMENTS_TEST_MODE === 'true'
     const BEPAID_ID = process.env.BEPAID_ID
@@ -51,24 +100,7 @@ export async function POST(req: NextRequest) {
 
     const authString = Buffer.from(`${BEPAID_ID}:${SECRET_KEY}`).toString('base64')
 
-    // 1. создаем транзакцию в бекенде
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      body: JSON.stringify({ plan, tracking_id }),
-    })
-
-    if (!backendResponse.ok) {
-      const errorText = await backendResponse.text()
-      return Response.json({ error: errorText }, { status: backendResponse.status })
-    }
-
-    const transaction = await backendResponse.json()
-
-    // 2. запрос в bepaid
+    console.log('Making bepaid request')
     const bepaidResponse = await fetch(CHECKOUT_URL, {
       method: 'POST',
       headers: {
@@ -94,6 +126,7 @@ export async function POST(req: NextRequest) {
       payment: bepaidResult,
       checkoutUrl: redirect_url,
       token,
+      isFree: false,
     })
   } catch (error: unknown) {
     console.error('POST /api/payments error:', {

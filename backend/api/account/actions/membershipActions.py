@@ -47,8 +47,6 @@ class MembershipView(ViewSet):
                 'message': 'У вас уже активирован этот тарифный план'
             }, status=status.HTTP_400_BAD_REQUEST)
             
-            # !апгрейды/даунгрейды?
-            
         now = timezone.now()
         subscription_end = now + timedelta(days=30)  # 30 дней
         
@@ -58,13 +56,18 @@ class MembershipView(ViewSet):
                 status=status.HTTP_409_CONFLICT
             )
         
+        # определяем статус и сообщение в зависимости от плана
+        is_free_plan = plan == 'zooID'
+        transaction_status = 'completed' if is_free_plan else 'pending'
+        response_message = 'Тарифный план успешно активирован' if is_free_plan else 'Транзакция создана, ожидаем подтверждение оплаты'
+        
         transaction_data = {
             'user': user.id,
             'membership': membership.id, 
-            'amount': membership.price,
+            'amount': 0 if is_free_plan else membership.price,
             'subscription_start': now,
             'subscription_end': subscription_end,
-            'status': 'pending',
+            'status': transaction_status,
             'request_id': request_id,
             'auto_renewal': request.data.get('auto_renewal', False)
         }
@@ -73,10 +76,36 @@ class MembershipView(ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-        # возвращаем только данные транзакции, тип аккаунта обновится после подтверждения оплаты
+        # для бесплатного плана сразу обновляем тип аккаунта
+        if is_free_plan:
+            user_profile = user.userprofile
+            user_profile.account_type = plan
+            user_profile.save()
+            
+            # обновляем данные пользователя для ответа
+            user_data = {
+                'id': user.id,
+                'name': user.first_name,
+                'uuid': str(user.userprofile.uuid)[:6] if user.userprofile.uuid else None,
+                'email': user.email,
+                'account_type': user.userprofile.account_type,
+                'phone_number': user.userprofile.phone_number,
+                'city': user.userprofile.city.id if user.userprofile.city else None,
+                'address': user.userprofile.address,
+                'imageURL': user.userprofile.image.url if user.userprofile.image else None,
+            }
+            
+            return Response({
+                'success': True,
+                'message': response_message,
+                'transaction': serializer.data,
+                'user': user_data
+            }, status=status.HTTP_200_OK)
+        
+        # для платных планов возвращаем только транзакцию
         return Response({
             'success': True,
-            'message': 'Транзакция создана, ожидаем подтверждение оплаты',
+            'message': response_message,
             'transaction': serializer.data
         }, status=status.HTTP_200_OK)
         
@@ -89,28 +118,13 @@ class VerificationView(APIView):
 class NotificationView(APIView):
     @handle_exceptions
     def post(self, request):
-        logger = logging.getLogger(__name__)
-        
-        logger.info('Bepaid notification headers: %s', dict(request.headers))
-        
         try:
             notification_data = request.data
-            logger.info('Bepaid notification data: %s', json.dumps(notification_data, indent=2))
             
             transaction_data = notification_data.get('transaction', {})
             tracking_id = transaction_data.get('tracking_id')
             payment_status = transaction_data.get('status')
             bepaid_id = transaction_data.get('uid')
-            
-            logger.info('Important fields: %s', {
-                'transaction_type': transaction_data.get('type'),
-                'status': payment_status,
-                'tracking_id': tracking_id,
-                'payment_method_type': transaction_data.get('payment_method_type'),
-                'amount': transaction_data.get('amount'),
-                'currency': transaction_data.get('currency'),
-                'bepaid_id': bepaid_id,
-            })
             
             if not tracking_id:
                 logger.error('No tracking_id in notification')
@@ -134,13 +148,10 @@ class NotificationView(APIView):
                 user_profile.account_type = transaction.membership.plan
                 user_profile.save()
                 
-                logger.info(f'Updated user {transaction.user.username} account type to {transaction.membership.plan}')
             else:
                 transaction.status = 'failed'
-                logger.info(f'Payment failed for transaction {tracking_id}')
             
             transaction.save()
-            logger.info(f'Updated transaction {tracking_id} status to {transaction.status}')
             
         except Exception as e:
             logger.exception('Error processing notification')

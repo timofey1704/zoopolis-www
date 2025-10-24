@@ -10,7 +10,7 @@ import { convertPriceToCents, getDisplayPlanName } from '../utils/converters'
 import { Membership } from '@/app/types'
 
 const PricingCard = ({ memberships }: PricingCardProps) => {
-  const { user } = useUserStore()
+  const { user, setUser } = useUserStore()
 
   const changeAccountType = async (membership: Membership) => {
     const internalPlan = displayNameToAccountType[membership.plan]
@@ -49,7 +49,23 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
 
     const responseData = await response.json()
 
-    // проверяем наличие URL для редиректа
+    // для бесплатного плана обновляем юзер стор
+    if (responseData.isFree && user) {
+      setUser({
+        ...user,
+        account_type: internalPlan,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+      })
+      showToast({
+        type: 'success',
+        message: 'Тарифный план успешно изменен на бесплатный',
+      })
+      return
+    }
+
+    // для платных планов проверяем наличие URL для редиректа
     if (responseData.checkoutUrl) {
       // перенаправляем пользователя на страницу оплаты
       window.location.href = responseData.checkoutUrl
@@ -94,7 +110,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
 
             <p className="mb-6">{membership.description}</p>
             <div className="mb-6 flex justify-center">
-              <div className="w-11/12 border-1 border-b border-white" />
+              <div className="w-11/12 border-b border-white" />
             </div>
             <ul className="mb-4 space-y-4">
               {membership.features.map(feature => (
