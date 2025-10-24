@@ -31,6 +31,25 @@ class RegisterQRCodeAdmin(admin.ModelAdmin):
     readonly_fields = ("code", "image", "created_at", "user", "is_used", "is_active", "pet", "activation_date")
     actions = ['print_selected_qr_codes']
     change_list_template = 'admin/api/registerqrcode_changelist.html'
+    
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(self.readonly_fields)
+        
+        if obj:  # если объект уже существует
+            is_customer_service = request.user.groups.filter(name='Customer Service').exists()
+            
+            if obj.is_printed:
+                # если QR уже распечатан
+                if is_customer_service:
+                    # customer service не может менять is_printed обратно на False
+                    readonly_fields.append('is_printed')
+            else:
+                # если QR не распечатан
+                if not is_customer_service and not request.user.is_superuser:
+                    # только customer service и суперпользователи могут менять is_printed на True
+                    readonly_fields.append('is_printed')
+                    
+        return readonly_fields
 
     def get_urls(self):
         urls = super().get_urls()
