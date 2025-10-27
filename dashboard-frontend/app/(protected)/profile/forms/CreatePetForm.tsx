@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import EnterCode from './steps/EnterCode'
 import CreatePet from './steps/CreatePet'
-import ValidateCode from './steps/EnterCode'
+import ValidateCode from './steps/ValidateCode'
 import StepIndicator from '@/components/ui/StepIndicator'
 
 interface QRCodeData {
@@ -13,20 +13,22 @@ interface CreatePetFormProps {
   onClose: () => void
 }
 
+type Step = 'enter' | 'validate' | 'create'
+
 const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
-  const [step, setStep] = useState<'enter' | 'validate' | 'create'>('enter')
+  const [step, setStep] = useState<Step>('enter')
   const [qrData, setQRData] = useState<QRCodeData | null>(null)
 
   const steps: Array<{ id: number; name: string; status: 'current' | 'complete' | 'upcoming' }> = [
     {
       id: 1,
       name: 'Код на кулоне',
-      status: step === 'validate' ? 'current' : step === 'create' ? 'complete' : 'upcoming',
+      status: step === 'enter' ? 'current' : 'complete',
     },
     {
       id: 2,
       name: 'Проверяем код',
-      status: step === 'validate' ? 'current' : step === 'create' ? 'complete' : 'upcoming',
+      status: step === 'validate' ? 'current' : step === 'enter' ? 'upcoming' : 'complete',
     },
     {
       id: 3,
@@ -35,8 +37,12 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
     },
   ]
 
-  const handleValidated = (data: QRCodeData) => {
+  const handleEnterStep = (data: QRCodeData) => {
     setQRData(data)
+    setStep('validate')
+  }
+
+  const handleValidateStep = () => {
     setStep('create')
   }
 
@@ -46,9 +52,11 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
         <StepIndicator steps={steps} />
       </div>
       <div className="space-y-3">
-        {step === 'enter' && <EnterCode onValidated={handleValidated} />}
-        {step === 'validate' && <ValidateCode onValidated={handleValidated} />}
-        {step === 'create' && <CreatePet onClose={onClose} initialQRData={qrData} />}
+        {step === 'enter' && <EnterCode onValidated={handleEnterStep} />}
+        {step === 'validate' && qrData && (
+          <ValidateCode code={qrData.code} onValidated={handleValidateStep} />
+        )}
+        {step === 'create' && qrData && <CreatePet onClose={onClose} initialQRData={qrData} />}
       </div>
     </div>
   )

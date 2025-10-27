@@ -37,7 +37,7 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
         }
 
         const result = await response.json()
-        showToast({ type: 'success', message: result.message })
+        showToast({ type: 'success', message: result.message, duration: 500 })
         onValidated({
           code: result.code,
           imageURL: result.imageURL,
