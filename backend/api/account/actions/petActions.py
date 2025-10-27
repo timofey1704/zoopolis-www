@@ -48,6 +48,20 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        #! проверяем, принадлежит ли код текущему пользователю и верифицирован ли он
+        if qr_code.user == request.user and qr_code.is_verificated and not qr_code.pet:
+            imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
+            return Response(
+                {
+                    "action": "pass",
+                    "message": "QR код уже верифицирован",
+                    "code": qr_code.code,
+                    "imageURL": imageURL,
+                    "isAlreadyVerificated": True
+                },
+                status=status.HTTP_200_OK,
+            )
+
         # проверяем можно ли отправить новый код
         can_send, error_message = redis_client.can_send_new_code(phone_number)
         if not can_send:
@@ -78,7 +92,8 @@ class CheckCodeView(ViewSet):
                 "action": "pass",
                 "message": "Код подтверждения отправлен на ваш номер телефона",
                 "code": qr_code.code,
-                "imageURL": imageURL
+                "imageURL": imageURL,
+                "isAlreadyVerificated": False
             },
             status=status.HTTP_200_OK,
         )

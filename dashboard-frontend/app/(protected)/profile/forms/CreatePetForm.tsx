@@ -7,6 +7,7 @@ import StepIndicator from '@/components/ui/StepIndicator'
 interface QRCodeData {
   code: string
   imageURL: string
+  isAlreadyVerificated?: boolean
 }
 
 interface CreatePetFormProps {
@@ -39,7 +40,8 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
 
   const handleEnterStep = (data: QRCodeData) => {
     setQRData(data)
-    setStep('validate')
+    // Если код уже верифицирован, пропускаем шаг валидации
+    setStep(data.isAlreadyVerificated ? 'create' : 'validate')
   }
 
   const handleValidateStep = () => {

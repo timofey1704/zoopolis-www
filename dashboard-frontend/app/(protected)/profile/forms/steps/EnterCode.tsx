@@ -11,6 +11,7 @@ const validationRules = {
 interface QRCodeData {
   code: string
   imageURL: string
+  isAlreadyVerificated?: boolean
 }
 
 interface ValidateCodeProps {
@@ -37,11 +38,12 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
         }
 
         const result = await response.json()
-        showToast({ type: 'success', message: result.message, duration: 500 })
+        showToast({ type: 'success', message: result.message })
         onValidated({
           code: result.code,
           imageURL: result.imageURL,
-        }) // переход к следующему шагу после успешной валидации
+          isAlreadyVerificated: result.isAlreadyVerificated,
+        })
       } catch (error) {
         showToast({
           type: 'error',
