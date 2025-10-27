@@ -48,7 +48,17 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        #! проверяем, принадлежит ли код текущему пользователю и верифицирован ли он
+        # проверяем не принадлежит ли код другому пользователю
+        if qr_code.user and qr_code.user != request.user:
+            return Response(
+                {
+                    "action": "unavailable",
+                    "message": "Этот кулон уже принадлежит другому пользователю",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # проверяем принадлежит ли код текущему пользователю и верифицирован ли он
         if qr_code.user == request.user and qr_code.is_verificated and not qr_code.pet:
             imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
             return Response(

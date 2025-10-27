@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import showToast from '@/components/ui/showToast'
 
 interface ValidateCodeProps {
   code: string
@@ -10,6 +11,29 @@ interface ValidateCodeProps {
 
 const ValidateCode: React.FC<ValidateCodeProps> = ({ code, onValidated }) => {
   const [verificationCode, setVerificationCode] = useState('')
+
+  const handleVerifyCode = async () => {
+    if (verificationCode.length !== 6) {
+      showToast({ type: 'error', message: 'Код должен содержать 6 цифр' })
+      return
+    }
+
+    const response = await fetch('/api/profile/pets/verify-sms-code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sms_code: verificationCode, qr_code: code }),
+    })
+    if (!response.ok) {
+      const error = await response.json()
+      showToast({ type: 'error', message: error.error || 'Ошибка при проверке кода' })
+      return
+    }
+    const result = await response.json()
+    showToast({ type: 'success', message: result.message })
+    onValidated()
+  }
 
   return (
     <div className="flex flex-col items-center space-y-8 p-6">
@@ -59,11 +83,7 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ code, onValidated }) => {
 
         <div className="w-[calc(6*3rem+5*0.5rem)]">
           <button
-            onClick={() => {
-              if (verificationCode.length === 6) {
-                onValidated()
-              }
-            }}
+            onClick={handleVerifyCode}
             disabled={verificationCode.length !== 6}
             className={`w-full rounded-xl px-4 py-3 font-medium text-white transition-all duration-200 ${
               verificationCode.length === 6
