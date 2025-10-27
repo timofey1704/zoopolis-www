@@ -46,6 +46,7 @@ class RegisterQRCode(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активность")
     is_used = models.BooleanField(default=False, verbose_name="Использован")
     is_printed = models.BooleanField(default=False, verbose_name='Распечатан')
+    is_verificated = models.BooleanField(default=False, verbose_name="Статус подтверждения покупки")
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="Питомец", null=True, blank=True)
         
     class Meta:
@@ -58,7 +59,7 @@ class RegisterQRCode(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:  # только при создании
-            qr_image, _, unique_code = generate_registration_qr() #! поменяй в проде
+            qr_image, _, unique_code = generate_registration_qr()
             self.code = unique_code
 
             # сохраняем изображение во временный буфер

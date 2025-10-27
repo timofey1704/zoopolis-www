@@ -43,6 +43,7 @@ urlpatterns = [
     path('v1/user/', UserDataView.as_view({'get': 'user_data'}), name="user"),
     
     path('v1/check-code/', CheckCodeView.as_view({'post': 'validate_code'}), name="validate-code"),
+    path('v1/validate-qr-sms/', CheckCodeView.as_view({'post': 'verify_sms_code'}), name="verify_sms_code"),
     path('v1/pets/get-pets/', PetView.as_view({'get': 'get_pets'}), name="get-pets"),
     path('v1/pets/get-pet/', PetView.as_view({'get': 'get_pet'}), name="get-pet"),
     path('v1/pets/create-pet/', PetView.as_view({'post': 'create_pet'}), name="create-pet"),
