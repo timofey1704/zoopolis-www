@@ -1,5 +1,6 @@
 import logging
 from django.conf import settings
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +15,8 @@ from typing import cast
 from api.models import RegisterQRCode
 from django.utils import timezone
 from api.utils.emails.email_templates.internal_qr_activated import qr_activated_email
+from api.utils.smsVerification import send_verification_code
+from api.utils.redisClient import redis_client
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +27,9 @@ class CheckCodeView(ViewSet):
     @action(detail=False, methods=['post'])
     @handle_exceptions
     def validate_code(self, request):
-        """Проверка кода из запроса пользователя"""
+        """Проверка кода из запроса пользователя и отправка SMS кода подтверждения"""
         code = request.data.get("code")
+        phone_number = request.user.userprofile.phone_number
 
         if not code:
             return Response(
@@ -35,27 +39,107 @@ class CheckCodeView(ViewSet):
 
         qr_code = RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
 
-        if qr_code:
-            
-            # код существует = пропускаем
-            imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
-            return Response(
-                {
-                    "action": "pass",
-                    "message": "Код найден",
-                    "code": qr_code.code,
-                    "imageURL": imageURL
-                },
-                status=status.HTTP_200_OK,
-            )
-        else:
-            # кода нет = разворачиваем
+        if not qr_code:
             return Response(
                 {
                     "action": "unavailable",
                     "message": "Такого кода не существует",
                 },
                 status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # проверяем можно ли отправить новый код
+        can_send, error_message = redis_client.can_send_new_code(phone_number)
+        if not can_send:
+            return Response(
+                {"error": error_message},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # генерируем и отправляем код
+        verification_code, error = send_verification_code(phone_number)
+        if error:
+            return Response(
+                {"error": f"Ошибка отправки кода: {error}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # сохраняем код в Redis
+        if not redis_client.set_verification_code(phone_number, verification_code):
+            return Response(
+                {"error": "Ошибка сохранения кода верификации"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # возвращаем успешный ответ с данными QR кода
+        imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
+        return Response(
+            {
+                "action": "pass",
+                "message": "Код подтверждения отправлен на ваш номер телефона",
+                "code": qr_code.code,
+                "imageURL": imageURL
+            },
+            status=status.HTTP_200_OK,
+        )
+        
+    @action(detail=False, methods=['post'])
+    @handle_exceptions
+    def verify_sms_code(self, request):
+        """Проверка SMS кода и активация QR кода"""
+        sms_code = request.data.get("sms_code")
+        qr_code = request.data.get("qr_code")
+
+        if not sms_code or not qr_code:
+            return Response(
+                {"error": "Необходимо указать SMS код и QR код"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # проверяем QR код
+        qr_code_obj = RegisterQRCode.objects.filter(
+            code=qr_code, 
+            is_active=True, 
+            is_used=False,
+            is_verificated=False
+        ).first()
+
+        if not qr_code_obj:
+            return Response(
+                {"error": "QR код не найден или уже использован"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # проверяем смску с фронта
+        phone_number = request.user.userprofile.phone_number
+        is_valid = redis_client.verify_code(phone_number, sms_code)
+        
+        if not is_valid:
+            return Response(
+                {"error": "Неверный или истекший код подтверждения"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # ! активируем QR код ( нужно ли делать? )
+        try:
+            qr_code_obj.is_verificated = True
+            qr_code_obj.user = request.user
+            qr_code_obj.activation_date = timezone.now()
+            qr_code_obj.save()
+
+            return Response(
+                {
+                    "message": "QR код успешно активирован",
+                    "code": qr_code_obj.code,
+                    "imageURL": f"{settings.BASE_URL}{qr_code_obj.image.url}" if qr_code_obj.image else None
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            logger.error(f"Error activating QR code: {e}")
+            return Response(
+                {"error": "Ошибка при активации QR кода"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 class PetView(ViewSet):
