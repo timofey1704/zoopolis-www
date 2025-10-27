@@ -33,7 +33,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
     },
     {
       id: 3,
-      name: 'Создание питомца',
+      name: 'Создаем питомца',
       status: step === 'create' ? 'current' : 'upcoming',
     },
   ]
