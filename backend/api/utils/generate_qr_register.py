@@ -105,7 +105,7 @@ def generate_registration_qr(base_url: str = redirect_url) -> Tuple[PILImage.Ima
         version=2,
         error_correction=constants.ERROR_CORRECT_M,
         box_size=10,
-        border=3,
+        border=1,
     )
     
     qr.add_data(url)
