@@ -232,14 +232,14 @@ const RegisterForm = () => {
               togglePasswordVisibility={togglePasswordVisibility}
             />
 
-            <TextInput
+            {/* <TextInput
               value={values.promocode}
               name="promocode"
               handleChange={handleChange}
               placeholder="QWEZXC12"
               style="register"
               label="Код с кулона (если есть)"
-            />
+            /> */}
           </div>
 
           <div className="flex items-start pb-2">

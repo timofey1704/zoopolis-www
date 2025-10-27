@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import ValidateCode from './steps/ValidateCode'
+import EnterCode from './steps/EnterCode'
 import CreatePet from './steps/CreatePet'
+import ValidateCode from './steps/EnterCode'
 import StepIndicator from '@/components/ui/StepIndicator'
 
 interface QRCodeData {
@@ -13,17 +14,22 @@ interface CreatePetFormProps {
 }
 
 const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
-  const [step, setStep] = useState<'validate' | 'create'>('validate')
+  const [step, setStep] = useState<'enter' | 'validate' | 'create'>('enter')
   const [qrData, setQRData] = useState<QRCodeData | null>(null)
 
   const steps: Array<{ id: number; name: string; status: 'current' | 'complete' | 'upcoming' }> = [
     {
       id: 1,
-      name: 'Проверка кода',
+      name: 'Код на кулоне',
       status: step === 'validate' ? 'current' : step === 'create' ? 'complete' : 'upcoming',
     },
     {
       id: 2,
+      name: 'Проверяем код',
+      status: step === 'validate' ? 'current' : step === 'create' ? 'complete' : 'upcoming',
+    },
+    {
+      id: 3,
       name: 'Создание питомца',
       status: step === 'create' ? 'current' : 'upcoming',
     },
@@ -40,6 +46,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose }) => {
         <StepIndicator steps={steps} />
       </div>
       <div className="space-y-3">
+        {step === 'enter' && <EnterCode onValidated={handleValidated} />}
         {step === 'validate' && <ValidateCode onValidated={handleValidated} />}
         {step === 'create' && <CreatePet onClose={onClose} initialQRData={qrData} />}
       </div>

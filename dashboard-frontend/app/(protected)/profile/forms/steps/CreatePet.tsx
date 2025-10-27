@@ -171,7 +171,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
         <div className="space-y-4">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex items-center justify-around gap-4 py-4">
-              <div className="flex items-center justify-center md:w-[160px]">
+              <div className="flex items-center justify-center md:w-40">
                 <div
                   className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
                   onClick={openFileDialog}
@@ -193,7 +193,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
                     height={160}
                     width={160}
                     priority
-                    className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
+                    className="aspect-square w-full rounded-2xl object-cover md:w-40"
                   />
                 </div>
               </div>
@@ -214,7 +214,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
                 )}
               </div>
             </div>
-            <div className="h-[2px] w-full bg-white" />
+            <div className="h-0,5 w-full bg-white" />
             <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
               <TextInput
                 name="name"
