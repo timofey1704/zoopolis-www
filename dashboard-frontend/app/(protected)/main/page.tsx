@@ -58,7 +58,7 @@ const DashboardPage = () => {
         <div className="animated-border flex w-full flex-row items-center justify-between p-6">
           <div className="flex flex-col gap-5">
             <h3>Мы получили информацию о вашем питомце!</h3>
-            <span>Вы можете посмотреть где видели Вашего питомца на карте</span>
+            <span>Вы можете посмотреть на карте, где видели Вашего питомца</span>
 
             <Button
               text="К списку питомцев"
