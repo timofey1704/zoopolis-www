@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           city: userData.city,
           address: userData.address,
           telegram_id: userData.telegram_id,
+          is_coordinates_available: userData.is_coordinates_available,
         })
         setAuthenticated(true)
       } catch (error) {

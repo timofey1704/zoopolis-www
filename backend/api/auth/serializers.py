@@ -3,7 +3,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.conf import settings
-
+from django.utils import timezone
+from datetime import timedelta
+from sitemanagement.models import PetCoordinates
 from api.models import UserProfile
 
 class ClientRegisterSerializer(serializers.ModelSerializer):
@@ -71,6 +73,15 @@ class UserResponseSerializer(serializers.Serializer):
     city = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
     telegram_id = serializers.SerializerMethodField()
+    is_coordinates_available = serializers.SerializerMethodField()
+    
+    def get_is_coordinates_available(self, obj):
+        three_days_ago = timezone.now() - timedelta(days=3)
+    
+        return PetCoordinates.objects.filter(
+            pet__owner=obj,
+            created_at__gte=three_days_ago
+        ).exists()
     
     def get_telegram_id(self, obj):
         return obj.userprofile.telegram_id if obj.userprofile.telegram_id else None

@@ -14,7 +14,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ steps }) => {
     <nav aria-label="Progress">
       {/* Мобильная версия */}
       <ol role="list" className="flex flex-col sm:hidden">
-        {steps.map((step, stepIdx) => (
+        {steps.map(step => (
           <li
             key={step.name}
             className={`flex items-center ${step.id !== steps.length ? 'mb-8' : ''} relative`}
@@ -49,7 +49,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ steps }) => {
 
       {/* Десктопная версия */}
       <ol role="list" className="hidden items-center sm:flex">
-        {steps.map((step, stepIdx) => (
+        {steps.map(step => (
           <li
             key={step.name}
             className={`${step.id !== steps.length ? 'pr-24 md:pr-48' : ''} relative`}

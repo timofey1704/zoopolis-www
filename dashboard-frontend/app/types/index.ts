@@ -17,6 +17,7 @@ export interface User {
   city?: CityData | null
   address?: string
   telegram_id?: string
+  is_coordinates_available: boolean
 }
 
 export interface UserState {

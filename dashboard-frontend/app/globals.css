@@ -237,6 +237,65 @@ div {
   }
 }
 
+@keyframes blink-warning {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes gradient-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse-shadow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 103, 49, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 103, 49, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 103, 49, 0);
+  }
+}
+
+.animated-border {
+  position: relative;
+  background: white;
+  border-radius: 40px;
+  animation: pulse-shadow 2.5s infinite;
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #f3561d, #ff8c31, #ffa631, #f3561d);
+  background-size: 300% 300%;
+  border-radius: 50px;
+  z-index: -1;
+  animation: gradient-border 2.5s ease infinite;
+}
+
+.blink-five-times {
+  animation: blink-warning 0.6s ease-in-out 5;
+}
+
 .leaflet-control-attribution {
   display: none !important;
 }

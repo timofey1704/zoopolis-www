@@ -49,10 +49,25 @@ const DashboardPage = () => {
           <Button
             text="Заявить о пропаже"
             onClick={() => router.push('/profile?tab=pets')}
-            className="from-orange mt-4 w-full cursor-pointer items-center justify-center bg-gradient-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 md:w-md"
+            className="from-orange mt-4 w-full cursor-pointer items-center justify-center bg-linear-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 md:w-md"
           />
         </div>
       </div>
+
+      {user.user?.is_coordinates_available && (
+        <div className="animated-border flex w-full flex-row items-center justify-between p-6">
+          <div className="flex flex-col gap-5">
+            <h3>Мы получили информацию о вашем питомце!</h3>
+            <span>Вы можете посмотреть где видели Вашего питомца на карте</span>
+
+            <Button
+              text="К списку питомцев"
+              onClick={() => router.push('/profile?tab=pets')}
+              className="from-orange mt-4 w-full cursor-pointer items-center justify-center bg-linear-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:opacity-50 md:w-md"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="relative z-0 mt-7 overflow-hidden rounded-2xl">
         <MapComponent points={mapPoints} />

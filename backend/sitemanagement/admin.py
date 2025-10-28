@@ -145,3 +145,10 @@ class DevicesAdmin(admin.ModelAdmin):
     list_filter = ['title','price', 'category']
     search_fields = ['title', 'description', 'price']
     readonly_fields = ('created_at',)
+    
+@admin.register(PetCoordinates)
+class PetCoordinatesAdmin(admin.ModelAdmin):
+    list_display = ['pet', 'latitude', 'longitude', 'accuracy', 'address', 'founder_name', 'founder_phone', 'created_at']
+    list_filter = ['pet', 'created_at']
+    search_fields = ['pet__name', 'address', 'founder_name', 'founder_phone']
+    readonly_fields = ('created_at',)

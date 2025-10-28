@@ -109,9 +109,9 @@ const ExistedPets = () => {
               </h2>
 
               <div className="hidden items-center gap-5 md:flex">
-                {pet.last_coordinates && (
+                {pet.last_coordinates && pet.is_lost && (
                   <button onClick={() => handleOpenMap(pet)}>
-                    <LuMailWarning className="text-orange text-2xl hover:cursor-pointer" />
+                    <LuMailWarning className="text-orange blink-five-times text-2xl hover:cursor-pointer" />
                   </button>
                 )}
                 <button
@@ -199,9 +199,9 @@ const ExistedPets = () => {
             </div>
 
             <div className="mt-6 flex justify-around md:hidden">
-              {pet.last_coordinates && (
+              {pet.last_coordinates && pet.is_lost && (
                 <button onClick={() => handleOpenMap(pet)}>
-                  <LuMailWarning className="text-orange text-2xl hover:cursor-pointer" />
+                  <LuMailWarning className="text-orange blink-five-times text-2xl hover:cursor-pointer" />
                 </button>
               )}
               <button
