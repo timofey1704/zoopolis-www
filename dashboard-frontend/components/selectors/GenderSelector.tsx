@@ -26,8 +26,8 @@ interface GenderSelectorProps {
 }
 
 const GENDERS: Gender[] = [
-  { id: 1, value: 'male', label: 'Мужской' },
-  { id: 2, value: 'female', label: 'Женский' },
+  { id: 1, value: 'male', label: 'Мальчик' },
+  { id: 2, value: 'female', label: 'Девочка' },
 ]
 
 const GenderSelector: React.FC<GenderSelectorProps> = ({
