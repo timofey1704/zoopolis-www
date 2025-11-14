@@ -53,7 +53,7 @@ export default async function Home() {
                   />
                 </a>
               </div>
-              <div className="relative mx-4 flex-shrink-0 md:mx-6 lg:mx-10">
+              <div className="relative mx-4 shrink-0 md:mx-6 lg:mx-10">
                 <Image
                   src="/dog1.svg"
                   alt="Счастливая собака"
@@ -118,7 +118,7 @@ export default async function Home() {
         </div>
 
         {/* блюр снизу */}
-        <div className="absolute inset-x-0 -bottom-5 h-40 bg-gradient-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
+        <div className="absolute inset-x-0 -bottom-5 h-40 bg-linear-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
       </div>
 
       <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-6 px-4 sm:my-6 sm:px-8 lg:my-8 lg:flex-row lg:gap-10 lg:px-0">

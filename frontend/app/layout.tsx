@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className="font-display flex min-h-screen flex-col">
         <Header />
         <Toaster />
-        <main className="flex-grow">{children}</main>
+        <main className="grow">{children}</main>
         <Footer />
       </body>
     </html>
