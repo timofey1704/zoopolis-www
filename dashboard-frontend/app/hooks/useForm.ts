@@ -80,7 +80,7 @@ export function useForm<T extends Record<string, FormValue>>(
     email: 'Email',
     phone_number: 'Номер телефона',
     password: 'Пароль',
-    privacy_policy: 'Политика конфиденциальности',
+    privacy_accepted: 'Политика конфиденциальности',
   }
 
   const validate = () => {

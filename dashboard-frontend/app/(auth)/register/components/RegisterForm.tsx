@@ -17,6 +17,8 @@ const validationRules = {
   name: { required: true },
   surname: { required: true },
   password: { required: true, minLength: 8 },
+  email: { required: true },
+  phone_number: { required: true, minLength: 13 },
   privacy_accepted: { required: true },
   promocode: { required: false },
 }
