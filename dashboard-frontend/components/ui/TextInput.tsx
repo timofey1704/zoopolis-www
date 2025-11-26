@@ -18,6 +18,7 @@ const TextInput = ({
   togglePasswordVisibility,
   isVisible,
   error,
+  isRequired,
 }: TextInputProps) => {
   const getStylesProps = () => {
     const baseStyles = 'px-3 py-2 '
@@ -35,8 +36,20 @@ const TextInput = ({
     <div className={className}>
       {label && (
         <div className="my-2 flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-500" htmlFor={name}>
+          <label
+            className="flex items-center gap-1 text-sm font-medium text-gray-500"
+            htmlFor={name}
+          >
             {label}
+            {isRequired && (
+              <span
+                className="text-sm text-red-500"
+                title="Обязательное поле"
+                aria-label="обязательное поле"
+              >
+                *
+              </span>
+            )}
           </label>
           {tooltip && <div className="tooltip">{tooltip}</div>}
         </div>
@@ -57,6 +70,8 @@ const TextInput = ({
           autoComplete={name}
           maxLength={maxLength}
           min={min}
+          required={isRequired}
+          aria-required={isRequired} // для accessibility и оценки серч консоли
         />
         {isPassword && (
           <button

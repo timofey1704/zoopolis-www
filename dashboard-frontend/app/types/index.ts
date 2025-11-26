@@ -66,6 +66,7 @@ export interface TextInputProps {
   error?: string
   min?: string
   max?: string
+  isRequired?: boolean
 }
 
 export interface ValidationRules {
@@ -90,6 +91,7 @@ export interface PhoneInputProps {
   label?: string
   className?: string
   operatorsInfo?: boolean
+  isRequired?: boolean
 }
 
 export interface AccountSidebarProps {

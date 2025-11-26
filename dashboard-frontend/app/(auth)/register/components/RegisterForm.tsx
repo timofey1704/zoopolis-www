@@ -196,6 +196,7 @@ const RegisterForm = () => {
               placeholder="Иван"
               style="register"
               label="Ваше имя"
+              isRequired={true}
             />
 
             <TextInput
@@ -205,6 +206,7 @@ const RegisterForm = () => {
               placeholder="Иванов"
               style="register"
               label="Ваша фамилия"
+              isRequired={true}
             />
 
             <TextInput
@@ -214,12 +216,14 @@ const RegisterForm = () => {
               placeholder="my_email@gmail.com"
               style="register"
               label="Ваш еmail"
+              isRequired={true}
             />
 
             <PhoneInput
               value={values.phone_number}
               handleChange={handleChange}
               operatorsInfo={false}
+              isRequired={true}
             />
 
             <TextInput
@@ -232,6 +236,7 @@ const RegisterForm = () => {
               isPassword={true}
               isVisible={isVisible}
               togglePasswordVisibility={togglePasswordVisibility}
+              isRequired={true}
             />
 
             {/* <TextInput
@@ -266,6 +271,13 @@ const RegisterForm = () => {
               >
                 персональных данных.
               </a>
+              <span
+                className="ml-1 text-sm text-red-500"
+                title="Обязательное поле"
+                aria-label="обязательное поле"
+              >
+                *
+              </span>
             </label>
           </div>
           <div className="my-2 flex w-full items-center justify-center">
