@@ -1,6 +1,7 @@
 import React from 'react'
 import { TextInputProps } from '@/app/types'
 import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi'
+import { useFormContext } from '@/app/hooks/useForm'
 
 const TextInput = ({
   value,
@@ -20,6 +21,8 @@ const TextInput = ({
   error,
   isRequired,
 }: TextInputProps) => {
+  const formContext = useFormContext()
+  const required = isRequired ?? (formContext?.isFieldRequired(name) || false)
   const getStylesProps = () => {
     const baseStyles = 'px-3 py-2 '
     switch (style) {
@@ -41,7 +44,7 @@ const TextInput = ({
             htmlFor={name}
           >
             {label}
-            {isRequired && (
+            {required && (
               <span
                 className="text-sm text-red-500"
                 title="Обязательное поле"
@@ -70,8 +73,8 @@ const TextInput = ({
           autoComplete={name}
           maxLength={maxLength}
           min={min}
-          required={isRequired}
-          aria-required={isRequired} // для accessibility и оценки серч консоли
+          required={required}
+          aria-required={required} // для accessibility и оценки серч консоли
         />
         {isPassword && (
           <button

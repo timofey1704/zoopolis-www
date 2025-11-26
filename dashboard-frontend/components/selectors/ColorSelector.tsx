@@ -29,6 +29,7 @@ interface ColorSelectorProps {
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
+  isRequired?: boolean
 }
 
 const ColorSelector: React.FC<ColorSelectorProps> = ({
@@ -38,6 +39,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
   label,
   tooltip,
   placeholder,
+  isRequired,
 }) => {
   const mapColorToOption = (color: ColorResponse): Option => ({
     id: color.id,
@@ -100,6 +102,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
       placeholder={placeholder}
       endpoint="/dictionaries/pet-colors/"
       mapDataToOptions={mapColorToOption}
+      isRequired={isRequired}
     />
   )
 }

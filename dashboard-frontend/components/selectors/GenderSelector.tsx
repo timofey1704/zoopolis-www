@@ -23,6 +23,7 @@ interface GenderSelectorProps {
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
+  isRequired?: boolean
 }
 
 const GENDERS: Gender[] = [
@@ -37,6 +38,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
   label,
   tooltip,
   placeholder,
+  isRequired,
 }) => {
   const handleSelectorChange = (e: {
     target: {
@@ -72,6 +74,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
         label: gender.label,
       })}
       staticOptions={GENDERS}
+      isRequired={isRequired}
     />
   )
 }

@@ -1,11 +1,29 @@
 'use client'
 
-import { useState, ChangeEvent, FormEvent } from 'react'
+import React, {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  createContext,
+  useContext,
+  ReactNode,
+} from 'react'
 import toast from 'react-hot-toast'
 import { ValidationRules, ValidationErrors, CityData } from '../types'
 import { PetType } from '@/components/selectors/PetTypeSelector'
 import { Breed } from '@/components/selectors/BreedSelector'
 import { PetColor } from '@/components/selectors/ColorSelector'
+
+type FormContextType = {
+  isFieldRequired: (fieldName: string) => boolean
+}
+
+const FormContext = createContext<FormContextType | null>(null)
+
+export const useFormContext = () => {
+  const context = useContext(FormContext)
+  return context
+}
 
 type FormValue =
   | string
@@ -153,6 +171,19 @@ export function useForm<T extends Record<string, FormValue>>(
     setIsVisible(!isVisible)
   }
 
+  const isFieldRequired = (fieldName: keyof T): boolean => {
+    if (!validationRules) return false
+    return validationRules[fieldName]?.required ?? false
+  }
+
+  const FormProvider = ({ children }: { children: ReactNode }) => {
+    return React.createElement(
+      FormContext.Provider,
+      { value: { isFieldRequired: isFieldRequired as (fieldName: string) => boolean } },
+      children
+    )
+  }
+
   return {
     values,
     errors,
@@ -162,5 +193,7 @@ export function useForm<T extends Record<string, FormValue>>(
     handleSubmit,
     togglePasswordVisibility,
     resetField,
+    isFieldRequired,
+    FormProvider,
   }
 }

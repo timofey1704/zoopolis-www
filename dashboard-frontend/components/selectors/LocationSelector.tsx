@@ -15,6 +15,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   label,
   tooltip,
   placeholder,
+  isRequired,
 }) => {
   const mapCityToOption = (city: ExtendedCityResponse): LocationOption => ({
     id: city.id,
@@ -83,6 +84,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
       placeholder={placeholder}
       endpoint="/dictionaries/cities/"
       mapDataToOptions={mapCityToOption}
+      isRequired={isRequired}
     />
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { PhoneInputProps } from '@/app/types'
+import { useFormContext } from '@/app/hooks/useForm'
 
 const PhoneInput = ({
   value,
@@ -9,12 +10,14 @@ const PhoneInput = ({
   operatorsInfo = true,
   isRequired,
 }: PhoneInputProps) => {
+  const formContext = useFormContext()
+  const required = isRequired ?? (formContext?.isFieldRequired('phone_number') || false)
   return (
     <div className={className}>
       {label && (
         <div className="my-2 flex items-center gap-1">
           <label className="text-sm font-medium text-gray-500">{label}</label>
-          {isRequired && (
+          {required && (
             <span
               className="text-sm text-red-500"
               title="Обязательное поле"
@@ -35,8 +38,8 @@ const PhoneInput = ({
         onChange={handleChange}
         className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-black focus:ring-1 focus:ring-blue-400 focus:outline-none"
         autoComplete="tel"
-        required={isRequired}
-        aria-required={isRequired} // для accessibility и оценки серч консоли
+        required={required}
+        aria-required={required} // для accessibility и оценки серч консоли
       />
 
       {operatorsInfo && (

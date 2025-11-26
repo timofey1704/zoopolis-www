@@ -128,6 +128,7 @@ export interface LocationSelectProps {
   label: string
   placeholder: string
   tooltip?: string | React.ReactNode
+  isRequired?: boolean
 }
 
 export interface TextAreaProps {

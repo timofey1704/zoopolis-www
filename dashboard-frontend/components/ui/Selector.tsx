@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Select from 'react-select'
 import Tooltip from './Tooltip'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
+import { useFormContext } from '@/app/hooks/useForm'
 
 export interface Option {
   id: number
@@ -40,6 +41,7 @@ export interface SelectorProps<T extends DataItem> {
   mapDataToOptions: (data: T) => Option
   searchParam?: string
   staticOptions?: T[]
+  isRequired?: boolean
   config?: {
     params?: Record<string, string | number | boolean | undefined>
     queryOptions?: {
@@ -59,8 +61,11 @@ const Selector = <T extends DataItem>({
   mapDataToOptions,
   searchParam = 'search',
   staticOptions,
+  isRequired,
   config = {},
 }: SelectorProps<T>) => {
+  const formContext = useFormContext()
+  const required = isRequired ?? (formContext?.isFieldRequired(name) || false)
   const [search, setSearch] = useState('')
 
   const { data, isLoading, error } = useClientFetch<PaginatedResponse<T>>(
@@ -99,8 +104,20 @@ const Selector = <T extends DataItem>({
     <div>
       {label && (
         <div className="my-2 flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-500" htmlFor={name}>
+          <label
+            className="flex items-center gap-1 text-sm font-medium text-gray-500"
+            htmlFor={name}
+          >
             {label}
+            {required && (
+              <span
+                className="text-sm text-red-500"
+                title="Обязательное поле"
+                aria-label="обязательное поле"
+              >
+                *
+              </span>
+            )}
           </label>
           {tooltip && <Tooltip content={tooltip} />}
         </div>
@@ -131,6 +148,8 @@ const Selector = <T extends DataItem>({
         noOptionsMessage={() => (isLoading ? 'Загрузка...' : 'Нет доступных вариантов')}
         classNamePrefix="select"
         className="rounded-lg"
+        required={required}
+        aria-required={required}
         styles={{
           control: base => ({
             ...base,

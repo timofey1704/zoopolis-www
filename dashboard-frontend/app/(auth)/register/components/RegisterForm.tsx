@@ -47,51 +47,52 @@ const RegisterForm = () => {
     return () => clearTimeout(timer)
   }, [isAuthenticated, router])
 
-  const { values, isVisible, handleChange, handleSubmit, togglePasswordVisibility } = useForm(
-    {
-      name: '',
-      surname: '',
-      email: '',
-      phone_number: '',
-      password: '',
-      privacy_accepted: false,
-      promocode: ref || '',
-    },
-    validationRules,
-    async values => {
-      try {
-        setIsLoading(true)
+  const { values, isVisible, handleChange, handleSubmit, togglePasswordVisibility, FormProvider } =
+    useForm(
+      {
+        name: '',
+        surname: '',
+        email: '',
+        phone_number: '',
+        password: '',
+        privacy_accepted: false,
+        promocode: ref || '',
+      },
+      validationRules,
+      async values => {
+        try {
+          setIsLoading(true)
 
-        // отправляем запрос на верификацию email
-        const verificationResponse = await fetch('/api/register/send-code/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone_number: values.phone_number,
-            promocode: values.promocode,
-            email: values.email,
-          }),
-        })
+          // отправляем запрос на верификацию email
+          const verificationResponse = await fetch('/api/register/send-code/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              phone_number: values.phone_number,
+              promocode: values.promocode,
+              email: values.email,
+            }),
+          })
 
-        const verificationData = await verificationResponse.json()
+          const verificationData = await verificationResponse.json()
 
-        if (!verificationResponse.ok) {
-          showToast({ type: 'error', message: verificationData.error || 'Ошибка отправки кода' })
-          return
+          if (!verificationResponse.ok) {
+            showToast({ type: 'error', message: verificationData.error || 'Ошибка отправки кода' })
+            return
+          }
+
+          showToast({ type: 'success', message: 'Код верификации отправлен на ваш номер телефона' })
+          setVerificationStep(true)
+        } catch (error) {
+          console.error(error)
+          showToast({ type: 'error', message: 'Ошибка при отправке кода верификации' })
+        } finally {
+          setIsLoading(false)
         }
-
-        showToast({ type: 'success', message: 'Код верификации отправлен на ваш номер телефона' })
-        setVerificationStep(true)
-      } catch (error) {
-        console.error(error)
-        showToast({ type: 'error', message: 'Ошибка при отправке кода верификации' })
-      } finally {
-        setIsLoading(false)
       }
-    }
-  )
+    )
 
   const handleVerificationSubmit = async () => {
     try {
@@ -184,62 +185,58 @@ const RegisterForm = () => {
   }
 
   return (
-    <div className="flex items-center justify-center p-12">
-      <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
-        <h1 className="py-1 text-2xl">Давайте познакомимся поближе!</h1>
-        <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
-          <div className="mb-2 space-y-4">
-            <TextInput
-              value={values.name}
-              name="name"
-              handleChange={handleChange}
-              placeholder="Иван"
-              style="register"
-              label="Ваше имя"
-              isRequired={true}
-            />
+    <FormProvider>
+      <div className="flex items-center justify-center p-12">
+        <div className="z-10 mx-4 flex w-full max-w-4xl flex-col gap-4 rounded-[40px] border-4 border-[#F3F3F3] bg-[#FAFAFA33] p-6 backdrop-blur-[50.9px] md:mx-8">
+          <h1 className="py-1 text-2xl">Давайте познакомимся поближе!</h1>
+          <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
+            <div className="mb-2 space-y-4">
+              <TextInput
+                value={values.name}
+                name="name"
+                handleChange={handleChange}
+                placeholder="Иван"
+                style="register"
+                label="Ваше имя"
+              />
 
-            <TextInput
-              value={values.surname}
-              name="surname"
-              handleChange={handleChange}
-              placeholder="Иванов"
-              style="register"
-              label="Ваша фамилия"
-              isRequired={true}
-            />
+              <TextInput
+                value={values.surname}
+                name="surname"
+                handleChange={handleChange}
+                placeholder="Иванов"
+                style="register"
+                label="Ваша фамилия"
+              />
 
-            <TextInput
-              value={values.email}
-              name="email"
-              handleChange={handleChange}
-              placeholder="my_email@gmail.com"
-              style="register"
-              label="Ваш еmail"
-              isRequired={true}
-            />
+              <TextInput
+                value={values.email}
+                name="email"
+                handleChange={handleChange}
+                placeholder="my_email@gmail.com"
+                style="register"
+                label="Ваш еmail"
+              />
 
-            <PhoneInput
-              value={values.phone_number}
-              handleChange={handleChange}
-              operatorsInfo={false}
-              isRequired={true}
-            />
+              <PhoneInput
+                value={values.phone_number}
+                handleChange={handleChange}
+                operatorsInfo={true}
+              />
 
-            <TextInput
-              value={values.password}
-              name="password"
-              handleChange={handleChange}
-              placeholder="Не менее 8 символов"
-              style="register"
-              label="Ваш пароль"
-              isPassword={true}
-              isVisible={isVisible}
-              togglePasswordVisibility={togglePasswordVisibility}
-              isRequired={true}
-            />
+              <TextInput
+                value={values.password}
+                name="password"
+                handleChange={handleChange}
+                placeholder="Не менее 8 символов"
+                style="register"
+                label="Ваш пароль"
+                isPassword={true}
+                isVisible={isVisible}
+                togglePasswordVisibility={togglePasswordVisibility}
+              />
 
-            {/* <TextInput
+              {/* <TextInput
               value={values.promocode}
               name="promocode"
               handleChange={handleChange}
@@ -247,62 +244,63 @@ const RegisterForm = () => {
               style="register"
               label="Код с кулона (если есть)"
             /> */}
-          </div>
+            </div>
 
-          <div className="flex items-start pb-2">
-            <input
-              type="checkbox"
-              id="privacy_accepted"
-              name="privacy_accepted"
-              onChange={handleChange}
-              checked={values.privacy_accepted}
-              className="mt-1 cursor-pointer"
-            />
-            <label
-              htmlFor="privacy_accepted"
-              className="cursor-pointer px-2 text-gray-700 select-none"
-            >
-              Даю согласие на обработку моих{' '}
-              <a
-                href="https://zoopolis.org/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-orange/60 hover:underline"
+            <div className="flex items-start pb-2">
+              <input
+                type="checkbox"
+                id="privacy_accepted"
+                name="privacy_accepted"
+                onChange={handleChange}
+                checked={values.privacy_accepted}
+                className="mt-1 cursor-pointer"
+              />
+              <label
+                htmlFor="privacy_accepted"
+                className="cursor-pointer px-2 text-gray-700 select-none"
               >
-                персональных данных.
-              </a>
-              <span
-                className="ml-1 text-sm text-red-500"
-                title="Обязательное поле"
-                aria-label="обязательное поле"
-              >
-                *
-              </span>
-            </label>
-          </div>
-          <div className="my-2 flex w-full items-center justify-center">
-            <Button
-              text={isLoading ? 'Подождите...' : 'Продолжить'}
-              className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white"
-              type="submit"
-              disabled={isLoading}
-            />
-          </div>
-        </form>
+                Даю согласие на обработку моих{' '}
+                <a
+                  href="https://zoopolis.org/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange/60 hover:underline"
+                >
+                  персональных данных.
+                </a>
+                <span
+                  className="ml-1 text-sm text-red-500"
+                  title="Обязательное поле"
+                  aria-label="обязательное поле"
+                >
+                  *
+                </span>
+              </label>
+            </div>
+            <div className="my-2 flex w-full items-center justify-center">
+              <Button
+                text={isLoading ? 'Подождите...' : 'Продолжить'}
+                className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white"
+                type="submit"
+                disabled={isLoading}
+              />
+            </div>
+          </form>
 
-        <div className="flex items-center gap-4">
-          <div className="flex-1 border-t border-gray-300" />
-          <p className="shrink-0 px-2 text-gray-500">Или</p>
-          <div className="flex-1 border-t border-gray-300" />
+          <div className="flex items-center gap-4">
+            <div className="flex-1 border-t border-gray-300" />
+            <p className="shrink-0 px-2 text-gray-500">Или</p>
+            <div className="flex-1 border-t border-gray-300" />
+          </div>
+          <p className="text-center">
+            Уже есть аккаунт?{' '}
+            <span className="text-orange/60 hover:underline">
+              <Link href="/login">Войти</Link>
+            </span>
+          </p>
         </div>
-        <p className="text-center">
-          Уже есть аккаунт?{' '}
-          <span className="text-orange/60 hover:underline">
-            <Link href="/login">Войти</Link>
-          </span>
-        </p>
       </div>
-    </div>
+    </FormProvider>
   )
 }
 

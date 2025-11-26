@@ -19,7 +19,7 @@ interface ValidateCodeProps {
 }
 
 const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
-  const { values, handleChange, handleSubmit } = useForm(
+  const { values, handleChange, handleSubmit, FormProvider } = useForm(
     { code: '' },
     validationRules,
     async values => {
@@ -54,32 +54,34 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
   )
 
   return (
-    <div className="space-y-3 py-3">
-      <div className="overflow-hidden rounded-2xl pl-1">
-        <div className="space-y-4">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-1">
-              <TextInput
-                name="code"
-                value={values.code}
-                handleChange={handleChange}
-                label="Код с кулона"
-                placeholder="Введите код с кулона"
-                style="register"
-              />
-            </div>
+    <FormProvider>
+      <div className="space-y-3 py-3">
+        <div className="overflow-hidden rounded-2xl pl-1">
+          <div className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-1">
+                <TextInput
+                  name="code"
+                  value={values.code}
+                  handleChange={handleChange}
+                  label="Код с кулона"
+                  placeholder="Введите код с кулона"
+                  style="register"
+                />
+              </div>
 
-            <div className="flex items-center justify-center">
-              <Button
-                text="Продолжить создание питомца"
-                className="bg-orange mt-4 flex w-full items-center justify-center text-white"
-                type="submit"
-              />
-            </div>
-          </form>
+              <div className="flex items-center justify-center">
+                <Button
+                  text="Продолжить создание питомца"
+                  className="bg-orange mt-4 flex w-full items-center justify-center text-white"
+                  type="submit"
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </FormProvider>
   )
 }
 

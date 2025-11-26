@@ -20,7 +20,7 @@ const validationRules = {
 const ContactForm = () => {
   const { user, setUser } = useUserStore()
 
-  const { values, handleChange, handleSubmit } = useForm(
+  const { values, handleChange, handleSubmit, FormProvider } = useForm(
     {
       firstName: user?.name || '',
       lastName: user?.surname || '',
@@ -62,79 +62,81 @@ const ContactForm = () => {
   )
 
   return (
-    <div className="space-y-3 py-3">
-      <div className="overflow-hidden rounded-2xl pl-1">
-        <div className="space-y-4">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
-              <TextInput
-                name="firstName"
-                value={values.firstName}
-                handleChange={handleChange}
-                label="Имя"
-                placeholder="Ваше имя"
-                style="register"
-              />
-              <TextInput
-                name="lastName"
-                value={values.lastName}
-                handleChange={handleChange}
-                label="Фамилия"
-                placeholder="Ваша фамилия"
-                style="register"
-              />
-              <TextInput
-                name="telegram_id"
-                value={values.telegram_id}
-                handleChange={handleChange}
-                label="ID в Telegram"
-                placeholder="Ваш ID в Telegram"
-                style="register"
-              />
-              <TextInput
-                name="email"
-                value={values.email}
-                handleChange={handleChange}
-                label="Email"
-                placeholder="Ваш email"
-                style="register"
-              />
+    <FormProvider>
+      <div className="space-y-3 py-3">
+        <div className="overflow-hidden rounded-2xl pl-1">
+          <div className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
+                <TextInput
+                  name="firstName"
+                  value={values.firstName}
+                  handleChange={handleChange}
+                  label="Имя"
+                  placeholder="Ваше имя"
+                  style="register"
+                />
+                <TextInput
+                  name="lastName"
+                  value={values.lastName}
+                  handleChange={handleChange}
+                  label="Фамилия"
+                  placeholder="Ваша фамилия"
+                  style="register"
+                />
+                <TextInput
+                  name="telegram_id"
+                  value={values.telegram_id}
+                  handleChange={handleChange}
+                  label="ID в Telegram"
+                  placeholder="Ваш ID в Telegram"
+                  style="register"
+                />
+                <TextInput
+                  name="email"
+                  value={values.email}
+                  handleChange={handleChange}
+                  label="Email"
+                  placeholder="Ваш email"
+                  style="register"
+                />
 
-              <PhoneInput
-                value={values.phone_number}
-                handleChange={handleChange}
-                operatorsInfo={false}
-              />
-            </div>
-            <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
-              <LocationSelect
-                name="city"
-                value={values.city}
-                handleChange={handleChange}
-                label="Город"
-                placeholder="Ваш город проживания"
-              />
+                <PhoneInput
+                  value={values.phone_number}
+                  handleChange={handleChange}
+                  operatorsInfo={false}
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
+                <LocationSelect
+                  name="city"
+                  value={values.city}
+                  handleChange={handleChange}
+                  label="Город"
+                  placeholder="Ваш город проживания"
+                />
 
-              <TextInput
-                name="address"
-                value={values.address}
-                handleChange={handleChange}
-                label="Адрес"
-                placeholder="Ваш адрес проживания"
-                style="register"
-              />
-            </div>
-            <div className="flex items-center justify-center">
-              <Button
-                text="Сохранить"
-                className="bg-orange mt-4 flex w-full items-center justify-center text-white"
-                type="submit"
-              />
-            </div>
-          </form>
+                <TextInput
+                  name="address"
+                  value={values.address}
+                  handleChange={handleChange}
+                  label="Адрес"
+                  placeholder="Ваш адрес проживания"
+                  style="register"
+                />
+              </div>
+              <div className="flex items-center justify-center">
+                <Button
+                  text="Сохранить"
+                  className="bg-orange mt-4 flex w-full items-center justify-center text-white"
+                  type="submit"
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </FormProvider>
   )
 }
 

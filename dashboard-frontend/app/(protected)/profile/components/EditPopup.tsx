@@ -41,7 +41,7 @@ const validationRules = {
   type: { required: true },
   gender: { required: true },
   breed: { required: true },
-  color: { required: false },
+  color: { required: true },
   comment: { required: false },
   allergies: { required: false },
 }
@@ -56,7 +56,7 @@ const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess })
     queryOptions: { enabled: !!id && isOpen },
   })
 
-  const { values, handleChange, handleSubmit, setValues } = useForm(
+  const { values, handleChange, handleSubmit, setValues, FormProvider } = useForm(
     {
       imageURL: '',
       name: '',
@@ -181,110 +181,112 @@ const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess })
   }, [previewUrl])
 
   return (
-    <Dialog
-      isOpen={isOpen && !!id}
-      onClose={onClose}
-      title={`Изменить данные питомца - ${data?.name || ''}`}
-      description={
-        <div>
-          {!id ? null : isLoading ? (
-            <Loader />
-          ) : error ? (
-            <div>Ошибка: {error.message}</div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
-                <div
-                  className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
-                  onClick={openFileDialog}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={e => e.key === 'Enter' && openFileDialog()}
-                >
-                  <input
-                    type="file"
-                    id="image"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept="image/*"
-                  />
-                  <Image
-                    src={values.imageURL || previewUrl || '/images/noPet.svg'}
-                    alt="Pet"
-                    height={160}
-                    width={160}
-                    priority
-                    className="aspect-square w-full rounded-2xl object-cover md:w-[160px]"
-                  />
+    <FormProvider>
+      <Dialog
+        isOpen={isOpen && !!id}
+        onClose={onClose}
+        title={`Изменить данные питомца - ${data?.name || ''}`}
+        description={
+          <div>
+            {!id ? null : isLoading ? (
+              <Loader />
+            ) : error ? (
+              <div>Ошибка: {error.message}</div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+                  <div
+                    className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
+                    onClick={openFileDialog}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && openFileDialog()}
+                  >
+                    <input
+                      type="file"
+                      id="image"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden"
+                      accept="image/*"
+                    />
+                    <Image
+                      src={values.imageURL || previewUrl || '/images/noPet.svg'}
+                      alt="Pet"
+                      height={160}
+                      width={160}
+                      priority
+                      className="aspect-square w-full rounded-2xl object-cover md:w-40"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-4">
+                    <TextInput
+                      name="name"
+                      value={values.name}
+                      handleChange={handleChange}
+                      label="Кличка"
+                      placeholder="Имя вашего питомца"
+                      style="register"
+                    />
+                    <PetTypeSelector
+                      name="type"
+                      value={values.type}
+                      handleChange={handleChange}
+                      label="Вид"
+                      placeholder="Какой у вас питомец?"
+                    />
+                  </div>
                 </div>
-                <div className="flex w-full flex-col gap-4">
-                  <TextInput
-                    name="name"
-                    value={values.name}
-                    handleChange={handleChange}
-                    label="Кличка"
-                    placeholder="Имя вашего питомца"
-                    style="register"
-                  />
-                  <PetTypeSelector
-                    name="type"
-                    value={values.type}
-                    handleChange={handleChange}
-                    label="Вид"
-                    placeholder="Какой у вас питомец?"
-                  />
-                </div>
-              </div>
 
-              <GenderSelector
-                name="gender"
-                value={values.gender}
-                handleChange={handleChange}
-                label="Пол"
-                placeholder="Выберите пол питомца"
-              />
-              <BreedSelector
-                name="breed"
-                value={values.breed}
-                petTypeId={values.type?.id}
-                handleChange={handleChange}
-                label="Порода"
-                placeholder="Выберите породу питомца"
-              />
-              <ColorSelector
-                name="color"
-                value={values.color}
-                handleChange={handleChange}
-                label="Цвет"
-                placeholder="Выберите цвет питомца"
-              />
-              <TextAreaInput
-                name="comment"
-                value={values.comment}
-                handleChange={handleChange}
-                label="Комментарий"
-                placeholder="Опишите вашего питомца"
-              />
-              <TextAreaInput
-                name="allergies"
-                value={values.allergies}
-                handleChange={handleChange}
-                label="Аллергии"
-                placeholder="Какие у вашего питомца аллергии?"
-              />
-            </div>
-          )}
-        </div>
-      }
-      showSubmit={true}
-      showCancel={false}
-      submitText="Сохранить"
-      onSubmit={() => {
-        const e = { preventDefault: () => {} } as FormEvent
-        handleSubmit(e)
-      }}
-    />
+                <GenderSelector
+                  name="gender"
+                  value={values.gender}
+                  handleChange={handleChange}
+                  label="Пол"
+                  placeholder="Выберите пол питомца"
+                />
+                <BreedSelector
+                  name="breed"
+                  value={values.breed}
+                  petTypeId={values.type?.id}
+                  handleChange={handleChange}
+                  label="Порода"
+                  placeholder="Выберите породу питомца"
+                />
+                <ColorSelector
+                  name="color"
+                  value={values.color}
+                  handleChange={handleChange}
+                  label="Цвет"
+                  placeholder="Выберите цвет питомца"
+                />
+                <TextAreaInput
+                  name="comment"
+                  value={values.comment}
+                  handleChange={handleChange}
+                  label="Комментарий"
+                  placeholder="Опишите вашего питомца"
+                />
+                <TextAreaInput
+                  name="allergies"
+                  value={values.allergies}
+                  handleChange={handleChange}
+                  label="Аллергии"
+                  placeholder="Какие у вашего питомца аллергии?"
+                />
+              </div>
+            )}
+          </div>
+        }
+        showSubmit={true}
+        showCancel={false}
+        submitText="Сохранить"
+        onSubmit={() => {
+          const e = { preventDefault: () => {} } as FormEvent
+          handleSubmit(e)
+        }}
+      />
+    </FormProvider>
   )
 }
 

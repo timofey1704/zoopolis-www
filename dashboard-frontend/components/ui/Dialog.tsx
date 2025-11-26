@@ -72,7 +72,7 @@ export const Dialog = ({
             <Button
               text={submitText}
               onClick={onSubmit || onClose}
-              className="from-orange flex-1 rounded-xl to-orange-600 py-3 text-white hover:opacity-90"
+              className="bg-orange flex-1 rounded-xl py-3 text-white hover:opacity-90"
             />
           )}
         </div>

@@ -30,6 +30,7 @@ interface BreedSelectorProps {
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
+  isRequired?: boolean
 }
 
 const BreedSelector: React.FC<BreedSelectorProps> = ({
@@ -40,6 +41,7 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
   label,
   tooltip,
   placeholder,
+  isRequired,
 }) => {
   const mapBreedToOption = (breed: BreedResponse): Option => ({
     id: breed.id,
@@ -90,6 +92,7 @@ const BreedSelector: React.FC<BreedSelectorProps> = ({
       endpoint={petTypeId ? `/dictionaries/pet-breeds/` : undefined}
       mapDataToOptions={mapBreedToOption}
       searchParam="search"
+      isRequired={isRequired}
       config={{
         params: {
           pet_type: petTypeId || undefined,

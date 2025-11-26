@@ -31,6 +31,7 @@ interface PetTypeSelectorProps {
   label?: string
   tooltip?: string | React.ReactNode
   placeholder?: string
+  isRequired?: boolean
 }
 
 const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
@@ -40,6 +41,7 @@ const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
   label,
   tooltip,
   placeholder,
+  isRequired,
 }) => {
   const mapPetTypeToOption = (petType: PetTypeResponse): PetTypeOption => ({
     id: petType.id,
@@ -94,6 +96,7 @@ const PetTypeSelector: React.FC<PetTypeSelectorProps> = ({
       placeholder={placeholder}
       endpoint="/dictionaries/pet-types/"
       mapDataToOptions={mapPetTypeToOption}
+      isRequired={isRequired}
     />
   )
 }

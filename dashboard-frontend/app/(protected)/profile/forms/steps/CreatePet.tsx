@@ -17,7 +17,7 @@ const validationRules = {
   birthday: { required: true },
   gender: { required: true },
   breed: { required: true },
-  color: { required: false },
+  color: { required: true },
   comment: { required: false },
   allergies: { required: false },
 }
@@ -42,7 +42,7 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  const { values, handleChange, handleSubmit } = useForm(
+  const { values, handleChange, handleSubmit, FormProvider } = useForm(
     {
       imageURL: '',
       name: '',
@@ -166,137 +166,139 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
   }, [previewUrl])
 
   return (
-    <div className="space-y-3 py-3">
-      <div className="overflow-hidden rounded-2xl pl-1">
-        <div className="space-y-4">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="flex items-center justify-around gap-4 py-4">
-              <div className="flex items-center justify-center md:w-40">
-                <div
-                  className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
-                  onClick={openFileDialog}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={e => e.key === 'Enter' && openFileDialog()}
-                >
-                  <input
-                    type="file"
-                    id="image"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept="image/*"
-                  />
+    <FormProvider>
+      <div className="space-y-3 py-3">
+        <div className="overflow-hidden rounded-2xl pl-1">
+          <div className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="flex items-center justify-around gap-4 py-4">
+                <div className="flex items-center justify-center md:w-40">
+                  <div
+                    className="group relative w-full cursor-pointer transition-opacity hover:opacity-80"
+                    onClick={openFileDialog}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && openFileDialog()}
+                  >
+                    <input
+                      type="file"
+                      id="image"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden"
+                      accept="image/*"
+                    />
+                    <Image
+                      src={previewUrl || '/images/noPet.svg'}
+                      alt="Pet"
+                      height={160}
+                      width={160}
+                      priority
+                      className="aspect-square w-full rounded-2xl object-cover md:w-40"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-2">
                   <Image
-                    src={previewUrl || '/images/noPet.svg'}
-                    alt="Pet"
-                    height={160}
+                    src={values.QRImage || '/images/noQR.svg'}
+                    alt="qrcode"
                     width={160}
-                    priority
-                    className="aspect-square w-full rounded-2xl object-cover md:w-40"
+                    height={160}
+                    className="rounded-2xl object-contain"
                   />
+                  {values.QRCode && (
+                    <div className="flex items-center justify-center rounded-lg bg-white px-12 py-2">
+                      <span className="font-mono text-lg font-semibold text-gray-700">
+                        {values.QRCode}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <Image
-                  src={values.QRImage || '/images/noQR.svg'}
-                  alt="qrcode"
-                  width={160}
-                  height={160}
-                  className="rounded-2xl object-contain"
+              <div className="h-0,5 w-full bg-white" />
+              <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
+                <TextInput
+                  name="name"
+                  value={values.name}
+                  handleChange={handleChange}
+                  label="Кличка"
+                  placeholder="Как зовут вашего питомца?"
+                  style="register"
                 />
-                {values.QRCode && (
-                  <div className="flex items-center justify-center rounded-lg bg-white px-12 py-2">
-                    <span className="font-mono text-lg font-semibold text-gray-700">
-                      {values.QRCode}
-                    </span>
-                  </div>
-                )}
+                <PetTypeSelector
+                  name="type"
+                  value={values.type}
+                  handleChange={handleChange}
+                  label="Вид"
+                  placeholder="Какой у вас питомец?"
+                />
+                <TextInput
+                  name="birthday"
+                  type="date"
+                  max={new Date().toISOString().split('T')[0]}
+                  min={
+                    new Date(new Date().setFullYear(new Date().getFullYear() - 15))
+                      .toISOString()
+                      .split('T')[0]
+                  }
+                  value={values.birthday}
+                  handleChange={handleChange}
+                  label="Дата рождения"
+                  style="register"
+                />
+                <GenderSelector
+                  name="gender"
+                  value={values.gender}
+                  handleChange={handleChange}
+                  label="Пол"
+                  placeholder="Выберите пол питомца"
+                />
+                <BreedSelector
+                  name="breed"
+                  value={values.breed}
+                  petTypeId={values.type?.id}
+                  handleChange={handleChange}
+                  label="Порода"
+                  placeholder="Выберите породу питомца"
+                />
+                <ColorSelector
+                  name="color"
+                  value={values.color}
+                  handleChange={handleChange}
+                  label="Цвет"
+                  placeholder="Выберите цвет питомца"
+                />
               </div>
-            </div>
-            <div className="h-0,5 w-full bg-white" />
-            <div className="grid grid-cols-1 gap-6 px-0.5 pb-4 md:grid-cols-3">
-              <TextInput
-                name="name"
-                value={values.name}
-                handleChange={handleChange}
-                label="Кличка"
-                placeholder="Как зовут вашего питомца?"
-                style="register"
-              />
-              <PetTypeSelector
-                name="type"
-                value={values.type}
-                handleChange={handleChange}
-                label="Вид"
-                placeholder="Какой у вас питомец?"
-              />
-              <TextInput
-                name="birthday"
-                type="date"
-                max={new Date().toISOString().split('T')[0]}
-                min={
-                  new Date(new Date().setFullYear(new Date().getFullYear() - 15))
-                    .toISOString()
-                    .split('T')[0]
-                }
-                value={values.birthday}
-                handleChange={handleChange}
-                label="Дата рождения"
-                style="register"
-              />
-              <GenderSelector
-                name="gender"
-                value={values.gender}
-                handleChange={handleChange}
-                label="Пол"
-                placeholder="Выберите пол питомца"
-              />
-              <BreedSelector
-                name="breed"
-                value={values.breed}
-                petTypeId={values.type?.id}
-                handleChange={handleChange}
-                label="Порода"
-                placeholder="Выберите породу питомца"
-              />
-              <ColorSelector
-                name="color"
-                value={values.color}
-                handleChange={handleChange}
-                label="Цвет"
-                placeholder="Выберите цвет питомца"
-              />
-            </div>
 
-            <div className="grid grid-cols-1 gap-6 px-1 pb-4 md:grid-cols-2">
-              <TextAreaInput
-                name="comment"
-                value={values.comment}
-                handleChange={handleChange}
-                label="Комментарий"
-                placeholder="Опишите вашего питомца"
-              />
-              <TextAreaInput
-                name="allergies"
-                value={values.allergies}
-                handleChange={handleChange}
-                label="Аллергии"
-                placeholder="Какие у вашего питомца аллергии?"
-              />
-            </div>
+              <div className="grid grid-cols-1 gap-6 px-1 pb-4 md:grid-cols-2">
+                <TextAreaInput
+                  name="comment"
+                  value={values.comment}
+                  handleChange={handleChange}
+                  label="Комментарий"
+                  placeholder="Опишите вашего питомца"
+                />
+                <TextAreaInput
+                  name="allergies"
+                  value={values.allergies}
+                  handleChange={handleChange}
+                  label="Аллергии"
+                  placeholder="Какие у вашего питомца аллергии?"
+                />
+              </div>
 
-            <div className="flex items-center justify-center">
-              <Button
-                text="Сохранить"
-                className="bg-orange mt-4 flex w-full items-center justify-center text-white"
-                type="submit"
-              />
-            </div>
-          </form>
+              <div className="flex items-center justify-center">
+                <Button
+                  text="Сохранить"
+                  className="bg-orange mt-4 flex w-full items-center justify-center text-white"
+                  type="submit"
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </FormProvider>
   )
 }
 
