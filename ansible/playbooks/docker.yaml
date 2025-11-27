@@ -5,11 +5,13 @@
       ansible.builtin.file:
         path: "/etc/apt/keyrings"
         state: directory
+        mode: "0755"
 
     - name: Add apt key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/debian/gpg
         dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
 
     - name: Add docker repo
       ansible.builtin.apt_repository:
@@ -33,6 +35,7 @@
           {
             "log-driver": "journald"
           }
+        mode: "0644"
       notify:
         - Restart docker service
 
@@ -46,11 +49,19 @@
       ansible.builtin.file:
         path: "/etc/docker/compose"
         state: directory
+        mode: "0755"
 
     - name: Docker compose systemd service
       ansible.builtin.template:
         src: docker/compose.service
         dest: "/etc/systemd/system/compose@.service"
+        mode: "0644"
+
+    - name: Docker project network
+      community.docker.docker_network:
+        name: "{{ app }}_network"
+        ipam_config:
+          - subnet: 172.56.0.0/24
 
   handlers:
     - name: Restart docker service

@@ -80,7 +80,7 @@ services:
       NEXTAUTH_URL: https://{{ domain_dashboard }}
       NEXTAUTH_SECRET: sdjfhshd126kbnaoTj12
 
-      #bepaid
+      # bepaid
       CHECKOUT_URL: https://checkout.bepaid.by/ctp/api/checkouts
       PAYMENTS_TEST_MODE: true
       BEPAID_ID: 23643
@@ -95,10 +95,8 @@ services:
 
 networks:
   zoopolis:
-    name: zoopolis_network
-    ipam:
-      config:
-        - subnet: 172.56.0.0/24
+    external:
+      name: zoopolis_network
 
 volumes:
   media:
