@@ -7,6 +7,8 @@ import React, {
   createContext,
   useContext,
   ReactNode,
+  useMemo,
+  useCallback,
 } from 'react'
 import toast from 'react-hot-toast'
 import { ValidationRules, ValidationErrors, CityData } from '../types'
@@ -94,15 +96,22 @@ export function useForm<T extends Record<string, FormValue>>(
 
   const fieldNames: { [key: string]: string } = {
     name: 'Имя',
-    surmame: 'Фамилия',
+    surname: 'Фамилия',
     email: 'Email',
     phone_number: 'Номер телефона',
     password: 'Пароль',
     privacy_accepted: 'Политика конфиденциальности',
+    pet_name: 'Имя питомца',
+    pet_type: 'Тип питомца',
+    breed: 'Порода',
+    gender: 'Пол',
+    color: 'Цвет',
+    birth_date: 'Дата рождения',
+    city: 'Город',
   }
 
   const validate = () => {
-    if (!validationRules) return true
+    if (!validationRules) return { isValid: true, firstErrorField: null }
 
     const newErrors: ValidationErrors = {}
 
@@ -157,13 +166,33 @@ export function useForm<T extends Record<string, FormValue>>(
     })
 
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    const firstErrorField = Object.keys(newErrors)[0] || null
+    return { isValid: Object.keys(newErrors).length === 0, firstErrorField }
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (validate() && onSubmit) {
+    const { isValid, firstErrorField } = validate()
+
+    if (isValid && onSubmit) {
       onSubmit(values)
+    } else if (firstErrorField) {
+      // скроллим к первому полю с ошибкой
+      const element =
+        document.getElementById(firstErrorField) ||
+        document.querySelector(`[name="${firstErrorField}"]`) ||
+        document.querySelector(`input[id="${firstErrorField}"]`) ||
+        document.querySelector(`select[name="${firstErrorField}"]`)
+
+      if (element && element instanceof HTMLElement) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        // фокусируемся на поле -- ZOO-200
+        setTimeout(() => {
+          if ('focus' in element && typeof element.focus === 'function') {
+            element.focus()
+          }
+        }, 300)
+      }
     }
   }
 
@@ -171,18 +200,25 @@ export function useForm<T extends Record<string, FormValue>>(
     setIsVisible(!isVisible)
   }
 
-  const isFieldRequired = (fieldName: keyof T): boolean => {
-    if (!validationRules) return false
-    return validationRules[fieldName]?.required ?? false
-  }
+  const isFieldRequired = useCallback(
+    (fieldName: keyof T): boolean => {
+      if (!validationRules) return false
+      return validationRules[fieldName]?.required ?? false
+    },
+    [validationRules]
+  )
 
-  const FormProvider = ({ children }: { children: ReactNode }) => {
-    return React.createElement(
-      FormContext.Provider,
-      { value: { isFieldRequired: isFieldRequired as (fieldName: string) => boolean } },
-      children
-    )
-  }
+  const contextValue = useMemo(
+    () => ({ isFieldRequired: isFieldRequired as (fieldName: string) => boolean }),
+    [isFieldRequired]
+  )
+
+  const FormProvider = useCallback(
+    ({ children }: { children: ReactNode }) => {
+      return React.createElement(FormContext.Provider, { value: contextValue }, children)
+    },
+    [contextValue]
+  )
 
   return {
     values,
