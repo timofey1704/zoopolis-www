@@ -1,12 +1,7 @@
-FROM node:23-alpine
+FROM node:24-alpine
 WORKDIR /app
-COPY --chmod=755 <<EOT ./entrypoint.sh
-#!/usr/bin/env sh
-set -e
-npm run build &&
-npm start
-EOT
 COPY . ./
-RUN npm install
+ARG NEXT_PUBLIC_API_URL=https://stage.zoopolis.org/api/v1
+RUN npm install && npm run build
 EXPOSE 3000
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["npm", "start"]
