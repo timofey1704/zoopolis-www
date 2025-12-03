@@ -26,7 +26,7 @@ services:
       DB_NAME: "{{ db_name }}"
       DB_USER: "{{ db_user }}"
       DB_PASSWORD: "{{ db_password }}"
-      DB_HOST: 172.56.0.1
+      DB_HOST: postgres
       DB_PORT: 5432
 
       # redis
@@ -91,7 +91,12 @@ services:
       PAYMENTS_TEST_MODE: true
       BEPAID_ID: 23643
       BEPAID_SECRET_KEY: e055773ef7f2c1194fd35f372665711081e48fe68df1993fe3b184182ce870bb
-      BEPAID_PRIVATE_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdu8Uij5KhA0Sn71cUkoStXkBQjsGvh7dCt4N0QcCJqVW4NrM8qnEVUAU8edhTVl17B9kHVKPiqOKSkyUMrbBgaGEggyR+Pe/3ohqcZGyd+BPDsLX2AQjye7L6lv15eqDTDNM7KV81rfN1vIxWuHJt7Zjagn2oOKMQbA9U0QJHn5HgLhORA+eKM49VnIyvLL4edVsNkrYqzHlpFalDCKuBc+CHZrXvJbCBO/idirNOHSFVYgAVfQtLgwwCTV0DBWdY3P/vVPiuICaQ4fxClyJzguy5TnUm1mZqsgBGOCrTEvJzRKHGO+Z/DonDO/qHeeuQ4f1OnWInV7kXDStJ1NUwIDAQAB
+      BEPAID_PRIVATE_KEY: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdu8Uij5Kh\
+        A0Sn71cUkoStXkBQjsGvh7dCt4N0QcCJqVW4NrM8qnEVUAU8edhTVl17B9kHVKPiqOKSkyUMr\
+        bBgaGEggyR+Pe/3ohqcZGyd+BPDsLX2AQjye7L6lv15eqDTDNM7KV81rfN1vIxWuHJt7Zjagn\
+        2oOKMQbA9U0QJHn5HgLhORA+eKM49VnIyvLL4edVsNkrYqzHlpFalDCKuBc+CHZrXvJbCBO/i\
+        dirNOHSFVYgAVfQtLgwwCTV0DBWdY3P/vVPiuICaQ4fxClyJzguy5TnUm1mZqsgBGOCrTEvJz\
+        RKHGO+Z/DonDO/qHeeuQ4f1OnWInV7kXDStJ1NUwIDAQAB"
     networks:
       zoopolis:
         ipv4_address: 172.56.0.4
@@ -131,8 +136,8 @@ services:
 
 networks:
   zoopolis:
-    external:
-      name: zoopolis_network
+    external: true
+    name: zoopolis_network
 
 volumes:
   media:

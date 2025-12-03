@@ -7,23 +7,29 @@
         state: directory
         mode: "0755"
 
+    - name: App data dir
+      ansible.builtin.file:
+        path: "/var/{{ app }}"
+        state: directory
+        mode: "0755"
+
     - name: Postgres dir
       ansible.builtin.file:
         path: "/var/{{ app }}/postgres"
         state: directory
-        recurse: true
+        mode: "0755"
 
     - name: Static dir
       ansible.builtin.file:
         path: "/var/{{ app }}/static"
         state: directory
-        recurse: true
+        mode: "0755"
 
     - name: Media dir
       ansible.builtin.file:
         path: "/var/{{ app }}/media"
         state: directory
-        recurse: true
+        mode: "0755"
 
     - name: Log into gitlab registry
       become: true
@@ -47,7 +53,7 @@
       community.docker.docker_compose_v2_pull:
         project_src: "/etc/docker/compose/{{ app }}"
       notify:
-        - Restart compose service
+        - Restart app
         - Prune docker
 
     - name: Systemd service
@@ -85,6 +91,15 @@
       ansible.builtin.service:
         name: "compose@{{ app }}"
         state: restarted
+
+    - name: Restart app
+      community.docker.docker_compose_v2:
+        project_src: "/etc/docker/compose/{{ app }}"
+        state: restarted
+        services:
+          - backend
+          - frontend
+          - dashboard-frontend
 
     - name: Prune docker
       community.docker.docker_prune:
