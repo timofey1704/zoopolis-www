@@ -10,19 +10,19 @@ services:
       # django settings
       ALLOWED_HOSTS: "{{domain}},backend"
       SECRET_KEY: "django-insecure-k$t@77c(qs_@+8#&#6ly(t5w=-!rc%3qluhfsl5rydq4pce@+5"
-      DEBUG_MODE: True
+      DEBUG_MODE: true
       BASE_URL: "https://{{ domain }}"
       MEDIA_ROOT: /media
       STATIC_ROOT: /static
-      CORS_ALLOW_ALL_ORIGINS: False
+      CORS_ALLOW_ALL_ORIGINS: false
       CORS_ALLOWED_ORIGINS: "http://{{ domain }},https://{{ domain }},https://{{ domain_dashboard }}"
       CSRF_TRUSTED_ORIGINS: "http://{{ domain }},https://{{ domain }},https://{{ domain_dashboard }}"
 
-      #is lost logic
+      # is lost logic
       IS_LOST_URL: https://{{ domain }}/is_lost/
       REDIRECT_LOGIN_URL: https://{{ domain_dashboard }}/login
 
-      #database
+      # database
       DB_NAME: "{{ db_name }}"
       DB_USER: "{{ db_user }}"
       DB_PASSWORD: "{{ db_password }}"
@@ -30,9 +30,9 @@ services:
       DB_PORT: 5432
 
       # redis
-      REDIS_HOST: 172.56.0.1
+      REDIS_HOST: redis
 
-      #email server
+      # email server
       CORP_EMAIL: admin@tripwb.com
       SUPPORT_EMAIL: admin@tripwb.com
       DOMAIN: tripwb.com
@@ -56,6 +56,12 @@ services:
     networks:
       zoopolis:
         ipv4_address: 172.56.0.2
+
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
 
   frontend:
     image: registry.gitlab.com/wedeving/zoopolis-www/frontend:prod
@@ -93,6 +99,36 @@ services:
       backend:
         condition: service_healthy
 
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - "redis:/data"
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.5
+
+  postgres:
+    image: postgres:18-alpine
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER={{ db_user }}
+      - POSTGRES_PASSWORD={{ db_password }}
+      - POSTGRES_DB={{ db_name }}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    networks:
+      zoopolis:
+        ipv4_address: 172.56.0.6
+
 networks:
   zoopolis:
     external:
@@ -111,3 +147,10 @@ volumes:
       o: bind
       type: none
       device: "/var/{{ app }}/static"
+  redis:
+  postgres:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/var/{{ app }}/postgres"
