@@ -177,12 +177,41 @@ class MapPointsSerializer(serializers.ModelSerializer):
 class ServicesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи услуг"""
     imageURL = serializers.SerializerMethodField()
+    is_available = serializers.SerializerMethodField()
+    is_launched = serializers.SerializerMethodField()
+    
     class Meta:
         model = Services
-        fields = ('id', 'title', 'description', 'imageURL', 'actual_before', 'is_available')
+        fields = ('id', 'title', 'description', 'imageURL', 'actual_before', 'available_for', 'is_available', 'is_launched')
+    
     def get_imageURL(self, obj):
         """Возвращает URL изображения сервиса"""
         return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
+    
+    def get_is_launched(self, obj):
+        """Возвращает флаг запуска услуги из базы (без учета тарифа)"""
+        return obj.is_available
+    
+    def get_is_available(self, obj):
+        """
+        Вычисляет доступность услуги для конкретного пользователя.
+        Услуга доступна если:
+        1. Она запущена (is_available=True в базе)
+        2. И либо нет ограничений по тарифу, либо тариф пользователя в списке available_for
+        """
+        # проверяем базовую доступность (запущена ли услуга вообще)
+        if not obj.is_available:
+            return False
+        
+        # получаем тариф пользователя из контекста
+        user_plan = self.context.get('user_plan')
+        
+        # если нет ограничений по тарифу - услуга доступна всем
+        if not obj.available_for:
+            return True
+        
+        # если есть ограничения - проверяем, есть ли тариф пользователя в списке
+        return user_plan in obj.available_for if user_plan else False
         
 class BonusesSerializer(serializers.ModelSerializer):
     """Сериализатор для выдачи бонусов"""

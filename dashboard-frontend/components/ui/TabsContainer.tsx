@@ -32,7 +32,7 @@ export function TabsContainer<T extends string>({
   return (
     <div className="relative">
       <div className="flex flex-row items-center justify-between border-b border-white">
-        <div className="flex-grow overflow-x-auto overflow-y-hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="grow overflow-x-auto overflow-y-hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="relative flex min-w-min flex-row gap-4">
             {tabs.map(tab => (
               <button
@@ -55,7 +55,7 @@ export function TabsContainer<T extends string>({
               </button>
             ))}
             <div
-              className="absolute bottom-[-1px] h-[2px] bg-orange-500 transition-all duration-200"
+              className="absolute -bottom-px h-0.5 bg-orange-500 transition-all duration-200"
               style={{
                 left: `${indicatorStyle.left}px`,
                 width: `${indicatorStyle.width}px`,
@@ -64,7 +64,7 @@ export function TabsContainer<T extends string>({
             />
           </div>
         </div>
-        {rightContent && <div className="ml-4 flex-shrink-0">{rightContent}</div>}
+        {rightContent && <div className="ml-4 shrink-0">{rightContent}</div>}
       </div>
     </div>
   )

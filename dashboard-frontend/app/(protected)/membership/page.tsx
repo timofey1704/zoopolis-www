@@ -29,7 +29,7 @@ const MembershipPage = () => {
 
       {memberships.length === 0 ? (
         <div className="my-8 text-center text-gray-500">
-          Пока что тут ничего нет. Следите за обновлениями!
+          Раздел в стадии наполнения. Следите за обновлениями!
         </div>
       ) : (
         <PricingCard memberships={memberships} />

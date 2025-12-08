@@ -39,7 +39,7 @@ const RejectPopup = ({ isOpen, onClose, serviceName, requiredPlans }: RejectPopu
           </p>
           <div className="mt-3 flex w-full">
             <Link href="/membership" className="flex-1" onClick={onClose}>
-              <div className="from-orange flex w-full cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r to-orange-600 py-3 text-white hover:opacity-90">
+              <div className="from-orange flex w-full cursor-pointer items-center justify-center rounded-xl bg-linear-to-r to-orange-600 py-3 text-white hover:opacity-90">
                 Перейти к тарифам
               </div>
             </Link>

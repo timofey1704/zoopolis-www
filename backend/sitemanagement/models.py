@@ -94,6 +94,7 @@ class Pet(models.Model):
         return f'{self.type} {self.name} - Владелец: {self.owner.username}'
     
 class PetCoordinates(models.Model):
+    id = models.AutoField(primary_key=True)
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name='Питомец')
     latitude = models.FloatField(verbose_name='Широта')
     longitude = models.FloatField(verbose_name='Долгота')

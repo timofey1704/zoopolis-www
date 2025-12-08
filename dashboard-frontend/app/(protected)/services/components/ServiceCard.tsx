@@ -15,7 +15,11 @@ interface ServiceRequestResponse {
   required_plans?: string[]
 }
 
-const ServiceCard = ({ service }: { service: ServiceData }) => {
+interface ServiceCardProps {
+  service: ServiceData
+}
+
+const ServiceCard = ({ service }: ServiceCardProps) => {
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false)
   const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false)
   const [requiredPlans, setRequiredPlans] = useState<string[]>([])
@@ -47,14 +51,48 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
     },
   })
 
-  const handleServiceRequest = () => {
-    requestService(null)
+  //! ZOO-211 разный текст на кнопках в зависимости от доступности
+  // услуга НЕ запущена вообще
+  const isComingSoon = !service.is_launched
+
+  // услуга запущена, но заблокирована из-за тарифа
+  const isBlockedByPlan = service.is_launched && !service.is_available
+
+  const handleButtonClick = () => {
+    if (isComingSoon) {
+      // услуга не запущена - ничего не делаем
+      return
+    }
+
+    if (isBlockedByPlan) {
+      // если заблокировано из-за тарифа - открываем попап с предложением повысить тариф
+      setIsRejectPopupOpen(true)
+      setRequiredPlans(service.available_for || [])
+    } else if (service.is_available) {
+      // если доступна - делаем обычный запрос
+      requestService(null)
+    }
   }
+
+  // определяем текст кнопки
+  const getButtonText = () => {
+    if (isLoading) return 'Отправка...'
+    if (isComingSoon) return 'Скоро появится'
+    if (isBlockedByPlan) return 'Повысить тариф'
+    if (service.is_available) return 'Заказать'
+    return 'Скоро появится' // fallback
+  }
+
+  const buttonText = getButtonText()
+
+  // кнопка активна если услуга доступна ИЛИ заблокирована тарифом (но НЕ "скоро появится")
+  const isButtonActive = !isComingSoon && (service.is_available || isBlockedByPlan) && !isLoading
+  const isButtonDisabled = !isButtonActive
 
   return (
     <>
       <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-        <div className="flex flex-grow flex-col space-y-4">
+        <div className="flex grow flex-col space-y-4">
           {service.imageURL && (
             <Image src={service.imageURL} alt={service.title} width={56} height={56} />
           )}
@@ -65,14 +103,16 @@ const ServiceCard = ({ service }: { service: ServiceData }) => {
         </div>
 
         <Button
-          text={!service.is_available ? 'Скоро появится' : isLoading ? 'Отправка...' : 'Заказать'}
+          text={buttonText}
           className={`mt-6 flex w-full items-center justify-center rounded-[20px] py-4 font-semibold shadow-lg transition-all duration-200 ${
-            service.is_available
-              ? 'from-orange cursor-pointer bg-gradient-to-r to-orange-600 text-white hover:opacity-90'
+            isButtonActive
+              ? isBlockedByPlan
+                ? 'cursor-pointer bg-linear-to-r from-blue-500 to-blue-600 text-white hover:opacity-90'
+                : 'from-orange cursor-pointer bg-linear-to-r to-orange-600 text-white hover:opacity-90'
               : 'pointer-events-none bg-gray-200 text-gray-500'
           } disabled:opacity-50`}
-          onClick={handleServiceRequest}
-          disabled={isLoading || !service.is_available}
+          onClick={handleButtonClick}
+          disabled={isButtonDisabled}
         />
       </div>
 

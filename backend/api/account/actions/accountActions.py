@@ -127,7 +127,9 @@ class ServicesView(ViewSet):
             # услуги недоступные для тарифа пользователя
             services = services.exclude(available_for__contains=[user_plan])
         
-        return Response(ServicesSerializer(services, many=True).data, status=status.HTTP_200_OK)
+        # передаем user_plan в контекст сериализатора для вычисления доступности
+        serializer = ServicesSerializer(services, many=True, context={'user_plan': user_plan})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     @handle_exceptions

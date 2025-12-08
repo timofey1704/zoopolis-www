@@ -14,14 +14,15 @@ export interface ServiceData {
   description: string
   imageURL?: string
   actual_before: Date
-  available_for: string[]
-  is_available: boolean
+  available_for?: string[] // может быть undefined для доступных услуг
+  is_available: boolean // доступна ли для ЭТОГО пользователя (с учетом тарифа)
+  is_launched: boolean //! запущена ли услуга вообще (из базы, без учета тарифа)
 }
 
 const TABS: TabConfig<TabType>[] = [
   { id: 'all', label: 'Все услуги' },
-  { id: 'available', label: 'Доступные услуги' },
-  { id: 'blocked', label: 'Заблокированные' },
+  { id: 'available', label: 'Доступные услуги', mobileLabel: 'Доступные' },
+  { id: 'blocked', label: 'Дополнительные услуги', mobileLabel: 'Дополнительные' },
 ]
 
 const ServicesPage = () => {
