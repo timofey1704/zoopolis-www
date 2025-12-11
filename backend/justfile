@@ -2,7 +2,7 @@ image := "backend"
 
 import "../docker.just"
 
-docker-prod: docker-build-internal Dockerfile prod
-docker-stage: docker-build-internal Dockerfile stage
+build-prod: docker-build-internal Dockerfile prod
+build-stage: docker-build-internal Dockerfile stage
 push-prod: docker-push-internal prod
 push-stage: docker-push-internal stage

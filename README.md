@@ -138,7 +138,9 @@
 
 Теперь проект будет доступен по адресу `http://localhost:3000`.
 
-### Инструкция по деплою.
+### Инструкция по деплою
+
+Инструкция по деплою на stage сервер. Деплоймент на прод происходит аналогично, необходимо заменить stage на prod в командах.
 
 1. **Заходим в нужные директории:**
 
@@ -151,7 +153,7 @@
 2. **Запускаем сборку контейнеров в каждом терминале:**
 
    ```sh
-   just docker-build
+   just build-stage
    ```
 
 3. **Добавляем ключ гитлаба (один раз на сессию терминала, нужно каждый раз делать заново):**
@@ -165,28 +167,30 @@
    ```sh
    env
    ```
+
    В консоли должны увидеть наш ключ и имя пользователя
 
 5. **Заливаем свежую сборку в GitLab (отдельно каждый контейнер):**
 
    ```sh
-   just docker-push
+   just push-stage
    ```
 
-6. **Собираем в продакшне:**
+6. **Собираем в stage:**
 
    ```sh
    cd ansible
-   ansible-playbook -i inventory/prod.yaml playbooks/zoopolis.yaml 
+   just stage zoopolis
    ```
-   Эта создает и запускает все контейнеры, контейнеры должны быть до этого загружены в registry.
 
-### Миграции в продакшне.
+   Команда создает и запускает все контейнеры, контейнеры должны быть до этого загружены в registry.
+
+### Миграции в продакшне
 
 1. **После сборки заходим в контейнер:**
 
    ```sh
-   docker exec -it zoopolis-backend-1 sh
+   docker exec -it stage-backend-1 sh
    ```
 
 2. **Проводим миграции:**
@@ -195,24 +199,24 @@
    python manage.py migrate
    ```
 
-### Логи в продакшне.
+### Логи в продакшне
 
 1. **Логи фронтенда:**
 
    ```sh
-   docker logs -f zoopolis-frontend-1
+   docker logs -f stage-frontend-1
    ```
 
 2. **Логи дашборда:**
 
    ```sh
-   docker logs -f zoopolis-dashboard-frontend-1
+   docker logs -f stage-dashboard-frontend-1
    ```
 
 3. **Логи бекенда:**
 
    ```sh
-   docker logs -f zoopolis-backend-1
+   docker logs -f stage-backend-1
    ```
 
 4. **Логи сервера:**
