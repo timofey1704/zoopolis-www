@@ -6,6 +6,7 @@ set -e
 npm run build &&
 npm start
 EOT
+
 COPY . ./
 RUN npm install
 EXPOSE 3000

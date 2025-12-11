@@ -8,6 +8,7 @@ set -e
 ./manage.py collectstatic -c --noinput &&
 gunicorn --bind 0.0.0.0:8000 base.wsgi:application
 EOT
+
 RUN pip install gunicorn
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
