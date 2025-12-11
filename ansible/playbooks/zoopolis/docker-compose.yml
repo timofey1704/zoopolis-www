@@ -1,8 +1,6 @@
 services:
   backend:
-    image: registry.gitlab.com/wedeving/zoopolis-www/backend:prod
-    ports:
-      - "127.0.0.1:8000:8000"
+    image: "registry.gitlab.com/wedeving/zoopolis-www/backend:{{ docker_tag }}"
     volumes:
       - "static:/static"
       - "media:/media"
@@ -55,7 +53,7 @@ services:
 
     networks:
       zoopolis:
-        ipv4_address: 172.56.0.2
+        ipv4_address: "{{ docker_network_prefix }}.1"
 
     depends_on:
       redis:
@@ -64,22 +62,20 @@ services:
         condition: service_healthy
 
   frontend:
-    image: registry.gitlab.com/wedeving/zoopolis-www/frontend:prod
-    ports:
-      - "127.0.0.1:3001:3000"
+    image: "registry.gitlab.com/wedeving/zoopolis-www/frontend:{{ docker_tag }}"
     environment:
       NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
+
     networks:
       zoopolis:
-        ipv4_address: 172.56.0.3
+        ipv4_address: "{{ docker_network_prefix }}.2"
+
     depends_on:
       backend:
         condition: service_healthy
 
   dashboard-frontend:
-    image: registry.gitlab.com/wedeving/zoopolis-www/dashboard-frontend:prod
-    ports:
-      - "127.0.0.1:3002:3000"
+    image: "registry.gitlab.com/wedeving/zoopolis-www/dashboard-frontend:{{ docker_tag }}"
     environment:
       NEXT_PUBLIC_API_URL: https://{{ domain }}/api/v1
       BACKEND_URL: http://backend:8000/api/v1
@@ -99,25 +95,22 @@ services:
         RKHGO+Z/DonDO/qHeeuQ4f1OnWInV7kXDStJ1NUwIDAQAB"
     networks:
       zoopolis:
-        ipv4_address: 172.56.0.4
+        ipv4_address: "{{ docker_network_prefix }}.3"
+
     depends_on:
       backend:
         condition: service_healthy
 
   redis:
     image: redis:8-alpine
-    ports:
-      - "127.0.0.1:6379:6379"
     volumes:
       - "redis:/data"
     networks:
       zoopolis:
-        ipv4_address: 172.56.0.5
+        ipv4_address: "{{ docker_network_prefix }}.10"
 
   postgres:
     image: postgres:18-alpine
-    ports:
-      - "127.0.0.1:15432:5432"
     volumes:
       - "postgres:/var/lib/postgresql/data"
     environment:
@@ -132,12 +125,14 @@ services:
       start_period: 80s
     networks:
       zoopolis:
-        ipv4_address: 172.56.0.6
+        ipv4_address: "{{ docker_network_prefix }}.11"
 
 networks:
   zoopolis:
-    external: true
-    name: zoopolis_network
+    name: "{{ app }}_network"
+    ipam:
+      config:
+        - subnet: "{{ docker_network_prefix }}.0/24"
 
 volumes:
   media:

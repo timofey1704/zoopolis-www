@@ -1,12 +1,12 @@
 servers:
   hosts:
     zoopolis:
-      ansible_host: zoopolis.org
+      ansible_host: stage.zoopolis.org
 
   vars:
     ansible_user: root
 
-    app: prod
+    app: stage
 
     user: zoo
     timezone: Europe/Minsk
@@ -14,18 +14,18 @@ servers:
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP+igmEmZ9KzELTgYKLrW/LcFIclzj0m2enPp5Bm4QSz promo@vhome6
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFIOJE+HAkS+l7kDMNsQAMsVxdBoKn6UKg1NwO/KJ5I+ timofey.syr17@gmail.com
 
-    docker_tag: prod
+    docker_tag: stage
     docker_network_prefix: "172.56.1"
 
     db_user: admin
-    db_password: eirohVeevahchuquiev2
-    db_name: zoopolis
+    db_password: eequeiTh0Yeiwoo4Ahra
+    db_name: zoopolisdb
 
     registry_user: gitlab+deploy-token-9189607
     registry_token: gldt-15QsUAVXE8SR-W3rAziA
 
-    domain: zoopolis.org
-    domain_dashboard: account.zoopolis.org
+    domain: stage.zoopolis.org
+    domain_dashboard: stage.account.zoopolis.org
     enable_https: true
 
     http_user: zoopolis

@@ -57,12 +57,6 @@
         dest: "/etc/systemd/system/compose@.service"
         mode: "0644"
 
-    - name: Docker project network
-      community.docker.docker_network:
-        name: "{{ app }}_network"
-        ipam_config:
-          - subnet: 172.56.0.0/24
-
   handlers:
     - name: Restart docker service
       ansible.builtin.service:
