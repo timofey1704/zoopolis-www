@@ -81,7 +81,7 @@
       become: true
       become_user: "{{ user }}"
       ansible.builtin.cron:
-        name: membership actualizer
+        name: "{{ app }} membership actualizer"
         minute: "0"
         hour: "0"
         job: "/usr/bin/docker exec {{ app }}-backend-1 ./manage.py membership_actualizer"
