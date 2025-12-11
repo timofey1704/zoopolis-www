@@ -1,3 +1,8 @@
 image := "dashboard-frontend"
 
 import "../docker.just"
+
+build-prod: (docker-build-internal "Dockerfile.prod" "prod")
+build-stage: (docker-build-internal "Dockerfile.stage" "stage")
+push-prod: (docker-push-internal "prod")
+push-stage: (docker-push-internal "stage")

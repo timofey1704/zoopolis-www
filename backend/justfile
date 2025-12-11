@@ -1,3 +1,8 @@
 image := "backend"
 
 import "../docker.just"
+
+build-prod: (docker-build-internal "Dockerfile" "prod")
+build-stage: (docker-build-internal "Dockerfile" "stage")
+push-prod: (docker-push-internal "prod")
+push-stage: (docker-push-internal "stage")

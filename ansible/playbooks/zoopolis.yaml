@@ -66,14 +66,14 @@
     - name: Configure frontend
       ansible.builtin.template:
         src: zoopolis/frontend.conf
-        dest: "/etc/angie/http.d/frontend.conf"
+        dest: "/etc/angie/http.d/{{ app }}_frontend.conf"
         mode: "0644"
       notify: Restart angie
 
     - name: Configure dashboard frontend
       ansible.builtin.template:
         src: zoopolis/dashboard-frontend.conf
-        dest: "/etc/angie/http.d/dashboard_frontend.conf"
+        dest: "/etc/angie/http.d/{{ app }}_dashboard_frontend.conf"
         mode: "0644"
       notify: Restart angie
 
@@ -81,10 +81,10 @@
       become: true
       become_user: "{{ user }}"
       ansible.builtin.cron:
-        name: membership actualizer
+        name: "{{ app }} membership actualizer"
         minute: "0"
         hour: "0"
-        job: "/usr/bin/docker exec zoopolis-backend-1 ./manage.py membership_actualizer"
+        job: "/usr/bin/docker exec {{ app }}-backend-1 ./manage.py membership_actualizer"
 
   handlers:
     - name: Restart compose service
