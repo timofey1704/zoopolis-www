@@ -73,7 +73,7 @@
     - name: Configure dashboard frontend
       ansible.builtin.template:
         src: zoopolis/dashboard-frontend.conf
-        dest: "/etc/angie/http.d/d{{ app }}_ashboard_frontend.conf"
+        dest: "/etc/angie/http.d/{{ app }}_dashboard_frontend.conf"
         mode: "0644"
       notify: Restart angie
 

@@ -15,7 +15,7 @@ servers:
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFIOJE+HAkS+l7kDMNsQAMsVxdBoKn6UKg1NwO/KJ5I+ timofey.syr17@gmail.com
 
     docker_tag: stage
-    docker_network_prefix: "172.56.1"
+    docker_network_prefix: "172.56.15"
 
     db_user: admin
     db_password: eequeiTh0Yeiwoo4Ahra
