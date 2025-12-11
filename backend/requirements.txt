@@ -40,5 +40,5 @@ requests==2.32.5
 requests-oauthlib==2.0.0
 sqlparse==0.5.4
 typing_extensions==4.15.0
-urllib3==2.6.0
+urllib3==2.6.1
 yarl==1.20.1
