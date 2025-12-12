@@ -25,16 +25,7 @@ const MediaSlider = () => {
           throw new Error('Invalid response format: media array is missing')
         }
 
-        const transformedMedia = response.data.media.map((item: MediaItem) => {
-          return {
-            id: item.id,
-            type: item.type,
-            url: item.url,
-            thumbnailUrl: item.thumbnailUrl || undefined,
-          }
-        })
-
-        setMedia(transformedMedia)
+        setMedia(response.data.media)
       } catch (err) {
         console.error('Detailed error:', {
           message: err instanceof Error ? err.message : 'Unknown error',
@@ -63,7 +54,7 @@ const MediaSlider = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[200px] w-full items-center justify-center">
+      <div className="flex min-h-50 w-full items-center justify-center">
         <Loader />
       </div>
     )
@@ -71,7 +62,7 @@ const MediaSlider = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-[200px] w-full items-center justify-center text-red-500">
+      <div className="flex min-h-50 w-full items-center justify-center text-red-500">
         <div>
           <p>{error}</p>
           <p className="mt-2 text-sm">Check console for details</p>
@@ -82,7 +73,7 @@ const MediaSlider = () => {
 
   if (media.length === 0) {
     return (
-      <div className="flex min-h-[200px] w-full items-center justify-center text-gray-500">
+      <div className="flex min-h-50 w-full items-center justify-center text-gray-500">
         No media available
       </div>
     )

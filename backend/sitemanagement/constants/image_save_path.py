@@ -25,3 +25,7 @@ def bonuses_upload_path(instance, filename):
 def services_upload_path(instance, filename):
     """Генерирует путь: services/{filename}"""
     return f"services/{filename}"
+
+def main_media_upload_path(instance, filename):
+    """Генерирует путь: media_main/{filename}"""
+    return f"media_main/{filename}"
