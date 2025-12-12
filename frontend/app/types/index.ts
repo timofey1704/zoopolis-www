@@ -30,9 +30,7 @@ export interface FAQProps {
 
 export interface MediaItem {
   id: number
-  type: 'image' | 'video'
-  url: string
-  thumbnailUrl?: string // для превью видео
+  image: string
 }
 
 export interface ImagesSliderProps {

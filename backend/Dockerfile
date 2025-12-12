@@ -1,16 +1,18 @@
-FROM python:3.13-alpine
+FROM python:3.14-alpine
+COPY --from=ghcr.io/astral-sh/uv:0.9.17 /uv /uvx /bin/
 WORKDIR /app
-COPY requirements.txt .
-RUN apk add iproute2-ss
+COPY uv.lock .
+COPY pyproject.toml .
+RUN apk add iproute2-ss=6.17.0-r0 --no-cache && rm -rf /var/cache/apk/*
 COPY --chmod=755 <<EOT ./entrypoint.sh
 #!/usr/bin/env sh
 set -e
-./manage.py collectstatic -c --noinput &&
-gunicorn --bind 0.0.0.0:8000 base.wsgi:application
+uv run manage.py collectstatic -c --noinput &&
+uv run gunicorn --bind 0.0.0.0:8000 base.wsgi:application
 EOT
 
-RUN pip install gunicorn
-RUN pip install --no-cache-dir -r requirements.txt
+ENV UV_NO_DEV=1
+RUN uv sync --locked
 COPY . .
 EXPOSE 8000
 ENTRYPOINT  ["./entrypoint.sh"]

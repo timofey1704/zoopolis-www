@@ -3,11 +3,13 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.constants.colors import colors
-from sitemanagement.constants.image_save_path import (devices_upload_path, 
+from sitemanagement.constants.image_save_path import (
+devices_upload_path, 
 pet_image_upload_path, 
 pet_qr_upload_path, 
 bonuses_upload_path, 
-services_upload_path)
+services_upload_path,
+main_media_upload_path)
 from dictionaries.models import PetsTypes, PetsBreeds, PetsColors
 
 class FAQ (models.Model):
@@ -50,20 +52,16 @@ class Feature(models.Model):
         return self.name
 
 class MainPageMedia(models.Model):
-    type = models.CharField(max_length=10, 
-        choices=[
-            ("image", "Фото"),
-            ("video", "Видео"),     
-        ],verbose_name="Тип контента")
-    url = models.CharField(max_length=255, verbose_name="Ссылка на медиаконтент")
-    thumbnail_url = models.CharField(max_length=255, verbose_name="Ссылка на превью видео", null=True, blank=True)
-    
+    image = models.ImageField(
+        upload_to=main_media_upload_path,
+        verbose_name="Фото на главной",
+    )
     class Meta:
         verbose_name = 'Медиа контент для главной'
         verbose_name_plural = 'Медиа контент для главной'
         
     def __str__(self):
-        return self.url
+        return f"Фотография #{self.pk}" if self.pk else "Новое фото"
     
 class Pet(models.Model):
     id = models.AutoField(primary_key=True)

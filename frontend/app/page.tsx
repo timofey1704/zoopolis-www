@@ -59,7 +59,7 @@ export default async function Home() {
                   alt="Счастливая собака"
                   width={580}
                   height={710}
-                  className="relative z-10 h-auto w-[320px] md:w-[420px] lg:w-[580px]"
+                  className="relative z-10 h-auto w-[320px] md:w-105 lg:w-145"
                 />
                 <div className="bg-orange/10 absolute top-1/2 -right-10 z-0 -translate-y-1/2 rounded-full blur-3xl" />
               </div>
@@ -104,7 +104,7 @@ export default async function Home() {
           </div>
           <Image src="/Blur.png" alt="logo" width={1440} height={251} className="w-full" priority />
           <div className="flex flex-col items-center px-6">
-            <div className="relative mt-8 w-full max-w-[280px]">
+            <div className="relative mt-8 w-full max-w-70">
               <Image
                 src="/dog1.svg"
                 alt="Счастливая собака"
@@ -121,13 +121,13 @@ export default async function Home() {
         <div className="absolute inset-x-0 -bottom-5 h-40 bg-linear-to-t from-[#EBEBEB] from-10% via-[#EBEBEB]/80 via-30% to-transparent to-100% blur-md" />
       </div>
 
-      <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-6 px-4 sm:my-6 sm:px-8 lg:my-8 lg:flex-row lg:gap-10 lg:px-0">
+      <div className="my-4 flex max-w-304 flex-col items-center justify-center gap-6 px-4 sm:my-6 sm:px-8 lg:my-8 lg:flex-row lg:gap-10 lg:px-0">
         <Image
           src={Dog2}
           alt="dog"
           width={289}
           height={263}
-          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+          className="h-auto w-full sm:w-55 lg:w-72.25"
         />
         <div className="flex max-w-sm flex-col items-center justify-center space-y-4 lg:max-w-none lg:space-y-5">
           <h2 className="text-center text-white">
@@ -153,24 +153,21 @@ export default async function Home() {
           alt="cat"
           width={289}
           height={263}
-          className="h-auto w-full sm:block sm:w-[220px] lg:w-[289px]"
+          className="h-auto w-full sm:block sm:w-55 lg:w-72.25"
         />
       </div>
 
-      <div
-        id="reviews"
-        className="container mx-auto max-w-[1216px] px-4 py-4 sm:py-6 md:py-8 lg:py-10"
-      >
+      <div id="reviews" className="container mx-auto max-w-304 px-4 py-4 sm:py-6 md:py-8 lg:py-10">
         <div className="relative grid grid-cols-1 items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
           {/* плашка отзывов */}
-          <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
+          <div className="bg-gray/80 absolute top-1/2 left-1/2 z-10 w-70 -translate-x-1/2 -translate-y-1/2 rounded-[52px] px-6 py-3 shadow-lg backdrop-blur-sm sm:w-auto sm:px-8 sm:py-4 lg:px-10">
             <div className="flex flex-col items-center gap-2">
               <Image
                 src="./reviewIcon.svg"
                 alt="star"
                 width={140}
                 height={24}
-                className="h-auto w-[100px] sm:w-[100px] lg:w-[140px]"
+                className="h-auto w-25 sm:w-25 lg:w-35"
               />
               <span className="text-sm sm:text-base">Средняя оценка</span>
             </div>
@@ -217,7 +214,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div id="pricing" className="flex max-w-[1216px] flex-col items-center justify-center px-4">
+      <div id="pricing" className="flex max-w-304 flex-col items-center justify-center px-4">
         <h2 className="space-x-4 text-white">
           <span className="text-black">УДОБНАЯ</span>
           <span className="relative mx-2 inline-block px-1">
@@ -226,7 +223,7 @@ export default async function Home() {
           </span>
           <span className="text-black">ZOOPOLIS</span>
         </h2>
-        <div className="mt-5 mb-8 max-w-[600px] text-center">
+        <div className="mt-5 mb-8 max-w-150 text-center">
           Подписка оформляется 1 раз, а списание происходит ежемесячно, условия подписки можно
           регулировать в личном кабинете
         </div>
@@ -235,7 +232,7 @@ export default async function Home() {
 
       <div
         id="about-us"
-        className="my-8 flex max-w-[1216px] flex-col items-center justify-center gap-10"
+        className="my-8 flex max-w-304 flex-col items-center justify-center gap-10"
       >
         <h2 className="text-white">
           <span className="text-black">МЫ НА</span>
@@ -251,13 +248,13 @@ export default async function Home() {
         <FAQ faqs={faqs} />
       </div>
 
-      <div className="my-4 flex max-w-[1216px] flex-col items-center justify-center gap-4 px-4 sm:my-6 sm:flex-row sm:gap-6 lg:my-8 lg:gap-10">
+      <div className="my-4 flex max-w-304 flex-col items-center justify-center gap-4 px-4 sm:my-6 sm:flex-row sm:gap-6 lg:my-8 lg:gap-10">
         <Image
           src={Dog4}
           alt="dog"
           width={289}
           height={263}
-          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+          className="h-auto w-full sm:w-55 lg:w-72.25"
         />
         <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 lg:space-y-5">
           <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl">
@@ -282,7 +279,7 @@ export default async function Home() {
           alt="cat"
           width={289}
           height={263}
-          className="h-auto w-full sm:w-[220px] lg:w-[289px]"
+          className="h-auto w-full sm:w-55 lg:w-72.25"
         />
       </div>
     </div>

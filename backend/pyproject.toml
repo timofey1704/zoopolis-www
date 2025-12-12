@@ -1,0 +1,42 @@
+[project]
+name = "backend"
+version = "1.0.0"
+description = "Zoopolis Backend service"
+# readme = "README.md"  # Removed because file doesn't exist
+requires-python = ">=3.12"
+dependencies = [
+    "django",
+    "djangorestframework",
+    "psycopg2-binary",
+    "python-dotenv",
+    "pytest",
+    "pytest-django",
+    "requests",
+    "pyjwt",
+    "redis",
+    "django-oauth-toolkit",
+    "requests-oauthlib",
+    "djangorestframework-simplejwt",
+    "qrcode",
+    "pillow",
+    "python-magic",
+    "django-cors-headers>=4.9.0",
+    "gunicorn>=23.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pycodestyle",
+    "black",
+    "ruff",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = false
+
+[tool.black]
+line-length = 88

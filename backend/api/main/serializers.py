@@ -1,17 +1,20 @@
 from rest_framework import serializers
 from sitemanagement.constants.account_types import account_types
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, Feature
-
+from django.conf import settings
 class FAQMainSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = "__all__"
 
 class MediaMainSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     class Meta:
         model = MainPageMedia
-        fields = "__all__"
-
+        fields = ["id", "image"]
+    
+    def get_image(self, obj):
+        return f"{settings.BASE_URL}{obj.image.url}" if obj.image else None
 class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feature
