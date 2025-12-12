@@ -51,18 +51,19 @@ class AccountActionsView(ViewSet):
             user_profile.address = request.data['address']
         if 'email' in request.data:
             email = request.data['email']
-            validate_email(email)  # handle_exceptions обработает ValidationError
-            user.email = email
-            user.username = email
+            if email and email.strip():
+                validate_email(email)  # handle_exceptions обработает ValidationError
+                user.email = email
+                user.username = email
         
         # обновляем номер телефона
         if 'phone_number' in request.data:
             phone = request.data['phone_number']
-            if phone:
+            if phone and phone.strip():
                 if len(phone) < 13:  # +375331234567
                     raise ValidationError("Номер телефона слишком короткий")
                 
-                # проверка на уникальность
+                # проверка на уникальность только для непустых значений
                 if UserProfile.objects.filter(phone_number=phone).exclude(user=user).exists():
                     raise ValidationError("Этот номер телефона уже используется")
                 
@@ -71,11 +72,15 @@ class AccountActionsView(ViewSet):
         if 'telegram_id' in request.data:
             telegram_id = request.data['telegram_id']
             
-            #проверка на уникальность
-            if UserProfile.objects.filter(telegram_id=telegram_id).exclude(user=user).exists():
-                raise ValidationError("Этот Telegram ID уже указал кто-то другой")
-                
-            user_profile.telegram_id = telegram_id
+            # если значение пустое - просто очищаем поле
+            if not telegram_id or telegram_id.strip() == '':
+                user_profile.telegram_id = None
+            else:
+                # проверка на уникальность только для непустых значений
+                if UserProfile.objects.filter(telegram_id=telegram_id).exclude(user=user).exists():
+                    raise ValidationError("Этот Telegram ID уже указал кто-то другой")
+                    
+                user_profile.telegram_id = telegram_id
         
         # обновляем фотографию профиля
         if 'image' in request.FILES:
