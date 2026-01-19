@@ -36,7 +36,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <h4 className="pr-4 text-left text-sm text-white sm:text-base lg:text-lg">{title}</h4>
-        <div className="relative flex h-6 w-6 flex-shrink-0 items-center justify-center sm:h-7 sm:w-7 lg:h-8 lg:w-8">
+        <div className="relative flex h-6 w-6 shrink-0 items-center justify-center sm:h-7 sm:w-7 lg:h-8 lg:w-8">
           <Image
             src={openFAQ}
             alt="FAQ icon"
@@ -61,7 +61,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
       <div
         ref={contentRef}
         style={{ '--accordion-height': `${contentHeight}px` } as React.CSSProperties}
-        className={`grid transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`grid transition-all duration-500 ease-in-out ${
           isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         } `}
       >

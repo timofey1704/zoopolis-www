@@ -8,7 +8,7 @@ const FAQ: React.FC<FAQProps> = ({ faqs }) => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1000px] px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-250 px-4 sm:px-6 lg:px-8">
       <div className="py-4 sm:py-6 lg:py-8">
         <h2 className="mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl lg:mb-10 lg:text-4xl">
           ЧАСТЫЕ{' '}

@@ -7,7 +7,7 @@ import Scroll from './ui/Scroll'
 const Footer = () => {
   return (
     <div className="flex flex-col space-y-4 rounded-t-[40px] bg-[#1C1C29] p-4 sm:space-y-6 sm:rounded-t-[60px] lg:space-y-7 lg:rounded-t-[100px]">
-      <div className="mt-4 flex flex-col items-center gap-6 px-4 sm:mt-5 sm:px-6 lg:mt-5 lg:flex-row lg:justify-center lg:px-[92px]">
+      <div className="mt-4 flex flex-col items-center gap-6 px-4 sm:mt-5 sm:px-6 lg:mt-5 lg:flex-row lg:justify-center lg:px-23">
         <div>
           {/* <Link href="/" className="transition-opacity duration-300 hover:opacity-80">
             <Image
@@ -75,7 +75,7 @@ const Footer = () => {
         </div> */}
       </div>
 
-      <div className="flex flex-col items-center gap-3 p-4 text-base font-medium text-white sm:flex-row sm:justify-center sm:gap-6 sm:text-lg lg:justify-between lg:px-[100px] lg:text-xl">
+      <div className="flex flex-col items-center gap-3 p-4 text-base font-medium text-white sm:flex-row sm:justify-center sm:gap-6 sm:text-lg lg:justify-between lg:px-25 lg:text-xl">
         <a
           href="tel:+375173618080"
           className="hover:text-orange transition-colors duration-300"

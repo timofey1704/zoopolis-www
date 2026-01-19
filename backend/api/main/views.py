@@ -39,7 +39,7 @@ class MediaMainView(APIView):
 class MembershipPlansView(APIView):
     @handle_exceptions
     def get(self, request):
-        memberships = Pricing.objects.all()
+        memberships = Pricing.objects.filter(is_available=True)
         
         data = {
             'memberships': MembershipPlansSerializer(memberships, many=True).data

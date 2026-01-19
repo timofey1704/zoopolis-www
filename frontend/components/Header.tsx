@@ -9,7 +9,7 @@ import Scroll from './ui/Scroll'
 const Header = () => {
   return (
     <div className="bg-gray flex items-center justify-between p-4">
-      <div className="pl-4 sm:pl-8 lg:pl-[92px]">
+      <div className="pl-4 sm:pl-8 lg:pl-23">
         <Link
           href="/"
           className="transition-opacity duration-300 hover:cursor-pointer hover:opacity-80"
@@ -49,7 +49,7 @@ const Header = () => {
         </Scroll>
       </div>
 
-      <div className="hidden pr-[92px] lg:block">
+      <div className="hidden pr-23 lg:block">
         <a href="https://account.zoopolis.org/login" target="_blank" rel="noopener noreferrer">
           <Button text="Личный кабинет" className="bg-white text-black hover:shadow-md" />
         </a>

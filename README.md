@@ -196,7 +196,7 @@
 2. **Проводим миграции:**
 
    ```sh
-   python manage.py migrate
+   uv run manage.py migrate
    ```
 
 ### Логи в продакшне
