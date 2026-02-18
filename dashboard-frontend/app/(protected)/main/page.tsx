@@ -9,6 +9,7 @@ import Loader from '@/components/ui/Loader'
 import { BonusCard } from '../bonuses/page'
 import BonusItem from '../bonuses/components/BonusItem'
 import { useRouter } from 'next/navigation'
+import { getGreetingByTime } from '@/lib/utils/getGreetingsByTime'
 
 const DashboardPage = () => {
   const router = useRouter()
@@ -34,9 +35,14 @@ const DashboardPage = () => {
     return null
   }
 
+  const userName = `${user.user?.name ?? ''} ${user.user?.surname ?? ''}`.trim() || 'Пользователь'
+
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="mb-3">ПРИВЕТ, {user.user?.name}</h1>
+      <h1 className="mb-3">
+        {' '}
+        {getGreetingByTime()}, {userName}
+      </h1>
 
       <div className="flex w-full flex-row items-center justify-between rounded-[40px] bg-black p-6">
         <div className="flex flex-col gap-5">
