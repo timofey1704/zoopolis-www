@@ -102,7 +102,7 @@ class BonusApplicationAdmin(admin.ModelAdmin):
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
     list_display = ['name', 'type', 'is_lost']
-    list_filter = ['type']
+    list_filter = ['type', 'is_lost']
     search_fields = ['owner__username', 'name']
     readonly_fields = ('created_at',)
     inlines = [QRCodeInline, PetCoordinatesInline]
