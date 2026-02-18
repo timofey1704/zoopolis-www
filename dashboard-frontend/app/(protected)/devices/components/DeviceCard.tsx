@@ -4,7 +4,7 @@ import { Device } from '../page'
 
 const DeviceCard = ({ device }: { device: Device }) => {
   return (
-    <div className="flex h-full flex-col rounded-2xl border-1 border-gray-200 bg-white p-4 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+    <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:scale-105 hover:shadow-xl">
       <div className="flex flex-1 flex-col justify-start space-y-3">
         <div className="flex flex-col items-center justify-center">
           <Image src={device.image} alt={device.title} width={200} height={200} priority />

@@ -150,7 +150,7 @@ const LoginPage = () => {
 
           <p className="text-center text-base font-medium">
             Впервые у нас?{' '}
-            <span className="text-orange transition-colors duration-200 hover:text-orange-600 hover:underline">
+            <span className="text-orange transition-colors duration-200 hover:underline">
               <Link href="/register">Зарегистрироваться</Link>
             </span>
           </p>

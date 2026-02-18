@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
         test: TEST_MODE,
         settings: {
           language: 'ru',
-          return_url: 'https://stage.account.zoopolis.org/membership',
+          return_url: 'https://account.zoopolis.org/membership',
           button_next_text: 'Вернуться в аккаунт',
         },
         order: {

@@ -139,14 +139,14 @@ const ExistedPets = () => {
             </div>
 
             <div className="flex items-center justify-around gap-4 py-4">
-              <div className="flex items-center justify-center md:w-[180px]">
+              <div className="flex items-center justify-center md:w-45">
                 <Image
                   src={pet.imageURL || '/images/noPet.svg'}
                   alt={pet.name}
                   height={180}
                   width={180}
                   priority
-                  className="aspect-square w-full rounded-2xl object-cover md:w-[180px]"
+                  className="aspect-square w-full rounded-2xl object-cover md:w-45"
                 />
               </div>
               <div className="flex flex-col items-center gap-2">
