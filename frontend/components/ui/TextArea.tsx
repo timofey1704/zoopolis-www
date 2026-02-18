@@ -1,4 +1,3 @@
-import React from 'react'
 import { TextAreaProps } from '@/app/types'
 
 const TextArea = ({ value, handleChange, label, name, placeholder, height }: TextAreaProps) => {

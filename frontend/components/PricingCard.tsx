@@ -1,4 +1,3 @@
-import React from 'react'
 import { PricingCardProps } from '@/app/types'
 import Button from './ui/Button'
 import Image from 'next/image'
@@ -10,7 +9,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       {memberships.map(membership => (
         <div
           key={membership.id}
-          className={`relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] p-8 ${
+          className={`relative flex min-h-175 flex-col overflow-hidden rounded-[30px] p-8 ${
             membership.bg_color === '#1c1c29' ? 'text-white' : ''
           }`}
           style={{ backgroundColor: membership.bg_color }}
@@ -29,7 +28,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
 
             <p className="mb-6">{membership.description}</p>
             <div className="mb-6 flex justify-center">
-              <div className="w-11/12 border-1 border-b border-white" />
+              <div className="w-11/12 border border-b border-white" />
             </div>
             <ul className="mb-4 space-y-4">
               {membership.features.map(feature => (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Dialog } from '@/components/ui/Dialog'
 import showToast from '@/components/ui/showToast'
 import TextInput from '@/components/ui/TextInput'

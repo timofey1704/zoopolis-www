@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Scroll from './ui/Scroll'
 
 const Burger = () => {
@@ -37,8 +37,8 @@ const Burger = () => {
       <div
         className={`bg-gray fixed left-0 z-50 w-full origin-top shadow-lg transition-all duration-300 ease-in-out ${
           isOpen
-            ? 'top-[80px] h-[calc(100vh-80px)] scale-y-100 opacity-100'
-            : 'top-[80px] h-0 scale-y-0 opacity-0'
+            ? 'top-20 h-[calc(100vh-80px)] scale-y-100 opacity-100'
+            : 'top-20 h-0 scale-y-0 opacity-0'
         } ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         <div
