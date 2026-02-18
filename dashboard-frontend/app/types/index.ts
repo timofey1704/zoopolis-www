@@ -99,6 +99,8 @@ export interface AccountSidebarProps {
   navigation: NavigationItem[]
 }
 
+export type BurgerProps = Pick<AccountSidebarProps, 'navigation'>
+
 export interface PaginatedResponse<T> {
   count: number
   next: string | null

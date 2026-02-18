@@ -12,6 +12,7 @@ import { TbPhotoUp } from 'react-icons/tb'
 import showToast from './ui/showToast'
 import { uploadImage } from '@/lib/imageUpload'
 import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
+import Burger from './Burger'
 
 type ProfileImageResponse = {
   user: {
@@ -84,47 +85,62 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
 
   return (
     <div className="space-y-3">
-      <div className="flex w-full items-center space-x-4 rounded-2xl bg-white p-4 shadow">
-        <div className="flex items-center justify-center">
-          <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
-            <input
-              type="file"
-              id="image"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept="image/*"
-            />
-            <Image
-              src={previewUrl || getProxiedImageUrl(user.image) || noPhoto}
-              alt="profile image"
-              height={84}
-              width={84}
-              priority
-              className="aspect-square rounded-3xl object-cover md:w-21"
-            />
-            <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
-              <TbPhotoUp className="text-3xl text-white" />
+      <div className="flex w-full items-center justify-between rounded-2xl bg-white p-2 shadow md:p-4">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-center">
+            <div className="group relative w-full cursor-pointer" onClick={handlePhotoChange}>
+              <input
+                type="file"
+                id="image"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/*"
+              />
+              <Image
+                src={previewUrl || getProxiedImageUrl(user.image) || noPhoto}
+                alt="profile image"
+                height={90}
+                width={90}
+                priority
+                className="aspect-square w-16 rounded-xl object-cover md:w-25 md:rounded-2xl"
+              />
+              <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center rounded-2xl bg-black opacity-0 transition-opacity group-hover:opacity-100">
+                <TbPhotoUp className="text-3xl text-white" />
+              </div>
             </div>
           </div>
+          <div className="space-y-1">
+            <div className="flex gap-2">
+              <p className="text-xl font-bold">{user.name || 'Пользователь'}</p>
+              <p className="text-xl font-bold">{user.surname || 'Пользователь'}</p>
+            </div>
+            {user.uuid && (
+              <p className="hidden text-sm font-medium text-gray-500 sm:block">ID: {user.uuid}</p>
+            )}
+            {user.account_type && (
+              <Link
+                href="/membership"
+                className={`${getAccountTypeStyles(
+                  user.account_type
+                )} flex items-center justify-center rounded-lg px-3 py-1 text-sm`}
+              >
+                {
+                  accountTypeToDisplayName[
+                    user.account_type as keyof typeof accountTypeToDisplayName
+                  ]
+                }
+              </Link>
+            )}
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-xl font-bold">{user.name || 'Пользователь'}</p>{' '}
-          {user.uuid && <p className="text-sm font-medium text-gray-500">ID: {user.uuid}</p>}
-          {user.account_type && (
-            <Link
-              href="/membership"
-              className={`${getAccountTypeStyles(
-                user.account_type
-              )} flex items-center justify-center rounded-lg px-3 py-1 text-sm`}
-            >
-              {accountTypeToDisplayName[user.account_type as keyof typeof accountTypeToDisplayName]}
-            </Link>
-          )}
+
+        <div className="flex items-center pr-6 sm:pr-10 lg:hidden">
+          <Burger navigation={navigation} />
         </div>
       </div>
 
-      <div className="w-full rounded-2xl bg-white p-2 shadow md:w-64">
+      <div className="hidden w-full rounded-2xl bg-white p-2 shadow md:w-64 lg:block">
         <nav className="space-y-2">
           {navigationItems.map(item => {
             const isActive = pathname === item.href
@@ -151,7 +167,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
           })}
         </nav>
       </div>
-      <div className="w-full rounded-2xl bg-white p-2 shadow md:w-64">
+      <div className="hidden w-full rounded-2xl bg-white p-2 shadow md:w-64 lg:block">
         <a
           href="https://t.me/+9mMS663WT6Y5YWYy"
           className={`${
