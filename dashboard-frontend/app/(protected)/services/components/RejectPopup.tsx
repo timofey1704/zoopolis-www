@@ -1,4 +1,3 @@
-import React from 'react'
 import { Dialog } from '@/components/ui/Dialog'
 import Link from 'next/link'
 

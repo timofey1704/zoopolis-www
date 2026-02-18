@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import BonusItem from './components/BonusItem'
 import Loader from '@/components/ui/Loader'

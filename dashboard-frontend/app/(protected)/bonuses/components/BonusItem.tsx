@@ -4,6 +4,7 @@ import { BonusCard } from '../page'
 import { formatDate } from '@/lib/utils/dateFormatter'
 import Button from '@/components/ui/Button'
 import Sidebar from './Sidebar'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 interface BonusItemProps {
   bonus: BonusCard
@@ -20,11 +21,11 @@ const BonusItem: React.FC<BonusItemProps> = ({ bonus }) => {
   return (
     <>
       <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-        <div className="flex flex-grow flex-col space-y-4">
+        <div className="flex grow flex-col space-y-4">
           {bonus.imageURL && (
-            <div className="relative h-[240px] w-full">
+            <div className="relative h-60 w-full">
               <Image
-                src={bonus.imageURL}
+                src={getProxiedImageUrl(bonus.imageURL)}
                 alt={bonus.name}
                 fill
                 className="rounded-2xl object-cover"
@@ -43,7 +44,7 @@ const BonusItem: React.FC<BonusItemProps> = ({ bonus }) => {
           text={!bonus.is_available ? 'Скоро появится' : 'Применить'}
           className={`mt-6 flex w-full items-center justify-center rounded-[20px] py-4 font-semibold shadow-lg transition-all duration-200 ${
             bonus.is_available
-              ? 'from-orange cursor-pointer bg-gradient-to-r to-orange-600 text-white hover:opacity-90'
+              ? 'from-orange cursor-pointer bg-linear-to-r to-orange-600 text-white hover:opacity-90'
               : 'pointer-events-none bg-gray-200 text-gray-500'
           } disabled:opacity-50`}
           onClick={handleApply}

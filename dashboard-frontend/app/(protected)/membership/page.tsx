@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import PricingCard from './components/PricingCard'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Loader from '@/components/ui/Loader'

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import ContactForm from './forms/ContactForm'
 import CreatePetForm from './forms/CreatePetForm'
 import ExistedPets from './forms/ExistedPets'

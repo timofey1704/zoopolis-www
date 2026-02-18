@@ -11,6 +11,7 @@ import noPhoto from '../public/images/no-photo.png'
 import { TbPhotoUp } from 'react-icons/tb'
 import showToast from './ui/showToast'
 import { uploadImage } from '@/lib/imageUpload'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 type ProfileImageResponse = {
   user: {
@@ -23,7 +24,7 @@ type ProfileImageResponse = {
 const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => {
   const pathname = usePathname()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>(user?.image || '')
+  const [previewUrl, setPreviewUrl] = useState<string>(getProxiedImageUrl(user?.image) || '')
 
   const handlePhotoChange = () => {
     fileInputRef.current?.click()
@@ -56,7 +57,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
       )
 
       if (response.user?.image) {
-        setPreviewUrl(response.user.image)
+        setPreviewUrl(getProxiedImageUrl(response.user.image))
       }
 
       showToast({
@@ -95,7 +96,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
               accept="image/*"
             />
             <Image
-              src={previewUrl || user.image || noPhoto}
+              src={previewUrl || getProxiedImageUrl(user.image) || noPhoto}
               alt="profile image"
               height={84}
               width={84}

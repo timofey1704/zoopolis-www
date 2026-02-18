@@ -1,4 +1,3 @@
-import React from 'react'
 import { PricingCardProps } from '@/app/types'
 import Button from '@/components/ui/Button'
 import Image from 'next/image'

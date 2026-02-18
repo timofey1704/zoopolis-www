@@ -78,7 +78,7 @@ export default function MapComponent({ points }: MapComponentProps) {
   })
 
   return (
-    <div className="h-[400px] w-full overflow-hidden rounded-xl">
+    <div className="h-100 w-full overflow-hidden rounded-xl">
       <MapContainer
         key={JSON.stringify(center)}
         center={center}
