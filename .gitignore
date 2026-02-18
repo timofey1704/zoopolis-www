@@ -75,7 +75,9 @@ database
 
 # Static and media files
 staticfiles/
-media/
+/media/
+!/frontend/media/
+!/dashboard-frontend/media/
 
 # Миграции
 */migrations/*.pyc

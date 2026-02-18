@@ -26,7 +26,7 @@ lint_dashboard:
     - merge_requests
 
 # test_backend:
-#   image: python:3.13-alpine
+#   image: python:3.14-alpine
 #   stage: test
 #   script:
 #     - cd backend

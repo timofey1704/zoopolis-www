@@ -6,7 +6,7 @@ interface JWTPayload {
   exp?: number
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isPublicRoute = pathname === '/login' || pathname === '/register'
   const isPublicAsset =
