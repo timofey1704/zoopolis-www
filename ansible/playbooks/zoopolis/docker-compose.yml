@@ -24,7 +24,7 @@ services:
       DB_NAME: "{{ db_name }}"
       DB_USER: "{{ db_user }}"
       DB_PASSWORD: "{{ db_password }}"
-      DB_HOST: postgres
+      DB_HOST: "{{ docker_network_prefix }}.30"
       DB_PORT: 5432
 
       # redis
@@ -54,12 +54,6 @@ services:
     networks:
       zoopolis:
         ipv4_address: "{{ docker_network_prefix }}.10"
-
-    depends_on:
-      redis:
-        condition: service_started
-      postgres:
-        condition: service_healthy
 
   frontend:
     image: "registry.gitlab.com/wedeving/zoopolis-www/frontend:{{ docker_tag }}"
@@ -109,30 +103,11 @@ services:
       zoopolis:
         ipv4_address: "{{ docker_network_prefix }}.20"
 
-  postgres:
-    image: postgres:18-alpine
-    volumes:
-      - "postgres:/var/lib/postgresql/18/docker"
-    environment:
-      - POSTGRES_USER={{ db_user }}
-      - POSTGRES_PASSWORD={{ db_password }}
-      - POSTGRES_DB={{ db_name }}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
-    networks:
-      zoopolis:
-        ipv4_address: "{{ docker_network_prefix }}.30"
 
 networks:
   zoopolis:
     name: "{{ app }}_network"
-    ipam:
-      config:
-        - subnet: "{{ docker_network_prefix }}.0/24"
+    external: true
 
 volumes:
   media:
@@ -148,9 +123,3 @@ volumes:
       type: none
       device: "/var/{{ app }}/static"
   redis:
-  postgres:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: "/var/{{ app }}/postgres"
