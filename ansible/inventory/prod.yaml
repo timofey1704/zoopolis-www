@@ -17,9 +17,13 @@ servers:
     docker_tag: prod
     docker_network_prefix: "172.56.10"
 
-    db_user: admin
-    db_password: eequeiTh0Yeiwoo4Ahra
-    db_name: zoopolisdb
+    db_user: zoo
+    db_password: lo8aepheiw9Feosh9quo
+    db_name: zoo
+
+    db_admin_user: admin
+    db_admin_password: eimeiSahp5aiNgaegi9i
+    db_admin_name: admin
 
     registry_user: gitlab+deploy-token-9189607
     registry_token: gldt-15QsUAVXE8SR-W3rAziA

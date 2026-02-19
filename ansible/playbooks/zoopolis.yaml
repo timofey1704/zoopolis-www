@@ -53,7 +53,7 @@
       community.docker.docker_compose_v2_pull:
         project_src: "/etc/docker/compose/{{ app }}"
       notify:
-        - Restart app
+        - Restart compose service
         - Prune docker
 
     - name: Systemd service
@@ -91,15 +91,6 @@
       ansible.builtin.service:
         name: "compose@{{ app }}"
         state: restarted
-
-    - name: Restart app
-      community.docker.docker_compose_v2:
-        project_src: "/etc/docker/compose/{{ app }}"
-        state: restarted
-        services:
-          - backend
-          - frontend
-          - dashboard-frontend
 
     - name: Prune docker
       community.docker.docker_prune:
