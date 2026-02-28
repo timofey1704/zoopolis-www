@@ -67,6 +67,7 @@ MAIL_SERVER_URL = os.environ.get("MAIL_SERVER_URL")
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.utils.jwt_cookie_authentication.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],

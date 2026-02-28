@@ -1,43 +1,27 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { User, UserState } from '../types'
+import { User } from '../types'
 
-interface UserStore extends UserState {
-  // состояние
-  isAuthenticated: boolean
+interface UserStore {
   user: User | null
+  isAuthChecked: boolean
 
-  // действия
   setUser: (user: User | null) => void
-  setAuthenticated: (isAuthenticated: boolean) => void
+  setAuthChecked: (value: boolean) => void
   logout: () => void
-
-  // асинхронные действия
-  //!  что пользователь может делать асинхронно?
 }
 
-const useUserStore = create<UserStore>()(
-  persist(
-    set => ({
-      // начальное состояние
-      isAuthenticated: false,
+const useUserStore = create<UserStore>(set => ({
+  user: null,
+  isAuthChecked: false,
+
+  setUser: user => set({ user }),
+  setAuthChecked: value => set({ isAuthChecked: value }),
+
+  logout: () =>
+    set({
       user: null,
-      favorites: [],
-
-      // синхронные действия
-      setUser: user => set({ user }),
-      setAuthenticated: isAuthenticated => set({ isAuthenticated }),
-      logout: () =>
-        set({
-          isAuthenticated: false,
-          user: null,
-        }),
     }),
-
-    //! асинхронщина?
-    { name: 'user-store' }
-  )
-)
+}))
 
 export default useUserStore
 

@@ -21,24 +21,18 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
-    //препроцессинг для бипейда
-    const amountInCents = convertPriceToCents(membership.price)
+    const tracking_id = generateTrackingId()
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-    const response = await fetch('/api/profile/payments', {
+    // 1. Создаём транзакцию на бэкенде (с куками)
+    const backendResponse = await fetch(`${apiUrl}/account/payments/`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        plan: internalPlan,
-        amount: amountInCents,
-        description: `Оплата подписки Zoopolis - ${getDisplayPlanName(internalPlan)} на 30 дней`,
-        tracking_id: generateTrackingId(),
-        email: user?.email,
-      }),
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: internalPlan, tracking_id }),
     })
 
-    if (!response.ok) {
+    if (!backendResponse.ok) {
       showToast({
         type: 'error',
         message: 'Не смогли изменить план',
@@ -46,10 +40,10 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
-    const responseData = await response.json()
+    const backendData = await backendResponse.json()
 
-    // для бесплатного плана обновляем юзер стор
-    if (responseData.isFree && user) {
+    // бесплатный план: бэкенд вернул user
+    if (backendData.user && user) {
       setUser({
         ...user,
         account_type: internalPlan,
@@ -64,10 +58,33 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       return
     }
 
-    // для платных планов проверяем наличие URL для редиректа
-    if (responseData.checkoutUrl) {
-      // перенаправляем пользователя на страницу оплаты
-      window.location.href = responseData.checkoutUrl
+    // платный план: получаем ссылку на оплату через Next.js (bepaid)
+    const amountInCents = convertPriceToCents(membership.price)
+    const description = `Оплата подписки Zoopolis - ${getDisplayPlanName(internalPlan)} на 30 дней`
+    const checkoutResponse = await fetch('/api/profile/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan: internalPlan,
+        amount: amountInCents,
+        description,
+        tracking_id,
+        email: user?.email,
+        transaction: backendData.transaction,
+      }),
+    })
+
+    if (!checkoutResponse.ok) {
+      showToast({
+        type: 'error',
+        message: 'Не удалось получить ссылку на оплату',
+      })
+      return
+    }
+
+    const checkoutData = await checkoutResponse.json()
+    if (checkoutData.checkoutUrl) {
+      window.location.href = checkoutData.checkoutUrl
     } else {
       showToast({
         type: 'error',

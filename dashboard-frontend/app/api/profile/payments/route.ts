@@ -1,47 +1,19 @@
 import { NextRequest } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-
-    if (!session) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const data = await req.json()
 
-    const { plan, description, tracking_id, email } = data
+    const { plan, description, tracking_id, email, transaction: existingTransaction } = data
     let { amount } = data
 
-    // для бесплатного плана устанавливаем amount = 0
+    // если фронт уже создал транзакцию на бэке (с credentials), только вызываем bepaid
+    const transaction = existingTransaction
 
-    if (plan === 'zooID') {
-      amount = 0
-    } else if (!amount) {
-      console.error('Amount is missing in request data')
-      return Response.json({ error: 'Amount is required' }, { status: 400 })
+    if (!transaction) {
+      return Response.json({ error: 'Transaction required (create via backend first)' }, { status: 400 })
     }
 
-    // 1. создаем транзакцию в бекенде
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/payments/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      body: JSON.stringify({ plan, tracking_id }),
-    })
-
-    if (!backendResponse.ok) {
-      const errorText = await backendResponse.text()
-      return Response.json({ error: errorText }, { status: backendResponse.status })
-    }
-
-    const transaction = await backendResponse.json()
-
-    // для бесплатного плана не делаем запрос в bepaid
     if (plan === 'zooID') {
       return Response.json({
         transaction,
@@ -49,7 +21,11 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // 2. запрос в bepaid для платных планов
+    if (!amount) {
+      return Response.json({ error: 'Amount is required' }, { status: 400 })
+    }
+
+    // запрос в bepaid для платных планов
     const CHECKOUT_URL = process.env.CHECKOUT_URL
     const TEST_MODE = process.env.PAYMENTS_TEST_MODE === 'true'
     const BEPAID_ID = process.env.BEPAID_ID

@@ -91,9 +91,11 @@ const CreatePetForm: React.FC<CreatePetFormProps> = ({ onClose, initialQRData })
           console.log('No file found in selectedFile state')
         }
 
-        const response = await fetch('/api/profile/pets', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const response = await fetch(`${apiUrl}/pets/create-pet/`, {
           method: 'POST',
-          body: formData, // FormData автоматически установит правильный Content-Type
+          credentials: 'include',
+          body: formData,
         })
 
         if (!response.ok) {

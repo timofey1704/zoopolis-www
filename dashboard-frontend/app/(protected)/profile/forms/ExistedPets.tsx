@@ -43,8 +43,11 @@ const ExistedPets = () => {
   const handleLostPet = async (id: number) => {
     try {
       setLoadingPetId(id)
-      const response = await fetch(`/api/profile/pets/is-lost`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const response = await fetch(`${apiUrl}/pets/is-lost-pet/`, {
         method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       })
 
@@ -78,8 +81,11 @@ const ExistedPets = () => {
   const handleDelete = async (id: number) => {
     try {
       setLoadingPetId(id)
-      const response = await fetch(`/api/profile/pets/delete`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const response = await fetch(`${apiUrl}/pets/delete-pet/`, {
         method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       })
 

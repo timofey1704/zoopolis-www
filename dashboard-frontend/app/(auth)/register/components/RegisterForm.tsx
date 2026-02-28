@@ -8,7 +8,6 @@ import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
-import { signIn } from 'next-auth/react'
 import TextInput from '@/components/ui/TextInput'
 import PhoneInput from '@/components/ui/PhoneInput'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
@@ -25,7 +24,7 @@ const validationRules = {
 
 const RegisterForm = () => {
   const router = useRouter()
-  const { isAuthenticated } = useUserStore()
+  const { user } = useUserStore()
   const [isLoading, setIsLoading] = useState(true)
   const [verificationStep, setVerificationStep] = useState(false)
   const [verificationCode, setVerificationCode] = useState('')
@@ -34,8 +33,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     // проверяем логин
-    if (isAuthenticated) {
-      // распределяем
+    if (user) {
       router.replace('/main')
       return
     }
@@ -45,7 +43,7 @@ const RegisterForm = () => {
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [isAuthenticated, router])
+  }, [user, router])
 
   const { values, isVisible, handleChange, handleSubmit, togglePasswordVisibility, FormProvider } =
     useForm(
@@ -118,17 +116,19 @@ const RegisterForm = () => {
         return
       }
 
-      // после успешной регистрации входим в систему
-      const signInResult = await signIn('credentials', {
-        email: values.email,
-        password: values.password,
-        redirect: false,
+      // после успешной регистрации логинимся на бэкенде (JWT в cookie)
+      const loginRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: values.email, password: values.password }),
       })
-
-      if (signInResult?.error) {
-        showToast({ type: 'error', message: signInResult.error })
+      if (!loginRes.ok) {
+        showToast({ type: 'error', message: 'Вход после регистрации не удался' })
         return
       }
+      const loginData = await loginRes.json()
+      useUserStore.getState().setUser(loginData.user)
 
       showToast({ type: 'success', message: 'Регистрация успешна!' })
       router.push('/profile')

@@ -1,6 +1,5 @@
 import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { useSession } from 'next-auth/react'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -35,7 +34,6 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
   ? QueryResult<TData, TError>
   : MutationResult<TData, TVariables, TError> {
   const { method = 'GET', config = {}, queryOptions = {}, mutationOptions = {} } = options
-  const { data: session } = useSession()
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`
@@ -50,18 +48,15 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
     throw error
   }
 
-  // добавляем токен в заголовки -- нужно чтобы хук получал данные закрытые под авторизацию
-  const headers = {
-    ...config.headers,
-    Authorization: session?.accessToken ? `Bearer ${session.accessToken}` : undefined,
-  }
+  // авторизация через JWT в httpOnly cookie (withCredentials: true)
+  const axiosConfig = { ...config, headers: config.headers, withCredentials: true }
 
   // всегда вызываем оба хука
   const query = useQuery<TData, TError>({
     queryKey: [url, config.params],
     queryFn: async () => {
       try {
-        const response = await axios.get(fullUrl, { ...config, headers })
+        const response = await axios.get(fullUrl, axiosConfig)
         return response.data
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -82,8 +77,7 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
           method: method.toLowerCase(),
           url: fullUrl,
           data: variables,
-          ...config,
-          headers,
+          ...axiosConfig,
         })
         return response.data
       } catch (error) {

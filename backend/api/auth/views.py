@@ -18,8 +18,6 @@ from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
 from api.models import User, UserProfile, RegisterQRCode
 
-
-
 class LoginViewSet(AuthBaseViewSet):
     """Логин для клиента"""
     
@@ -28,41 +26,39 @@ class LoginViewSet(AuthBaseViewSet):
         try:
             email = request.data.get("email")
             password = request.data.get("password")
-            
+
             if not email or not password:
                 return Response(
                     {"error": "Email и пароль обязательны"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
+
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 return Response(
-                    {"error": "Пользователь не найден"},
-                    status=status.HTTP_404_NOT_FOUND
+                    {"error": "Неверный email или пароль"},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
+
             if not user.check_password(password):
                 return Response(
-                    {"error": "Неверный пароль"},
-                    status=status.HTTP_403_FORBIDDEN
+                    {"error": "Неверный email или пароль"},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
-            
+
             refresh = RefreshToken.for_user(user)
-            
+
             user_data = UserResponseSerializer(user).data
-            
+
             response = Response({
                 "message": "Успешная авторизация",
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
                 "user": user_data
             }, status=status.HTTP_200_OK)
-            
-            # сеттим куки
+
             return self._set_auth_cookies(response, refresh)
-                
-        except Exception as e:
+
+        except Exception:
             return Response(
                 {"error": "Ошибка авторизации"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -196,8 +192,7 @@ class RegisterViewSet(AuthBaseViewSet):
                     
                     response = Response(
                         {
-                            "access": str(refresh.access_token),
-                            "refresh": str(refresh),
+                             "message": "Успешная регистрация",
                             "user": user_data
                         }, 
                         status=status.HTTP_201_CREATED
@@ -237,10 +232,10 @@ class LogoutView(APIView):
     def post(self, request):
         response = Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
         
-        # чистим куки и sessionID
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
-        response.delete_cookie('sessionid') 
+        # чистим куки (те же samesite/secure, что при установке; max_age=0 = удаление)
+        response.set_cookie('access_token', '', max_age=0, path='/', samesite='None', secure=True)
+        response.set_cookie('refresh_token', '', max_age=0, path='/', samesite='None', secure=True)
+        response.delete_cookie('sessionid', path='/') 
         
         return response
     

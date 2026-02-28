@@ -10,13 +10,16 @@ class AuthBaseViewSet(ViewSet):
     """Базовый класс для аутентификации с общими методами"""
     
     def _set_auth_cookies(self, response, refresh):
-        """Устанавливает куки для токенов аутентификации"""
+        """Устанавливает куки для токенов аутентификации.
+        SameSite=None + Secure нужны, чтобы браузер отправлял куки при cross-origin
+        (фронт на 3000, бэк на 8000). При SameSite=Lax куки с другого origin не отправляются.
+        """
         response.set_cookie(
             'access_token',
             str(refresh.access_token),
             httponly=True,
             secure=True,
-            samesite='Lax',
+            samesite='None',
             max_age=300
         )
         response.set_cookie(
@@ -24,7 +27,7 @@ class AuthBaseViewSet(ViewSet):
             str(refresh),
             httponly=True,
             secure=True,
-            samesite='Lax',
+            samesite='None',
             max_age=86400
         )
         return response

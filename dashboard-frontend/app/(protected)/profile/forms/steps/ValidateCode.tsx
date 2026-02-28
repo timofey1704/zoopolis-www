@@ -18,11 +18,11 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ code, onValidated }) => {
       return
     }
 
-    const response = await fetch('/api/profile/pets/verify-sms-code', {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const response = await fetch(`${apiUrl}/validate-qr-sms/`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sms_code: verificationCode, qr_code: code }),
     })
     if (!response.ok) {

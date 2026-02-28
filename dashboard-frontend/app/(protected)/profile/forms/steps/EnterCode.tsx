@@ -24,11 +24,11 @@ const ValidateCode: React.FC<ValidateCodeProps> = ({ onValidated }) => {
     validationRules,
     async values => {
       try {
-        const response = await fetch('/api/profile/pets/validate-code', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const response = await fetch(`${apiUrl}/check-code/`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code: values.code }),
         })
 

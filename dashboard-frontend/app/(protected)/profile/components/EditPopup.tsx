@@ -104,9 +104,11 @@ const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess })
           console.log('No file found in selectedFile state')
         }
 
-        const response = await fetch('/api/profile/pets/update-pet', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const response = await fetch(`${apiUrl}/pets/update-pet/`, {
           method: 'PATCH',
-          body: formData, // FormData автоматически установит правильный Content-Type
+          credentials: 'include',
+          body: formData,
         })
 
         if (!response.ok) {

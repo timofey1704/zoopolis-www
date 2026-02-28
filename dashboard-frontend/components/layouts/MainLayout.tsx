@@ -1,25 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AccountSidebar from '@/components/AccountSidebar'
 import Loader from '@/components/ui/Loader'
 import useUserStore from '@/app/store/userStore'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-  const { isAuthenticated, user } = useUserStore()
+  const { user, isAuthChecked } = useUserStore()
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (!isAuthChecked || !user) {
       router.replace('/login')
       return
     }
-    setIsLoading(false)
-  }, [isAuthenticated, user, router])
+  }, [isAuthChecked, user, router])
 
-  if (isLoading) {
+  if (!isAuthChecked || !user) {
     return <Loader />
   }
 
@@ -29,32 +27,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { name: 'Услуги', href: '/services', icon: 'services' },
     { name: 'Подписка', href: '/membership', icon: 'membership' },
     { name: 'Карта', href: '/map', icon: 'map' },
-    {
-      name: 'Устройства',
-      href: '/devices',
-      icon: 'devices',
-    },
-    {
-      name: 'Скидки и бонусы',
-      href: '/bonuses',
-      icon: 'bonuses',
-    },
+    { name: 'Устройства', href: '/devices', icon: 'devices' },
+    { name: 'Скидки и бонусы', href: '/bonuses', icon: 'bonuses' },
   ]
 
   return (
-    <>
-      <div className="min-h-screen bg-[#F3F3F3]">
-        <div className="mx-auto max-w-337.5 px-4 pt-8 sm:px-6">
-          <div className="flex flex-col gap-6 md:flex-row">
-            <div className="w-full shrink-0 md:w-64">
-              <div className="sticky top-8">
-                {user && <AccountSidebar user={user} navigation={userNavigation} />}
-              </div>
+    <div className="min-h-screen bg-[#F3F3F3]">
+      <div className="mx-auto max-w-337.5 px-4 pt-8 sm:px-6">
+        <div className="flex flex-col gap-6 md:flex-row">
+          <div className="w-full shrink-0 md:w-64">
+            <div className="sticky top-8">
+              {user && <AccountSidebar user={user} navigation={userNavigation} />}
             </div>
-            <main className="min-w-0 flex-1 px-5">{children}</main>
           </div>
+          <main className="min-w-0 flex-1 px-5">{children}</main>
         </div>
       </div>
-    </>
+    </div>
   )
 }

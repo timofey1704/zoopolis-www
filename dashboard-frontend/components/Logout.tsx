@@ -1,7 +1,6 @@
 import { useRouter } from 'next/navigation'
 import { IoExitOutline } from 'react-icons/io5'
 import useUserStore from '@/app/store/userStore'
-import { signOut } from 'next-auth/react'
 import Button from './ui/Button'
 
 const Logout = () => {
@@ -14,8 +13,6 @@ const Logout = () => {
         method: 'POST',
         credentials: 'include',
       })
-
-      await signOut({ redirect: false })
 
       useUserStore.getState().logout()
 

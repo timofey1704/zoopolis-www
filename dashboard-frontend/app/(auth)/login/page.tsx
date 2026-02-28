@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
@@ -8,7 +8,6 @@ import Loader from '@/components/ui/Loader'
 import { useForm } from '@/app/hooks/useForm'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
-import { signIn } from 'next-auth/react'
 import TextInput from '@/components/ui/TextInput'
 import Image from 'next/image'
 
@@ -19,23 +18,19 @@ const validationRules = {
 
 const LoginPage = () => {
   const router = useRouter()
-  const { isAuthenticated } = useUserStore()
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, isAuthChecked } = useUserStore()
 
   useEffect(() => {
-    // проверяем логин
-    if (isAuthenticated) {
-      // распределяем
+    if (!isAuthChecked) return
+
+    if (user) {
       router.replace('/main')
-      return
     }
+  }, [isAuthChecked, user])
 
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [isAuthenticated, router])
+  if (!isAuthChecked) {
+    return <Loader />
+  }
 
   const { values, isVisible, handleChange, handleSubmit, togglePasswordVisibility, FormProvider } =
     useForm(
@@ -46,28 +41,37 @@ const LoginPage = () => {
       validationRules,
       async values => {
         try {
-          const result = await signIn('credentials', {
-            email: values.email,
-            password: values.password,
-            redirect: false,
+          const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+          const loginRes = await fetch(`${API_URL}/login/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(values),
           })
 
-          if (result?.error) {
-            showToast({ type: 'error', message: result.error })
+          if (!loginRes.ok) {
+            const error = await loginRes.json()
+            showToast({ type: 'error', message: error.error })
             return
           }
 
+          const userRes = await fetch(`${API_URL}/user/`, {
+            credentials: 'include',
+          })
+
+          const user = await userRes.json()
+          useUserStore.getState().setUser(user)
+
           showToast({ type: 'success', message: 'Авторизация успешна!' })
-          router.push('/main')
+          router.replace('/main')
         } catch {
-          showToast({ type: 'error', message: 'Ошибка при входе в аккаунт' })
+          showToast({ type: 'error', message: 'Ошибка при входе' })
         }
       }
     )
-
-  if (isLoading) {
-    return <Loader />
-  }
 
   return (
     <FormProvider>

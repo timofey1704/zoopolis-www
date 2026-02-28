@@ -34,6 +34,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
     try {
       const file = files[0]
@@ -53,8 +54,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({ user, navigation }) => 
       // загружаем на сервер
       const response = await uploadImage<ProfileImageResponse>(
         file,
-        '/api/profile/update-userimage',
-        'PATCH'
+        `${apiUrl}/account/profile/contacts/`
       )
 
       if (response.user?.image) {
