@@ -67,6 +67,7 @@ local/
 
 # Системные файлы
 .DS_Store
+ansible/
 Thumbs.db
 
 # Базы данных SQLite
@@ -90,5 +91,3 @@ staticfiles/
 # Docker файлы
 *.pid
 docker-compose.override.yml
-
-.DS_Store

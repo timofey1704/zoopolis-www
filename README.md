@@ -35,7 +35,7 @@
 1. **Клонирование репозитория:**
 
    ```sh
-   git clone https://gitlab.com/wedeving/zoopolis-www
+   git clone https://github.com/timofey1704/zoopolis-www
    cd zoopolis-www
    ```
 
@@ -138,89 +138,3 @@
 
 Теперь проект будет доступен по адресу `http://localhost:3000`.
 
-### Инструкция по деплою
-
-Инструкция по деплою на stage сервер. Деплоймент на прод происходит аналогично, необходимо заменить stage на prod в командах.
-
-1. **Заходим в нужные директории:**
-
-   ```sh
-   cd backend
-   cd frontend
-   cd dashboard-frontend
-   ```
-
-2. **Запускаем сборку контейнеров в каждом терминале:**
-
-   ```sh
-   just build-stage
-   ```
-
-3. **Добавляем ключ гитлаба (один раз на сессию терминала, нужно каждый раз делать заново):**
-
-   ```sh
-   export GITLAB_TOKEN={token} ;export GITLAB_USER={user}
-   ```
-
-4. **Проверяем, что ключи добавились:**
-
-   ```sh
-   env
-   ```
-
-   В консоли должны увидеть наш ключ и имя пользователя
-
-5. **Заливаем свежую сборку в GitLab (отдельно каждый контейнер):**
-
-   ```sh
-   just push-stage
-   ```
-
-6. **Собираем в stage:**
-
-   ```sh
-   cd ansible
-   just stage zoopolis
-   ```
-
-   Команда создает и запускает все контейнеры, контейнеры должны быть до этого загружены в registry.
-
-### Миграции в продакшне
-
-1. **После сборки заходим в контейнер:**
-
-   ```sh
-   docker exec -it stage-backend-1 sh
-   ```
-
-2. **Проводим миграции:**
-
-   ```sh
-   uv run manage.py migrate
-   ```
-
-### Логи в продакшне
-
-1. **Логи фронтенда:**
-
-   ```sh
-   docker logs -f stage-frontend-1
-   ```
-
-2. **Логи дашборда:**
-
-   ```sh
-   docker logs -f stage-dashboard-frontend-1
-   ```
-
-3. **Логи бекенда:**
-
-   ```sh
-   docker logs -f stage-backend-1
-   ```
-
-4. **Логи сервера:**
-
-   ```sh
-   tail -f /var/log/angie/access.log
-   ```
