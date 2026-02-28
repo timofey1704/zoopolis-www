@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Loader from '@/components/ui/Loader'
 import Image from 'next/image'
@@ -109,7 +109,7 @@ const IsLostContent = () => {
               <div className="flex w-full items-center justify-center">
                 <Button
                   text={getButtonText(plan)}
-                  className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
+                  className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-linear-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
                   type="button"
                   onClick={() => setIsOpen(true)}
                 />
@@ -138,7 +138,7 @@ const IsLostContent = () => {
               <div className="flex w-full items-center justify-center">
                 <Link
                   href="/"
-                  className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-gradient-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
+                  className="from-orange mt-3 flex w-full items-center justify-center rounded-[20px] bg-linear-to-r to-orange-600 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90"
                 >
                   Вернуться на главную
                 </Link>

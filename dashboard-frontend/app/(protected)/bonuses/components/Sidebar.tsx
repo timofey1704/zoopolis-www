@@ -8,6 +8,7 @@ import { useClientFetch } from '@/app/hooks/useClientFetch'
 import { AxiosError } from 'axios'
 import showToast from '@/components/ui/showToast'
 import Button from '@/components/ui/Button'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 interface BonusSidebarProps {
   isOpen: boolean
@@ -34,9 +35,9 @@ const BonusHeader: React.FC<{ onClose: () => void }> = ({ onClose }) => (
 )
 
 const BonusImage: React.FC<{ url: string; alt: string }> = ({ url, alt }) => (
-  <div className="relative h-[200px] w-full overflow-hidden rounded-xl">
+  <div className="relative h-50 w-full overflow-hidden rounded-xl">
     <Image
-      src={url}
+      src={getProxiedImageUrl(url)}
       alt={alt}
       fill
       className="object-cover"
@@ -170,7 +171,7 @@ export default function Sidebar({ isOpen, onClose, bonus }: BonusSidebarProps) {
                 <Button
                   onClick={() => applyBonus(null)}
                   disabled={isLoading}
-                  className="from-orange w-full cursor-pointer rounded-[20px] bg-gradient-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="from-orange w-full cursor-pointer rounded-[20px] bg-linear-to-r to-orange-600 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   text={isLoading ? 'Применение...' : 'Применить бонус'}
                 />
               </div>

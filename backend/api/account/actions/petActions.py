@@ -13,7 +13,6 @@ from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
 from typing import cast
 from api.models import RegisterQRCode
-from django.utils import timezone
 from api.utils.emails.email_templates.internal_qr_activated import qr_activated_email
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client

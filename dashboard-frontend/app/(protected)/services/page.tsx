@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import ServiceCard from './components/ServiceCard'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Loader from '@/components/ui/Loader'

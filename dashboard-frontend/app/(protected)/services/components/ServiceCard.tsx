@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import { ServiceData } from '../page'
@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button'
 import SuccessPopup from './SuccessPopup'
 import RejectPopup from './RejectPopup'
 import showToast from '@/components/ui/showToast'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 interface ServiceRequestResponse {
   success: boolean
@@ -94,7 +95,12 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
       <div className="flex h-full flex-col rounded-3xl border bg-white p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl">
         <div className="flex grow flex-col space-y-4">
           {service.imageURL && (
-            <Image src={service.imageURL} alt={service.title} width={56} height={56} />
+            <Image
+              src={getProxiedImageUrl(service.imageURL)}
+              alt={service.title}
+              width={56}
+              height={56}
+            />
           )}
 
           <p className="text-sm text-gray-500">до {formatDate(service.actual_before)}</p>

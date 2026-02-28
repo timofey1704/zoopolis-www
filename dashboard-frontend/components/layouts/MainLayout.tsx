@@ -44,9 +44,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <div className="min-h-screen bg-[#F3F3F3]">
-        <div className="mx-auto max-w-[1350px] px-4 pt-8 sm:px-6">
+        <div className="mx-auto max-w-337.5 px-4 pt-8 sm:px-6">
           <div className="flex flex-col gap-6 md:flex-row">
-            <div className="w-full flex-shrink-0 md:w-64">
+            <div className="w-full shrink-0 md:w-64">
               <div className="sticky top-8">
                 {user && <AccountSidebar user={user} navigation={userNavigation} />}
               </div>

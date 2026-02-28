@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Image from 'next/image'
 import Loader from '@/components/ui/Loader'
@@ -9,6 +9,7 @@ import { LuMailWarning } from 'react-icons/lu'
 import EditPopup from '../components/EditPopup'
 import { Pet } from '@/app/types'
 import MapPopup from '../components/MapPopup'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 const ExistedPets = () => {
   const {
@@ -139,19 +140,19 @@ const ExistedPets = () => {
             </div>
 
             <div className="flex items-center justify-around gap-4 py-4">
-              <div className="flex items-center justify-center md:w-[180px]">
+              <div className="flex items-center justify-center md:w-45">
                 <Image
-                  src={pet.imageURL || '/images/noPet.svg'}
+                  src={getProxiedImageUrl(pet.imageURL) || '/images/noPet.svg'}
                   alt={pet.name}
                   height={180}
                   width={180}
                   priority
-                  className="aspect-square w-full rounded-2xl object-cover md:w-[180px]"
+                  className="aspect-square w-full rounded-2xl object-cover md:w-45"
                 />
               </div>
               <div className="flex flex-col items-center gap-2">
                 <Image
-                  src={pet.QRImage || '/images/noQR.svg'}
+                  src={getProxiedImageUrl(pet.QRImage) || '/images/noQR.svg'}
                   alt="qrcode"
                   width={160}
                   height={160}

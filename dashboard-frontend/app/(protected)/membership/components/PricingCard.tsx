@@ -1,4 +1,3 @@
-import React from 'react'
 import { PricingCardProps } from '@/app/types'
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
@@ -82,7 +81,7 @@ const PricingCard = ({ memberships }: PricingCardProps) => {
       {memberships.map(membership => (
         <div
           key={membership.id}
-          className={`relative flex min-h-[700px] flex-col overflow-hidden rounded-[30px] px-8 py-6 transition-all duration-300 hover:my-4 hover:scale-105 hover:shadow-xl ${
+          className={`relative flex min-h-175 flex-col overflow-hidden rounded-[30px] px-8 py-6 transition-all duration-300 hover:my-4 hover:scale-105 hover:shadow-xl ${
             membership.bg_color === '#1c1c29' ? 'text-white' : ''
           } ${accountTypeToDisplayName[user?.account_type as keyof typeof accountTypeToDisplayName] === membership.plan ? 'ring-orange ring-4' : ''}`}
           style={{ backgroundColor: membership.bg_color }}

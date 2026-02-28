@@ -11,6 +11,7 @@ import PetTypeSelector from '@/components/selectors/PetTypeSelector'
 import GenderSelector from '@/components/selectors/GenderSelector'
 import BreedSelector from '@/components/selectors/BreedSelector'
 import ColorSelector from '@/components/selectors/ColorSelector'
+import { getProxiedImageUrl } from '@/lib/utils/imageProxy'
 
 interface EditPopupProps {
   isOpen: boolean
@@ -211,7 +212,11 @@ const EditPopup: React.FC<EditPopupProps> = ({ isOpen, onClose, id, onSuccess })
                       accept="image/*"
                     />
                     <Image
-                      src={values.imageURL || previewUrl || '/images/noPet.svg'}
+                      src={
+                        getProxiedImageUrl(values.imageURL) ||
+                        getProxiedImageUrl(previewUrl) ||
+                        '/images/noPet.svg'
+                      }
                       alt="Pet"
                       height={160}
                       width={160}

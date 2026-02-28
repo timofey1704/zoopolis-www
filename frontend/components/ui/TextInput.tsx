@@ -1,4 +1,3 @@
-import React from 'react'
 import { TextInputProps } from '@/app/types'
 import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi'
 

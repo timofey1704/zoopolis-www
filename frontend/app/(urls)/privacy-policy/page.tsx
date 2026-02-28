@@ -1,5 +1,3 @@
-import React from 'react'
-
 const PrivacyPolicyPage = () => {
   return (
     <div className="px-8 py-4">
