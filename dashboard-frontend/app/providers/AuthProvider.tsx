@@ -8,11 +8,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
     const checkAuth = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/`, {
-          credentials: 'include',
-        })
+        let res = await fetch(`${apiUrl}/user/`, { credentials: 'include' })
+
+        if (res.status === 401) {
+          const refreshRes = await fetch(`${apiUrl}/login/refresh/`, {
+            method: 'POST',
+            credentials: 'include',
+          })
+          if (refreshRes.ok) {
+            res = await fetch(`${apiUrl}/user/`, { credentials: 'include' })
+          }
+        }
 
         if (!res.ok) throw new Error()
 

@@ -6,31 +6,34 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
+def set_auth_cookies(response, refresh):
+    """Устанавливает куки для токенов аутентификации.
+    SameSite=None + Secure нужны, чтобы браузер отправлял куки при cross-origin.
+    """
+    response.set_cookie(
+        'access_token',
+        str(refresh.access_token),
+        httponly=True,
+        secure=True,
+        samesite='None',
+        max_age=900,  # 15 min, как ACCESS_TOKEN_LIFETIME
+    )
+    response.set_cookie(
+        'refresh_token',
+        str(refresh),
+        httponly=True,
+        secure=True,
+        samesite='None',
+        max_age=86400 * 14,  # 14 дней как REFRESH_TOKEN_LIFETIME
+    )
+    return response
+
+
 class AuthBaseViewSet(ViewSet):
     """Базовый класс для аутентификации с общими методами"""
-    
+
     def _set_auth_cookies(self, response, refresh):
-        """Устанавливает куки для токенов аутентификации.
-        SameSite=None + Secure нужны, чтобы браузер отправлял куки при cross-origin
-        (фронт на 3000, бэк на 8000). При SameSite=Lax куки с другого origin не отправляются.
-        """
-        response.set_cookie(
-            'access_token',
-            str(refresh.access_token),
-            httponly=True,
-            secure=True,
-            samesite='None',
-            max_age=300
-        )
-        response.set_cookie(
-            'refresh_token',
-            str(refresh),
-            httponly=True,
-            secure=True,
-            samesite='None',
-            max_age=86400
-        )
-        return response
+        return set_auth_cookies(response, refresh)
 
     @action(detail=False, methods=['post'], url_path="refresh")
     def refresh_token(self, request):

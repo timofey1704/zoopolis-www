@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/app/store/userStore'
 import { useSearchParams } from 'next/navigation'
@@ -235,15 +235,6 @@ const RegisterForm = () => {
                 isVisible={isVisible}
                 togglePasswordVisibility={togglePasswordVisibility}
               />
-
-              {/* <TextInput
-              value={values.promocode}
-              name="promocode"
-              handleChange={handleChange}
-              placeholder="QWEZXC12"
-              style="register"
-              label="Код с кулона (если есть)"
-            /> */}
             </div>
 
             <div className="flex items-start pb-2">
