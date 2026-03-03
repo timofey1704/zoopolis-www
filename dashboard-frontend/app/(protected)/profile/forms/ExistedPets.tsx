@@ -24,6 +24,7 @@ const ExistedPets = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false)
   const [isMapPopupOpen, setIsMapPopupOpen] = useState(false)
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
   const handleOpenMap = (pet: Pet) => {
     setSelectedPet(pet)
@@ -43,7 +44,7 @@ const ExistedPets = () => {
   const handleLostPet = async (id: number) => {
     try {
       setLoadingPetId(id)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
       const response = await fetch(`${apiUrl}/pets/is-lost-pet/`, {
         method: 'PATCH',
         credentials: 'include',
@@ -81,7 +82,7 @@ const ExistedPets = () => {
   const handleDelete = async (id: number) => {
     try {
       setLoadingPetId(id)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
       const response = await fetch(`${apiUrl}/pets/delete-pet/`, {
         method: 'DELETE',
         credentials: 'include',

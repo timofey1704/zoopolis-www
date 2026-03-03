@@ -6,11 +6,14 @@ import useUserStore from '@/app/store/userStore'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from '@/app/hooks/useForm'
+import { useClientFetch } from '@/app/hooks/useClientFetch'
 import Button from '@/components/ui/Button'
 import showToast from '@/components/ui/showToast'
 import TextInput from '@/components/ui/TextInput'
 import PhoneInput from '@/components/ui/PhoneInput'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import type { User } from '@/app/types'
+import type { AxiosError } from 'axios'
 
 const validationRules = {
   name: { required: true },
@@ -22,28 +25,93 @@ const validationRules = {
   promocode: { required: false },
 }
 
+type SendCodePayload = { phone_number: string; promocode?: string; email: string }
+type VerifyPayload = SendCodePayload & {
+  name: string
+  surname: string
+  password: string
+  privacy_accepted: boolean
+  verification_code: string
+}
+type LoginPayload = { email: string; password: string }
+type LoginResponse = { message: string; user: User }
+
 const RegisterForm = () => {
   const router = useRouter()
-  const { user } = useUserStore()
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, setUser } = useUserStore()
+  const [initialLoading, setInitialLoading] = useState(true)
   const [verificationStep, setVerificationStep] = useState(false)
   const [verificationCode, setVerificationCode] = useState('')
   const searchParams = useSearchParams()
   const ref = searchParams.get('ref')
 
+  const { mutate: sendCode, isLoading: isSendingCode } = useClientFetch<
+    unknown,
+    SendCodePayload,
+    AxiosError<{ error?: string }>
+  >('/register/send-verification/', {
+    method: 'POST',
+    mutationOptions: {
+      onSuccess: () => {
+        showToast({ type: 'success', message: 'Код верификации отправлен на ваш номер телефона' })
+        setVerificationStep(true)
+      },
+      onError: error => {
+        showToast({
+          type: 'error',
+          message: error.response?.data?.error ?? 'Ошибка при отправке кода верификации',
+        })
+      },
+    },
+  })
+
+  const { mutate: login, isLoading: isLoggingIn } = useClientFetch<
+    LoginResponse,
+    LoginPayload,
+    AxiosError<{ error?: string }>
+  >('/login/', {
+    method: 'POST',
+    mutationOptions: {
+      onSuccess: data => {
+        setUser(data.user)
+        showToast({ type: 'success', message: 'Регистрация успешна!' })
+        router.push('/profile')
+      },
+      onError: () => {
+        showToast({ type: 'error', message: 'Вход после регистрации не удался' })
+      },
+    },
+  })
+
+  const { mutate: register, isLoading: isRegistering } = useClientFetch<
+    unknown,
+    VerifyPayload,
+    AxiosError<{ error?: string }>
+  >('/register/verify/', {
+    method: 'POST',
+    mutationOptions: {
+      onSuccess: (_, variables) => {
+        login({ email: variables.email, password: variables.password })
+      },
+      onError: error => {
+        showToast({
+          type: 'error',
+          message: error.response?.data?.error ?? 'Ошибка при регистрации',
+        })
+      },
+    },
+  })
+
   useEffect(() => {
-    // проверяем логин
     if (user) {
       router.replace('/main')
       return
     }
-
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 300)
-
+    const timer = setTimeout(() => setInitialLoading(false), 300)
     return () => clearTimeout(timer)
   }, [user, router])
+
+  const isLoadingStep2 = isRegistering || isLoggingIn
 
   const { values, isVisible, handleChange, handleSubmit, togglePasswordVisibility, FormProvider } =
     useForm(
@@ -58,85 +126,21 @@ const RegisterForm = () => {
       },
       validationRules,
       async values => {
-        try {
-          setIsLoading(true)
-
-          // отправляем запрос на верификацию email
-          const verificationResponse = await fetch('/api/register/send-code/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              phone_number: values.phone_number,
-              promocode: values.promocode,
-              email: values.email,
-            }),
-          })
-
-          const verificationData = await verificationResponse.json()
-
-          if (!verificationResponse.ok) {
-            showToast({ type: 'error', message: verificationData.error || 'Ошибка отправки кода' })
-            return
-          }
-
-          showToast({ type: 'success', message: 'Код верификации отправлен на ваш номер телефона' })
-          setVerificationStep(true)
-        } catch (error) {
-          console.error(error)
-          showToast({ type: 'error', message: 'Ошибка при отправке кода верификации' })
-        } finally {
-          setIsLoading(false)
-        }
+        sendCode({
+          phone_number: values.phone_number,
+          promocode: values.promocode || undefined,
+          email: values.email,
+        })
       }
     )
 
-  const handleVerificationSubmit = async () => {
-    try {
-      setIsLoading(true)
-
-      // отправляем код верификации и регистрируем пользователя
-      const registerResponse = await fetch('/api/register/verify/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...values,
-          verification_code: verificationCode,
-          promocode: values.promocode,
-        }),
-      })
-
-      const registerData = await registerResponse.json()
-
-      if (!registerResponse.ok) {
-        showToast({ type: 'error', message: registerData.error || 'Ошибка регистрации' })
-        return
-      }
-
-      // после успешной регистрации логинимся на бэкенде (JWT в cookie)
-      const loginRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email: values.email, password: values.password }),
-      })
-      if (!loginRes.ok) {
-        showToast({ type: 'error', message: 'Вход после регистрации не удался' })
-        return
-      }
-      const loginData = await loginRes.json()
-      useUserStore.getState().setUser(loginData.user)
-
-      showToast({ type: 'success', message: 'Регистрация успешна!' })
-      router.push('/profile')
-    } catch {
-      showToast({ type: 'error', message: 'Ошибка при регистрации' })
-    } finally {
-      setIsLoading(false)
-    }
+  const handleVerificationSubmit = () => {
+    if (verificationCode.length !== 6) return
+    register({
+      ...values,
+      verification_code: verificationCode,
+      promocode: values.promocode || '',
+    })
   }
 
   if (verificationStep) {
@@ -162,10 +166,10 @@ const RegisterForm = () => {
 
         <div className="flex flex-col gap-4">
           <Button
-            text={isLoading ? 'Подождите...' : 'Подтвердить'}
+            text={isLoadingStep2 ? 'Подождите...' : 'Подтвердить'}
             className="flex items-center justify-center rounded-2xl bg-black py-3 text-white disabled:opacity-50"
             onClick={handleVerificationSubmit}
-            disabled={verificationCode.length !== 6 || isLoading}
+            disabled={verificationCode.length !== 6 || isLoadingStep2}
           />
 
           <button
@@ -175,7 +179,7 @@ const RegisterForm = () => {
               handleSubmit(e)
             }}
             className="text-gray-600 hover:text-gray-900"
-            disabled={isLoading}
+            disabled={isSendingCode}
           >
             Отправить код повторно
           </button>
@@ -270,10 +274,10 @@ const RegisterForm = () => {
             </div>
             <div className="my-2 flex w-full items-center justify-center">
               <Button
-                text={isLoading ? 'Подождите...' : 'Продолжить'}
-                className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white"
+                text={initialLoading || isSendingCode ? 'Подождите...' : 'Продолжить'}
+                className="flex w-full items-center justify-center rounded-2xl bg-black py-3 text-white disabled:opacity-70"
                 type="submit"
-                disabled={isLoading}
+                disabled={initialLoading || isSendingCode}
               />
             </div>
           </form>
