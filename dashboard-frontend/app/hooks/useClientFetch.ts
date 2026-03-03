@@ -6,6 +6,7 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 interface FetchOptions<TData, TVariables, TError> {
   method?: HttpMethod
   config?: AxiosRequestConfig
+  //! опции react-query для GET: staleTime, gcTime, enabled и т.д. переопределяют дефолты из QueryClient
   queryOptions?: Omit<UseQueryOptions<TData, TError>, 'queryKey' | 'queryFn'>
   mutationOptions?: Omit<UseMutationOptions<TData, TError, TVariables>, 'mutationFn'>
 }
@@ -46,7 +47,7 @@ export function useClientFetch<TData = unknown, TVariables = undefined, TError =
   // авторизация через JWT в httpOnly cookie (withCredentials: true)
   const axiosConfig = { ...config, headers: config.headers, withCredentials: true }
 
-  // всегда вызываем оба хука
+  //! GET-запросы кэшируются (staleTime/gcTime в QueryClient). при повторном заходе данные показываются из кэша сразу
   const query = useQuery<TData, TError>({
     queryKey: [url, config.params],
     queryFn: async () => {
