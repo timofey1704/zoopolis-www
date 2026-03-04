@@ -1,6 +1,8 @@
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import UserRateThrottle
 
 from dictionaries.models import Cities, PetsTypes, PetsBreeds, PetsColors
 from api.utils.pagination import StandardResultsSetPagination
@@ -11,22 +13,23 @@ from api.utils.decorators import handle_exceptions
 
 class DictionariesView(ViewSet):
     """Эндпоинт для получения данных для выбора (изначальные словари заполняются админами)"""
+    permission_classes = [IsAuthenticated]
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def cities(self, request):
         cities = Cities.objects.all()
         serializer = CityListSerializer(cities, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def pet_types(self, request):
         pet_types = PetsTypes.objects.all()
         serializer = PetTypeSerializer(pet_types, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def pet_breeds(self, request):
         pet_type = request.query_params.get('pet_type')
@@ -37,7 +40,7 @@ class DictionariesView(ViewSet):
         serializer = PetBreedSerializer(pet_breeds, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def pet_colors(self, request):
         pet_colors = PetsColors.objects.all()
@@ -46,9 +49,10 @@ class DictionariesView(ViewSet):
     
 class CityView(ViewSet):
     """Получаем список городов из базы для автокомплита"""
+    permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_cities(self, request):
         # получаем параметр id города из query params

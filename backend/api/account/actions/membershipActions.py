@@ -7,6 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import AnonRateThrottle
 
 from api.utils.decorators import handle_exceptions
 from sitemanagement.models import Pricing, Tranasctions
@@ -18,7 +20,7 @@ logger = logging.getLogger(__name__)
 class MembershipView(ViewSet):
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def change_membership(self, request):
         user = request.user
@@ -115,6 +117,7 @@ class VerificationView(APIView):
         pass
     
 class NotificationView(APIView):
+    throttle_classes = [AnonRateThrottle]
     @handle_exceptions
     def post(self, request):
         try:

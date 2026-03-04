@@ -71,7 +71,16 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle', # ограничивает по IP анонимов
+        'rest_framework.throttling.UserRateThrottle', # по ID пользователя
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '500/day',
+        'user': '1000/hour',
+    },
 }
+
 
 
 SIMPLE_JWT = {

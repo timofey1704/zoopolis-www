@@ -1,16 +1,18 @@
+import requests
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.conf import settings
-from api.utils.exceptionsHandler import handle_exceptions
+from rest_framework.throttling import AnonRateThrottle
 
+from django.conf import settings
+
+from api.utils.exceptionsHandler import handle_exceptions
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
 from api.models import RegisterQRCode, UserProfile
-from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
-
 from api.utils.smsProvider import sendsms
 from api.utils.emails.email_templates.internal_pet_found_email import pet_found_email
-import requests
+
+from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
 
 class FAQView(APIView):
     @handle_exceptions
@@ -48,6 +50,7 @@ class MembershipPlansView(APIView):
         return Response(data, status=status.HTTP_200_OK)
     
 class SmsSendView(APIView):
+    throttle_classes = [AnonRateThrottle]
     @handle_exceptions
     def post(self, request):
         phone = request.data.get('phone')
@@ -67,6 +70,7 @@ class SmsSendView(APIView):
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
         
 class IsLostPetView(APIView):
+    throttle_classes = [AnonRateThrottle]
     @handle_exceptions
     def post(self, request):
         code = request.data.get("code")
@@ -114,6 +118,7 @@ class IsLostPetView(APIView):
         )
         
 class SendCoordinatesView(APIView):
+    throttle_classes = [AnonRateThrottle]
     @handle_exceptions
     def post(self, request):
         code = request.data.get("code")

@@ -1,21 +1,25 @@
 import logging
-from django.conf import settings
-from django.utils import timezone
+from typing import cast
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.throttling import UserRateThrottle
+
+from django.conf import settings
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+
 from api.account.serializers import PetSerializer, PetCreateSerializer
-from sitemanagement.models import Pet
 from api.utils.decorators import handle_exceptions
-from typing import cast
 from api.models import RegisterQRCode
 from api.utils.emails.email_templates.internal_qr_activated import qr_activated_email
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
+
+from sitemanagement.models import Pet
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +27,7 @@ class CheckCodeView(ViewSet):
     """Проверяем код с QR пользователя"""
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def validate_code(self, request):
         """Проверка кода из запроса пользователя и отправка SMS кода подтверждения"""
@@ -107,7 +111,7 @@ class CheckCodeView(ViewSet):
             status=status.HTTP_200_OK,
         )
         
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def verify_sms_code(self, request):
         """Проверка SMS кода и активация QR кода"""
@@ -179,7 +183,7 @@ class PetView(ViewSet):
             raise PermissionDenied("У вас нет прав на доступ к этому питомцу")
         return pet
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_pets(self, request):
         """Получение списка питомцев пользователя"""
@@ -187,7 +191,7 @@ class PetView(ViewSet):
         serializer = PetSerializer(pets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_pet(self, request):
         """Получение конкретного питомца"""
@@ -201,7 +205,7 @@ class PetView(ViewSet):
         serializer = PetSerializer(pet)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def create_pet(self, request):
         """Создание нового питомца"""
@@ -265,7 +269,7 @@ class PetView(ViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['patch'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def update_pet(self, request):
         """Обновление данных питомца"""
@@ -288,7 +292,7 @@ class PetView(ViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    @action(detail=False, methods=['delete'])
+    @action(detail=False, methods=['delete'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def delete_pet(self, request):
         """Удаление питомца"""

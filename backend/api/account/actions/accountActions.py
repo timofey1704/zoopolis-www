@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from django.shortcuts import get_object_or_404
 from django.core.validators import validate_email
@@ -26,7 +27,7 @@ class AccountActionsView(ViewSet):
     
     permission_classes = [IsAuthenticated]
     
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['patch'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def change_profile_contacts_data(self, request):
         """Обновление данных на главной странице аккаунта"""
@@ -100,10 +101,8 @@ class AccountActionsView(ViewSet):
 
 class MapPointsView(ViewSet):
     """Получаем список маркеров на карте"""
-    
     permission_classes = [IsAuthenticated]
-    
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_map_points(self, request):
         map_points = MapPoints.objects.all()
@@ -111,10 +110,8 @@ class MapPointsView(ViewSet):
     
 class ServicesView(ViewSet):
     """Взаимодействие с функционалом услуг"""
-    
     permission_classes = [IsAuthenticated]
-    
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_services(self, request):
         filter_type = request.query_params.get('filter', 'all')
@@ -136,7 +133,7 @@ class ServicesView(ViewSet):
         serializer = ServicesSerializer(services, many=True, context={'user_plan': user_plan})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def request_service(self, request, pk=None):
         """Запрос на получение услуги"""
@@ -171,10 +168,8 @@ class ServicesView(ViewSet):
 
 class BonusesView(ViewSet):
     """Взаимодействие с функционалом бонусов"""
-    
     permission_classes = [IsAuthenticated]
-    
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def get_bonuses(self, request):
         # получаем активные бонусы, которые не были использованы текущим пользователем
@@ -188,6 +183,7 @@ class BonusesView(ViewSet):
         return Response(BonusesSerializer(bonuses, many=True).data, status=status.HTTP_200_OK)
     
 
+    @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
     def apply_bonus(self, request, pk=None):
         """Применение бонуса"""
@@ -201,8 +197,8 @@ class BonusesView(ViewSet):
         
 class DevicesView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle]
     @handle_exceptions
-    
     def get(self, request):
         devices = Devices.objects.all()
         

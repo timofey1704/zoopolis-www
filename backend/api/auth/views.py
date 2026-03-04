@@ -1,9 +1,10 @@
+import traceback
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-import traceback
+from rest_framework.throttling import AnonRateThrottle
 
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
@@ -19,7 +20,7 @@ from api.models import User, UserProfile, RegisterQRCode
 class LoginViewSet(AuthBaseViewSet):
     """Логин для клиента"""
     
-    @action(detail=False, methods=['post'], url_path="login")
+    @action(detail=False, methods=['post'], url_path="login", throttle_classes=[AnonRateThrottle])
     def login_client(self, request):
         try:
             email = request.data.get("email")
@@ -65,7 +66,7 @@ class LoginViewSet(AuthBaseViewSet):
 class RegisterViewSet(AuthBaseViewSet):
     """Регистрация клиента"""
     
-    @action(detail=False, methods=['post'], url_path="send-verification")
+    @action(detail=False, methods=['post'], url_path="send-verification", throttle_classes=[AnonRateThrottle])
     def send_verification_code(self, request):
         """Отправка кода верификации на номер телефона"""
         phone_number = request.data.get('phone_number')
@@ -262,7 +263,7 @@ class RefreshTokenCookieView(APIView):
 class PasswordRecoveryViewSet(AuthBaseViewSet):
     """Логика восстановления пароля"""
     
-    @action(detail=False, methods=['post'], url_path="send-code")
+    @action(detail=False, methods=['post'], url_path="send-code", throttle_classes=[AnonRateThrottle])
     def send_recovery_code(self, request):
         """Отправляем код на введенный емаил"""
         try:
