@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import AnonRateThrottle
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
@@ -12,7 +13,7 @@ from django.db import IntegrityError, transaction
 
 from .serializers import ClientRegisterSerializer, UserResponseSerializer
 
-from api.utils.cookiesSetter import AuthBaseViewSet, set_auth_cookies
+from api.utils.cookiesSetter import AuthBaseViewSet, set_auth_cookies, clear_auth_cookies
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
 from api.models import User, UserProfile, RegisterQRCode
@@ -227,15 +228,12 @@ class RegisterViewSet(AuthBaseViewSet):
 
 class LogoutView(APIView):
     """Выход из системы"""
-    
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        response = Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
-        
-        # чистим куки (те же samesite/secure, что при установке; max_age=0 = удаление)
-        response.set_cookie('access_token', '', max_age=0, path='/', samesite='None', secure=True)
-        response.set_cookie('refresh_token', '', max_age=0, path='/', samesite='None', secure=True)
-        response.delete_cookie('sessionid', path='/') 
-        
+        response = Response({"message": "Выход успешен"}, status=status.HTTP_200_OK)
+        clear_auth_cookies(response)
+        response.delete_cookie('sessionid', path='/')
         return response
 class RefreshTokenCookieView(APIView):
     """Refresh по cookie refresh_token. Возвращает ответ с новыми access/refresh в Set-Cookie (для продления сессии)."""

@@ -6,6 +6,15 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
+# общие атрибуты кук (должны совпадать при установке и удалении)
+COOKIE_OPTS = {
+    'path': '/',
+    'httponly': True,
+    'secure': True,
+    'samesite': 'None',
+}
+
+
 def set_auth_cookies(response, refresh):
     """Устанавливает куки для токенов аутентификации.
     SameSite=None + Secure нужны, чтобы браузер отправлял куки при cross-origin.
@@ -13,19 +22,22 @@ def set_auth_cookies(response, refresh):
     response.set_cookie(
         'access_token',
         str(refresh.access_token),
-        httponly=True,
-        secure=True,
-        samesite='None',
+        **COOKIE_OPTS,
         max_age=900,  # 15 min, как ACCESS_TOKEN_LIFETIME
     )
     response.set_cookie(
         'refresh_token',
         str(refresh),
-        httponly=True,
-        secure=True,
-        samesite='None',
+        **COOKIE_OPTS,
         max_age=86400 * 14,  # 14 дней как REFRESH_TOKEN_LIFETIME
     )
+    return response
+
+
+def clear_auth_cookies(response):
+    """Удаляет куки токенов. Те же атрибуты, что при установке (set_auth_cookies)."""
+    response.set_cookie('access_token', '', max_age=0, **COOKIE_OPTS)
+    response.set_cookie('refresh_token', '', max_age=0, **COOKIE_OPTS)
     return response
 
 
