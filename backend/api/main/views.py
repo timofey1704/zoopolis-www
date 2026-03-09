@@ -9,7 +9,7 @@ from django.conf import settings
 from api.utils.exceptionsHandler import handle_exceptions
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
 from api.models import RegisterQRCode, UserProfile
-from api.utils.smsProvider import sendsms
+from api.utils.smsProvider import sendsms_async
 from api.utils.emails.email_templates.internal_pet_found_email import pet_found_email
 
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
@@ -48,27 +48,7 @@ class MembershipPlansView(APIView):
         }
         
         return Response(data, status=status.HTTP_200_OK)
-    
-class SmsSendView(APIView):
-    throttle_classes = [AnonRateThrottle]
-    @handle_exceptions
-    def post(self, request):
-        phone = request.data.get('phone')
-        text = request.data.get('text')
-        
-        if not phone or not text:
-            return Response(
-                {'status': False, 'error': {'code': 1, 'description': 'Phone and text are required'}}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        result = sendsms(phone, text)
-        
-        if result.get('status'):
-            return Response(result, status=status.HTTP_200_OK)
-        else:
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
-        
+            
 class IsLostPetView(APIView):
     throttle_classes = [AnonRateThrottle]
     @handle_exceptions

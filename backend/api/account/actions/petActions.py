@@ -12,6 +12,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
+from asgiref.sync import sync_to_async
+
 from api.account.serializers import PetSerializer, PetCreateSerializer
 from api.utils.decorators import handle_exceptions
 from api.models import RegisterQRCode
@@ -29,10 +31,11 @@ class CheckCodeView(ViewSet):
 
     @action(detail=False, methods=['post'], throttle_classes=[UserRateThrottle])
     @handle_exceptions
-    def validate_code(self, request):
-        """Проверка кода из запроса пользователя и отправка SMS кода подтверждения"""
+    async def validate_code(self, request):
+        """Проверка кода из запроса пользователя и отправка SMS кода подтверждения."""
         code = request.data.get("code")
-        phone_number = request.user.userprofile.phone_number
+        profile = await sync_to_async(lambda: request.user.userprofile)()
+        phone_number = profile.phone_number
 
         if not code:
             return Response(
@@ -40,7 +43,9 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        qr_code = RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
+        qr_code = await sync_to_async(
+            lambda: RegisterQRCode.objects.filter(code=code, is_active=True, is_used=False).first()
+        )()
 
         if not qr_code:
             return Response(
@@ -51,7 +56,6 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # проверяем не принадлежит ли код другому пользователю
         if qr_code.user and qr_code.user != request.user:
             return Response(
                 {
@@ -61,7 +65,6 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # проверяем принадлежит ли код текущему пользователю и верифицирован ли он
         if qr_code.user == request.user and qr_code.is_verificated and not qr_code.pet:
             imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
             return Response(
@@ -75,30 +78,27 @@ class CheckCodeView(ViewSet):
                 status=status.HTTP_200_OK,
             )
 
-        # проверяем можно ли отправить новый код
-        can_send, error_message = redis_client.can_send_new_code(phone_number)
+        can_send, error_message = await sync_to_async(redis_client.can_send_new_code)(phone_number)
         if not can_send:
             return Response(
                 {"error": error_message},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # генерируем и отправляем код
-        verification_code, error = send_verification_code(phone_number)
+        verification_code, error = await send_verification_code(phone_number)
         if error:
             return Response(
                 {"error": f"Ошибка отправки кода: {error}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        # сохраняем код в Redis
-        if not redis_client.set_verification_code(phone_number, verification_code):
+        set_ok = await sync_to_async(redis_client.set_verification_code)(phone_number, verification_code)
+        if not set_ok:
             return Response(
                 {"error": "Ошибка сохранения кода верификации"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        # возвращаем успешный ответ с данными QR кода
         imageURL = f"{settings.BASE_URL}{qr_code.image.url}" if qr_code.image else None
         return Response(
             {

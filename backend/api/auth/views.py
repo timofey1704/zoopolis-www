@@ -13,6 +13,8 @@ from django.db import IntegrityError, transaction
 
 from .serializers import ClientRegisterSerializer, UserResponseSerializer
 
+from asgiref.sync import sync_to_async
+
 from api.utils.cookiesSetter import AuthBaseViewSet, set_auth_cookies, clear_auth_cookies
 from api.utils.smsVerification import send_verification_code
 from api.utils.redisClient import redis_client
@@ -68,65 +70,68 @@ class RegisterViewSet(AuthBaseViewSet):
     """Регистрация клиента"""
     
     @action(detail=False, methods=['post'], url_path="send-verification", throttle_classes=[AnonRateThrottle])
-    def send_verification_code(self, request):
+    async def send_verification_code(self, request):
         """Отправка кода верификации на номер телефона"""
         phone_number = request.data.get('phone_number')
         promocode = request.data.get('promocode')
         email = request.data.get('email')
-        
+
         if not phone_number:
             return Response(
                 {"error": "Номер телефона обязателен"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-            
-        # проверяем не существует ли уже пользователь с таким номером телефона
-        if UserProfile.objects.filter(phone_number=phone_number).exists():
+
+        profile_exists = await sync_to_async(
+            lambda: UserProfile.objects.filter(phone_number=phone_number).exists()
+        )()
+        if profile_exists:
             return Response(
                 {"error": "Пользователь с таким номером телефона уже существует"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if User.objects.filter(email=email).exists():
+        user_exists = await sync_to_async(
+            lambda: User.objects.filter(email=email).exists()
+        )()
+        if user_exists:
             return Response(
                 {"error": "Пользователь с таким email уже существует"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-        # проверяем промокод (если предоставлен)
+
         if promocode:
             try:
-                qr_code = RegisterQRCode.objects.get(code=promocode)
+                qr_code = await sync_to_async(
+                    lambda: RegisterQRCode.objects.get(code=promocode)
+                )()
                 if qr_code.is_used:
                     return Response({"error": "Промокод уже использован"}, status=status.HTTP_400_BAD_REQUEST)
                 if not qr_code.is_active:
                     return Response({"error": "Промокод неактивен"}, status=status.HTTP_400_BAD_REQUEST)
             except RegisterQRCode.DoesNotExist:
                 return Response({"error": "Неверный промокод"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        # проверяем можно ли отправить новый код
-        can_send, error_message = redis_client.can_send_new_code(phone_number)
+
+        can_send, error_message = await sync_to_async(redis_client.can_send_new_code)(phone_number)
         if not can_send:
             return Response(
                 {"error": error_message},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-        # генерируем и отправляем код
-        verification_code, error = send_verification_code(phone_number)
-        
+
+        verification_code, error = await send_verification_code(phone_number)
         if error:
             return Response(
                 {"error": f"Ошибка отправки кода: {error}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-            
-        # сохраняем код в Redis
-        if not redis_client.set_verification_code(phone_number, verification_code):
+
+        set_ok = await sync_to_async(redis_client.set_verification_code)(phone_number, verification_code)
+        if not set_ok:
             return Response(
                 {"error": "Ошибка сохранения кода верификации"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
+
         return Response(
             {"message": "Код верификации отправлен"},
             status=status.HTTP_200_OK
@@ -262,55 +267,54 @@ class PasswordRecoveryViewSet(AuthBaseViewSet):
     """Логика восстановления пароля"""
     
     @action(detail=False, methods=['post'], url_path="send-code", throttle_classes=[AnonRateThrottle])
-    def send_recovery_code(self, request):
-        """Отправляем код на введенный емаил"""
+    async def send_recovery_code(self, request):
+        """Отправляем код на введенный номер телефона"""
         try:
             phone_number = request.data.get('phone_number')
-            
+
             if not phone_number:
                 return Response(
                     {"error": "Номер телефона обязателен"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-                
-            # проверяем существует ли юзер в базе
+
             try:
-                user = User.objects.get(phone_number=phone_number)
+                user = await sync_to_async(
+                    lambda: User.objects.get(phone_number=phone_number)
+                )()
             except User.DoesNotExist:
                 return Response(
                     {"error": "Пользователь не найден"},
                     status=status.HTTP_404_NOT_FOUND
                 )
-            
-            # проверяем таймауты
-            can_send, error_message = redis_client.can_send_new_code(phone_number)
+
+            can_send, error_message = await sync_to_async(redis_client.can_send_new_code)(phone_number)
             if not can_send:
                 return Response(
                     {"error": error_message},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
-            # отправляем код
-            verification_code, error = send_verification_code(phone_number)
+
+            verification_code, error = await send_verification_code(phone_number)
             if error:
                 return Response(
                     {"error": error},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-                
-            # сохраняем в редисе
-            if not redis_client.set_verification_code(phone_number, verification_code):
+
+            set_ok = await sync_to_async(redis_client.set_verification_code)(phone_number, verification_code)
+            if not set_ok:
                 return Response(
                     {"error": "Ошибка сохранения кода подтверждения"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-                
+
             return Response(
                 {"message": "Код подтверждения отправлен"},
                 status=status.HTTP_200_OK
             )
-            
-        except Exception as e:
+
+        except Exception:
             return Response(
                 {"error": "Ошибка при отправке кода восстановления"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
