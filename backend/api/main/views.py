@@ -9,7 +9,6 @@ from django.conf import settings
 from api.utils.exceptionsHandler import handle_exceptions
 from api.main.serializers import FAQMainSerializer, MediaMainSerializer, MembershipPlansSerializer
 from api.models import RegisterQRCode, UserProfile
-from api.utils.smsProvider import sendsms_async
 from api.utils.emails.email_templates.internal_pet_found_email import pet_found_email
 
 from sitemanagement.models import FAQ, MainPageMedia, Pricing, PetCoordinates
